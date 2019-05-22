@@ -1,0 +1,5 @@
+new("big.matrix.descriptor", description = list(sharedType = "FileBacked", 
+    filename = "bigmatrix.mat", dirname = "F:/PostDoc/Gottingen/EFForTS/Focus3/Package/dynamicfoam/", 
+    totalRows = 100L, totalCols = 100L, rowOffset = c(0, 100), 
+    colOffset = c(0, 100), nrow = 100, ncol = 100, rowNames = NULL, 
+    colNames = NULL, type = "double", separated = FALSE))

@@ -1,0 +1,115 @@
+starting worker pid=15160 on localhost:11817 at 13:52:39.246
+starting worker pid=10480 on localhost:11817 at 13:52:39.567
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+Loading required package: raster
+Loading required package: raster
+Loading required package: sp
+Loading required package: sp
+
+Attaching package: 'raster'
+
+The following object is masked from 'package:dplyr':
+
+    select
+
+Loading required package: foreach
+
+Attaching package: 'raster'
+
+The following object is masked from 'package:dplyr':
+
+    select
+
+Loading required package: foreach
+Loading required package: doParallel
+Loading required package: doParallel
+Loading required package: iterators
+Loading required package: iterators
+Loading required package: parallel
+Loading required package: parallel
+Loading OurFOAM
+Loading OurFOAM
+starting worker pid=8548 on localhost:11455 at 13:55:40.739
+starting worker pid=9744 on localhost:11455 at 13:55:41.153
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+Loading required package: raster
+Loading required package: raster
+Loading required package: sp
+Loading required package: sp
+
+Attaching package: 'raster'
+
+The following object is masked from 'package:dplyr':
+
+    select
+
+The following object is masked from 'package:dplyr':
+
+    select
+
+Loading required package: foreach
+Loading required package: foreach
+Loading required package: doParallel
+Loading required package: doParallel
+Loading required package: iterators
+Loading required package: iterators
+Loading required package: parallel
+Loading required package: parallel
+Loading OurFOAM
+Loading OurFOAM
+Warning messages:
+1: replacing previous import 'dplyr::select' by 'raster::select' when loading 'OurFOAM' 
+2: replacing previous import 'dplyr::intersect' by 'raster::intersect' when loading 'OurFOAM' 
+3: replacing previous import 'dplyr::union' by 'raster::union' when loading 'OurFOAM' 
+4: replacing previous import 'dplyr::select' by 'raster::select' when loading 'OurFOAM' 
+5: replacing previous import 'dplyr::intersect' by 'raster::intersect' when loading 'OurFOAM' 
+6: replacing previous import 'dplyr::union' by 'raster::union' when loading 'OurFOAM' 
+Warning messages:
+1: replacing previous import 'dplyr::select' by 'raster::select' when loading 'OurFOAM' 
+2: replacing previous import 'dplyr::intersect' by 'raster::intersect' when loading 'OurFOAM' 
+3: replacing previous import 'dplyr::union' by 'raster::union' when loading 'OurFOAM' 
+4: replacing previous import 'dplyr::select' by 'raster::select' when loading 'OurFOAM' 
+5: replacing previous import 'dplyr::intersect' by 'raster::intersect' when loading 'OurFOAM' 
+6: replacing previous import 'dplyr::union' by 'raster::union' when loading 'OurFOAM' 
