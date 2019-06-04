@@ -11,9 +11,9 @@ predict_pair_dissimilarity(x, y, envdat, gdmmodel)
 
 \item{y}{y-coord.}
 
-\item{gdmmodel}{GDM model.}
+\item{envdat}{A dataframe of environmental variable values for each landuse.}
 
-\item{env}{A dataframe of environmental variable values for each landuse.}
+\item{gdmmodel}{GDM model.}
 }
 \value{
 A pairwise matrix of predicted dissimilarity.

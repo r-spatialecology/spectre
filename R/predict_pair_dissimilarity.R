@@ -2,12 +2,9 @@
 #' 
 #' @param x x-coord.
 #' @param y y-coord.
-#' @param env A dataframe of environmental variable values for each landuse.
+#' @param envdat A dataframe of environmental variable values for each landuse.
 #' @param gdmmodel GDM model.
 #' @return A pairwise matrix of predicted dissimilarity.
-#' 
-#' @import gdm
-#' @import dplyr
 
 ## This function creates a predicted pairwise dissimilarity for every pair of sites in the landscape
 

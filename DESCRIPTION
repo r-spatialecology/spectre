@@ -7,11 +7,22 @@ Author: Your Name
 Maintainer: Your Name <your@email.com>
 Description: One paragraph description of what the package does as one
         or more full sentences.
-License: GPL (>= 2)
+License: CC0
 Imports: 
     Rcpp (>= 1.0.1),
     dplyr,
     gdm,
     raster
+Suggests: 
+    testthat,
+    knitr,
+    rmarkdown
 LinkingTo: Rcpp
+ByteCompile: true
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
+SystemRequirements: C++11
+VignetteBuilder: knitr
+

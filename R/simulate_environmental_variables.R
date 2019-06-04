@@ -4,8 +4,6 @@
 #' @param lutdf A table of site locations and landuses.
 #' @param env A table of environmental variable values linked to each land use.
 #' @return A dataframe of simulated environmental variable values for each landuse.
-#' 
-#' @import dplyr
 
 simulate_environmental_data <- function(lutdf, env) {
   gdmdat <- NULL
