@@ -3,3 +3,5 @@
 import(dplyr)
 import(gdm)
 import(raster)
+importFrom(Rcpp,sourceCpp)
+useDynLib(OurFOAM)
