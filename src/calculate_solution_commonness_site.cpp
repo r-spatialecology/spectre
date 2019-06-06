@@ -7,18 +7,18 @@ IntegerMatrix calculate_solution_commonness_site_rcpp(IntegerMatrix solution_mat
                                                  int site) {
 
   int nrows = solution_commonness.nrow();
-  site = site - 1;
+  site = site - 1; // because C++ starts indexing at zero
   
-  for (int j = 0; j < nrows; j++){
-    
-    if (j < site){
-      solution_commonness(site,j) = sum((solution_matrix(_,j) + solution_matrix(_,site)) > 1);
-    }
-    
-    if (j > site){
-      solution_commonness(j,site) = sum((solution_matrix(_,j) + solution_matrix(_,site)) > 1);
-    }
-    
+  int j = 0;
+  
+  for (j = 0; j < site; j++) {
+    solution_commonness(site, j) = sum((solution_matrix(_, j) + solution_matrix(_, site)) > 1);
+  }
+  
+  j++; // just to avoid comparing with itself
+  
+  for (; j < nrows; j++) {
+    solution_commonness(j, site) = sum((solution_matrix(_, j) + solution_matrix(_, site)) > 1);
   }
   
   return solution_commonness ;
