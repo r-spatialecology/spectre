@@ -1,4 +1,12 @@
-## usethis namespace: start
+#' @title spectre
+#'
+#' @description
+#' lalalalaalal
+#'
+#' @name spectre
+#' @docType package
+#' @useDynLib spectre
 #' @importFrom Rcpp sourceCpp
-## usethis namespace: end
-NULL
+
+"_PACKAGE"
+

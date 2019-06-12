@@ -1,3 +1,7 @@
+#' @title run_optimization
+#' 
+#' @description xxx
+#' 
 #' @param alpha_list Matrix of predicted alpha diversity in each cell.
 #' @param total_gamma Total (estimated) species in the system.
 #' @param target pairwise matrix of species in common.
@@ -13,6 +17,9 @@
 #' 4. Run optimization algorithm until some stop requirement is met 
 #' 
 #' @return Best matrix of common species between each site.
+#' @references xxx
+#' @export
+#' 
 
 run_optimization <- function(alpha_list, total_gamma, target, cycles, required_D, patience){
   
