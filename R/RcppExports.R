@@ -2,6 +2,6 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 calculate_solution_commonness_site_rcpp <- function(solution_matrix, solution_commonness, site) {
-    .Call('_OurFOAM_calculate_solution_commonness_site_rcpp', PACKAGE = 'OurFOAM', solution_matrix, solution_commonness, site)
+    .Call('_spectre_calculate_solution_commonness_site_rcpp', PACKAGE = 'spectre', solution_matrix, solution_commonness, site)
 }
 

@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // calculate_solution_commonness_site_rcpp
 IntegerMatrix calculate_solution_commonness_site_rcpp(IntegerMatrix solution_matrix, IntegerMatrix solution_commonness, int site);
-RcppExport SEXP _OurFOAM_calculate_solution_commonness_site_rcpp(SEXP solution_matrixSEXP, SEXP solution_commonnessSEXP, SEXP siteSEXP) {
+RcppExport SEXP _spectre_calculate_solution_commonness_site_rcpp(SEXP solution_matrixSEXP, SEXP solution_commonnessSEXP, SEXP siteSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,11 +20,11 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_OurFOAM_calculate_solution_commonness_site_rcpp", (DL_FUNC) &_OurFOAM_calculate_solution_commonness_site_rcpp, 3},
+    {"_spectre_calculate_solution_commonness_site_rcpp", (DL_FUNC) &_spectre_calculate_solution_commonness_site_rcpp, 3},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_OurFOAM(DllInfo *dll) {
+RcppExport void R_init_spectre(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }
