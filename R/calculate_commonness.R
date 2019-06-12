@@ -15,7 +15,7 @@ calculate_commonness <- function(alpha, beta){
   for(i in 1:ncol(beta)){
     
    for(j in 1:nrow(beta)){
-     commonness_mat[j,i] <- ceiling(((1 - beta[j,i])*(alpha_list[j] + alpha_list[i])) / 2)
+     commonness_mat[j,i] <- ceiling(((1 - beta[j,i])*(alpha[j] + alpha[i])) / 2)
    } 
   }
   

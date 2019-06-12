@@ -1,19 +1,21 @@
-#' This is the function which runs the optimization algorithm.
-#' There are a number of steps involved
-#' 1)generate initial solution site x species matrix (only needs to be run once per landscape) [x]
-#' 2)calculate commonness site x site matrix and Dsol (This could almost be a function in its own right) [x]
-#' 3)alter solution site x species matrix and select best site x site matrix based on Dsol
-#' 4)Run optimization algorithm until some stop requirement is met
-
 #' @param alpha_list Matrix of predicted alpha diversity in each cell.
 #' @param total_gamma Total (estimated) species in the system.
 #' @param target pairwise matrix of species in common.
 #' @param cycles number of loops before stopping.
 #' @param required_D maximum D required to stop.
 #' @param patience number of loops with no improvement before stopping.
+#' 
+#' @details 
+#' This is the function which runs the optimization algorithm.
+#' There are a number of steps involved
+#' 1. generate initial solution site x species matrix (only needs to be run once per landscape) 
+#' 3. alter solution site x species matrix and select best site x site matrix based on Dsol
+#' 4. Run optimization algorithm until some stop requirement is met 
+#' 
 #' @return Best matrix of common species between each site.
 
 run_optimization <- function(alpha_list, total_gamma, target, cycles, required_D, patience){
+  
   ## 1) Generate initial solution
   ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
   current_solution <- matrix(0, nrow = total_gamma, ncol = length(alpha_list))
