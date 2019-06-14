@@ -14,7 +14,7 @@ IntegerMatrix calculate_solution_commonness_site_rcpp(IntegerMatrix solution_mat
     solution_commonness(site, j) = sum((solution_matrix(_, j) + solution_matrix(_, site)) > 1);
   }
   
-  for (int j = site; j < nrows; j++) {
+  for (int j = site + 1; j < nrows; j++) {
     solution_commonness(j, site) = sum((solution_matrix(_, j) + solution_matrix(_, site)) > 1);
   }
   
