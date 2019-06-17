@@ -29,24 +29,10 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// calculate_solution_commonness_site_rcpp_par
-IntegerMatrix calculate_solution_commonness_site_rcpp_par(IntegerMatrix solution_matrix, IntegerMatrix solution_commonness, int site);
-RcppExport SEXP _spectre_calculate_solution_commonness_site_rcpp_par(SEXP solution_matrixSEXP, SEXP solution_commonnessSEXP, SEXP siteSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerMatrix >::type solution_matrix(solution_matrixSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type solution_commonness(solution_commonnessSEXP);
-    Rcpp::traits::input_parameter< int >::type site(siteSEXP);
-    rcpp_result_gen = Rcpp::wrap(calculate_solution_commonness_site_rcpp_par(solution_matrix, solution_commonness, site));
-    return rcpp_result_gen;
-END_RCPP
-}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spectre_calculate_solution_commonness_rcpp", (DL_FUNC) &_spectre_calculate_solution_commonness_rcpp, 1},
     {"_spectre_calculate_solution_commonness_site_rcpp", (DL_FUNC) &_spectre_calculate_solution_commonness_site_rcpp, 3},
-    {"_spectre_calculate_solution_commonness_site_rcpp_par", (DL_FUNC) &_spectre_calculate_solution_commonness_site_rcpp_par, 3},
     {NULL, NULL, 0}
 };
 

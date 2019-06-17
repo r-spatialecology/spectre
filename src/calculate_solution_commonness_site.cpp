@@ -3,16 +3,18 @@
 
 using namespace Rcpp;
 
+// [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::export]]
 IntegerMatrix calculate_solution_commonness_rcpp(IntegerMatrix solution_matrix) {
   
   int ncols = solution_matrix.ncol();
-  IntegerMatrix commonness_s_mat(ncols, ncols, NA) ;
+  IntegerMatrix commonness_s_mat(ncols, ncols, 0) ;
   
   
   for (int i = 0; i < ncols; i++) {
     for (int j = 0; j < ncols; j++) {
       commonness_s_mat(j,i) = sum((solution_matrix(_, j) + solution_matrix(_, i)) > 1);
+    }
   }
 
   return commonness_s_mat ;
@@ -40,27 +42,6 @@ IntegerMatrix calculate_solution_commonness_site_rcpp(IntegerMatrix solution_mat
 
 }
 
-// [[Rcpp::depends(RcppParallel)]]
-// [[Rcpp::export]]
-IntegerMatrix calculate_solution_commonness_site_rcpp_par(IntegerMatrix solution_matrix, 
-                                                      IntegerMatrix solution_commonness, 
-                                                      int site) {
-  
-  int nrows = solution_commonness.nrow();
-  site = site - 1; // because C++ starts indexing at zero
-  
-  
-  for (int j = 0; j < site; j++) {
-    solution_commonness(site, j) = sum((solution_matrix(_, j) + solution_matrix(_, site)) > 1);
-  }
-  
-  for (int j = site; j < nrows; j++) {
-    solution_commonness(j, site) = sum((solution_matrix(_, j) + solution_matrix(_, site)) > 1);
-  }
-  
-  return solution_commonness ;
-  
-}
 /*** R
 dim(new_solution)
 
