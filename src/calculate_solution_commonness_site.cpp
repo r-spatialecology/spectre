@@ -8,8 +8,7 @@ using namespace Rcpp;
 IntegerMatrix calculate_solution_commonness_rcpp(IntegerMatrix solution_matrix) {
   
   int ncols = solution_matrix.ncol();
-  IntegerMatrix commonness_s_mat(ncols, ncols, 0) ;
-  
+  IntegerMatrix commonness_s_mat(ncols, ncols);
   
   for (int i = 0; i < ncols; i++) {
     for (int j = 0; j < ncols; j++) {
