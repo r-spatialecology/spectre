@@ -35,8 +35,10 @@ run_optimization <- function(alpha_list, total_gamma, target, cycles, required_D
   }
 
   #Calculate the site x site commonness for the current solution
-  solution_commonness <- calculate_solution_commonness(current_solution)
-
+  # solution_commonness <- calculate_solution_commonness(current_solution)
+  solution_commonness <- calculate_solution_commonness_rcpp(current_solution)
+  solution_commonness[upper.tri(solution_commonness, diag = TRUE)] <- NA
+  
   #Calculate the difference between target and current solution
   D <- abs(sum(solution_commonness - as.numeric(target), na.rm = TRUE))
 
