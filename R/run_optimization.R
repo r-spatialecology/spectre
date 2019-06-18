@@ -45,6 +45,7 @@ run_optimization <- function(alpha_list, total_gamma, target, cycles, required_D
   #END REQUIREMENTS: 1) D < x; 2) n > y; 3) delta D not changing over set period
   n_loops <- 0
   unchanged_steps <- 0
+  
   while (n_loops < cycles && D > required_D && unchanged_steps < patience) {
     #print(D)
     #Create a new modified site x species grid

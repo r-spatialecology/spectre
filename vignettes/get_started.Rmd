@@ -17,7 +17,12 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(spectre)
 
-species_grid <- run_optimization(alpha_list, estimated_gamma, target_matrix, 1500000000, 1000000000, 500000)
+species_grid <- run_optimization(alpha_list,
+                                 estimated_gamma, 
+                                 target_matrix,
+                                 150000000, 
+                                 1, 
+                                 50000)
 ```
 
 
