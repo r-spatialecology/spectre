@@ -9,3 +9,25 @@ calculate_solution_commonness_site_rcpp <- function(solution_matrix, solution_co
     .Call('_spectre_calculate_solution_commonness_site_rcpp', PACKAGE = 'spectre', solution_matrix, solution_commonness, site)
 }
 
+#' rcpp_sample
+#'
+#' @description Rcpp sample function
+#'
+#' @param x Vector of elements to sample from.
+#' @param size Size of the sample.
+#' @param replace Sample with replacement.
+#'
+#' @details
+#' \code{Rcpp} implementation of the \code{sample} function.
+#'
+#' @seealso
+#' \code{\link{sample}}
+#'
+#' @return vector
+#'
+#' @name rcpp_sample
+#' @export
+rcpp_sample <- function(x, size, replace = FALSE) {
+    .Call('_spectre_rcpp_sample', PACKAGE = 'spectre', x, size, replace)
+}
+
