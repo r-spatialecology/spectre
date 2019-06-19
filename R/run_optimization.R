@@ -29,7 +29,7 @@ run_optimization <- function(alpha_list, total_gamma, target,
   # get dimensions of matrix
   n_row <- total_gamma
   
-  n_col = length(alpha_list)
+  n_col <- length(alpha_list)
   
   # generate initial solution
   current_solution <- matrix(data = 0, 
@@ -37,7 +37,6 @@ run_optimization <- function(alpha_list, total_gamma, target,
                              ncol = n_col)
   
   # loop changes the alpha number of species in each site to present (i.e. 1)
-  # MH: I'm sure we can somehow do this without a loop...
   for (n in seq_len(n_col)) {
     
     change_locations <- rcpp_sample(x = seq_len(n_row),

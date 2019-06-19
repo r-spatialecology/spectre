@@ -8,11 +8,10 @@ Maintainer: Your Name <your@email.com>
 Description: One paragraph description of what the package does as one
         or more full sentences.
 License: CC0
+Depends: 
+    R (>= 3.1)
 Imports: 
-    Rcpp (>= 1.0.1),
-    dplyr,
-    gdm,
-    raster
+    Rcpp (>= 1.0.1)
 Suggests: 
     testthat,
     knitr,
