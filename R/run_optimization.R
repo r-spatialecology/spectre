@@ -4,10 +4,11 @@
 #' 
 #' @param alpha_list Matrix of predicted alpha diversity in each cell.
 #' @param total_gamma Total (estimated) species in the system.
-#' @param target pairwise matrix of species in common.
-#' @param cycles number of loops before stopping.
-#' @param required_D maximum D required to stop.
-#' @param patience number of loops with no improvement before stopping.
+#' @param target Pairwise matrix of species in common.
+#' @param max_runs Max number of loops before stopping.
+#' @param energy_threshold Optimization stops if energy threshold is reached.
+#' @param patience Number of runs with no improvement before stopping.
+#' @param verbose It TRUE, progress report is printed
 #' 
 #' @details 
 #' This is the function which runs the optimization algorithm.
@@ -21,60 +22,114 @@
 #' @export
 #' 
 
-run_optimization <- function(alpha_list, total_gamma, target, cycles, required_D, patience){
+run_optimization <- function(alpha_list, total_gamma, target, 
+                             max_runs, energy_threshold, patience, 
+                             verbose = TRUE) {
   
-  ## 1) Generate initial solution
-  ##~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~##
-  current_solution <- matrix(0, nrow = total_gamma, ncol = length(alpha_list))
-
-  #Loop changes the alpha number of species in each site to present (i.e. 1)
-  for(n in 1:ncol(current_solution)){
-    #print(alpha_list[n])
-    change_locations <- sample(nrow(current_solution),alpha_list[n])
+  # get dimensions of matrix
+  n_row <- total_gamma
+  
+  n_col <- length(alpha_list)
+  
+  # generate initial solution
+  current_solution <- matrix(data = 0, 
+                             nrow = n_row, 
+                             ncol = n_col)
+  
+  # loop changes the alpha number of species in each site to present (i.e. 1)
+  for (n in seq_len(n_col)) {
+    
+    change_locations <- rcpp_sample(x = seq_len(n_row),
+                                    size = alpha_list[n])
+    
     current_solution[change_locations, n] <- 1
   }
 
-  #Calculate the site x site commonness for the current solution
+  # calculate the site x site commonness for the current solution
   solution_commonness <- calculate_solution_commonness_rcpp(current_solution)
+  
   solution_commonness[upper.tri(solution_commonness, diag = TRUE)] <- NA
   
-  #Calculate the difference between target and current solution
-  D <- abs(sum(solution_commonness - as.numeric(target), na.rm = TRUE))
-
-  #While loop to change matrix and check new D till best solution found
-  #END REQUIREMENTS: 1) D < x; 2) n > y; 3) delta D not changing over set period
-  n_loops <- 0
+  # calculate the difference between target and current solution
+  energy <- abs(sum(solution_commonness - target, na.rm = TRUE))
+  
+  # init patience counter
   unchanged_steps <- 0
   
-  while (n_loops < cycles && D > required_D && unchanged_steps < patience) {
-    #print(D)
-    #Create a new modified site x species grid
+  # create random col/row ids
+  random_col <- rcpp_sample(x = seq_len(n_col),
+                            size = max_runs, replace = TRUE)
+  
+  random_row_1 <- rcpp_sample(x = seq_len(n_row), 
+                            size = max_runs, replace = TRUE)
+  
+  random_row_2 <- rcpp_sample(x = seq_len(n_row), 
+                              size = max_runs, replace = TRUE)
+  
+  # for loop not longer than max_runs
+  for (i in seq_len(max_runs)) {
+    
+    # create a new modified site x species grid
     new_solution <- current_solution
 
-    random_col <- sample(seq_len(ncol(new_solution)), size = 1)
-    random_row1 <- sample(seq_len(nrow(new_solution)), size = 1)
-    random_row2 <- sample(seq_len(nrow(new_solution)), size = 1)
+    # get random ids
+    current_col <- random_col[i]
+    
+    current_row_1 <- random_row_1[i]
+    
+    current_row_2 <- random_row_2[i]
 
-    new_solution[random_row1, random_col] <- current_solution[random_row2, random_col]
-    new_solution[random_row2, random_col] <- current_solution[random_row1, random_col]
+    # change values
+    new_solution[current_row_1, current_col] <- current_solution[current_row_2, 
+                                                                 current_col]
+    
+    new_solution[current_row_2, current_col] <- current_solution[current_row_1, 
+                                                                 current_col]
 
-    #Calculate the site x site commonness for the new solution
-    solution_commonness <- calculate_solution_commonness_site_rcpp(new_solution, solution_commonness, random_col)
+    # calculate the site x site commonness for the new solution
+    solution_commonness <- calculate_solution_commonness_site_rcpp(new_solution, 
+                                                                   solution_commonness, 
+                                                                   current_col)
 
-    #Calculate the difference between target and new solution
-    D_new <- abs(sum(solution_commonness - as.numeric(target), na.rm = TRUE))
+    # calculate the difference between target and new solution
+    energy_new <- abs(sum(solution_commonness - target, na.rm = TRUE))
 
-    if(D_new < D){
+    # check if energy decreased
+    if (energy_new < energy) {
+      
+      # keep new solution
       current_solution <- new_solution
-      D <- D_new
+      
+      # keep new energy
+      energy <- energy_new
+      
+      # reset patience counter
       unchanged_steps <- 0
-    } else {
+    } 
+    
+    # increase patience counter
+    else {
       unchanged_steps <- unchanged_steps + 1
     }
-    n_loops <-  n_loops + 1
+    
+    # exit loop if enery threshold or patience counter max is reached
+    if (energy <= energy_threshold || unchanged_steps > patience) {
+      break
+    }
+    
+    # print progress
+    if (verbose) {
+      message("\r> Progress: max_runs: ", i, "/", max_runs,
+              " || energy = ", energy, "\t\t",
+              appendLF = FALSE)
+    }
   }
-
-  print(paste("finished with D of", D))
+  
+  # write result in new line if progress was printed
+  if (verbose) {
+    message("\r")
+    message(paste("> Optimization finished with an energy =", energy))
+  }
 
   return(current_solution)
 }
