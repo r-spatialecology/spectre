@@ -19,22 +19,24 @@
 #' 
 #' @return Best matrix of common species between each site.
 #' @references xxx
-#' @export
-#' 
 
+#' @export
 run_optimization <- function(alpha_list, total_gamma, target, 
                              max_runs, energy_threshold, patience, 
                              verbose = TRUE) {
   
   # get dimensions of matrix
   n_row <- total_gamma
-  
   n_col <- length(alpha_list)
   
   # generate initial solution
   current_solution <- matrix(data = 0, 
                              nrow = n_row, 
                              ncol = n_col)
+  
+  # generate dataframe for i and energy
+  energy_df <- data.frame(i = rep(NA, max_runs), 
+                          energy = rep(NA, max_runs))
   
   # loop changes the alpha number of species in each site to present (i.e. 1)
   for (n in seq_len(n_col)) {
@@ -117,6 +119,9 @@ run_optimization <- function(alpha_list, total_gamma, target,
       break
     }
     
+    # save energy in df
+    energy_df[i, ] <- c(i, energy)
+    
     # print progress
     if (verbose) {
       message("\r> Progress: max_runs: ", i, "/", max_runs,
@@ -130,6 +135,11 @@ run_optimization <- function(alpha_list, total_gamma, target,
     message("\r")
     message(paste("> Optimization finished with an energy =", energy))
   }
+  
+  result <- list(current_solution, 
+                 energy_df)
+  
+  names(result) <- c("optimized_grid", "energy")
 
-  return(current_solution)
+  return(result)
 }
