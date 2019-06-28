@@ -10,3 +10,6 @@
 
 "_PACKAGE"
 
+globalVariables(c("x", 
+                  "y", 
+                  "value"))

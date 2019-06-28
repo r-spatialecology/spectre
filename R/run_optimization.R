@@ -19,16 +19,14 @@
 #' 
 #' @return Best matrix of common species between each site.
 #' @references xxx
-#' @export
-#' 
 
+#' @export
 run_optimization <- function(alpha_list, total_gamma, target, 
                              max_runs, energy_threshold, patience, 
                              verbose = TRUE) {
   
   # get dimensions of matrix
   n_row <- total_gamma
-  
   n_col <- length(alpha_list)
   
   # generate initial solution
