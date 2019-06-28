@@ -10,6 +10,8 @@
 
 "_PACKAGE"
 
-globalVariables(c("x", 
-                  "y", 
-                  "value"))
+globalVariables(c("energy",
+                  "i",
+                  "value",
+                  "x", 
+                  "y"))
