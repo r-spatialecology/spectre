@@ -14,7 +14,7 @@
 #' @export
 plot_commonness <- function(species_grid, target) {
   
-  commonness_species_grid <- calculate_solution_commonness_rcpp(species_grid)
+  commonness_species_grid <- calculate_solution_commonness_rcpp(species_grid[[1]])
   
   n_row <- nrow(commonness_species_grid)
   n_col <- ncol(commonness_species_grid)

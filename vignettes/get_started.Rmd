@@ -25,6 +25,7 @@ knitr::opts_chunk$set(
 # 
 # plot_commonness(species_grid = species_grid, 
 #                 target = target_matrix)
+# plot_energy(species_grid = species_grid)
 ```
 
 
