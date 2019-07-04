@@ -4,21 +4,23 @@
 \alias{run_optimization}
 \title{run_optimization}
 \usage{
-run_optimization(alpha_list, total_gamma, target, cycles, required_D,
-  patience)
+run_optimization(alpha_list, total_gamma, target, max_runs,
+  energy_threshold, patience, verbose = TRUE)
 }
 \arguments{
 \item{alpha_list}{Matrix of predicted alpha diversity in each cell.}
 
 \item{total_gamma}{Total (estimated) species in the system.}
 
-\item{target}{pairwise matrix of species in common.}
+\item{target}{Pairwise matrix of species in common.}
 
-\item{cycles}{number of loops before stopping.}
+\item{max_runs}{Max number of loops before stopping.}
 
-\item{required_D}{maximum D required to stop.}
+\item{energy_threshold}{Optimization stops if energy threshold is reached.}
 
-\item{patience}{number of loops with no improvement before stopping.}
+\item{patience}{Number of runs with no improvement before stopping.}
+
+\item{verbose}{It TRUE, progress report is printed}
 }
 \value{
 Best matrix of common species between each site.

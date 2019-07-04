@@ -10,3 +10,8 @@
 
 "_PACKAGE"
 
+globalVariables(c("energy",
+                  "i",
+                  "value",
+                  "x", 
+                  "y"))

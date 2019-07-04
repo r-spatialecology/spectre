@@ -1,5 +1,24 @@
 #include <Rcpp.h>
+#include <RcppParallel.h>
+
 using namespace Rcpp;
+
+// [[Rcpp::plugins(cpp11)]]
+// [[Rcpp::export]]
+IntegerMatrix calculate_solution_commonness_rcpp(IntegerMatrix solution_matrix) {
+  
+  int ncols = solution_matrix.ncol();
+  IntegerMatrix commonness_s_mat(ncols, ncols);
+  
+  for (int i = 0; i < ncols; i++) {
+    for (int j = 0; j < ncols; j++) {
+      commonness_s_mat(j,i) = sum((solution_matrix(_, j) + solution_matrix(_, i)) > 1);
+    }
+  }
+
+  return commonness_s_mat ;
+  
+}
 
 // [[Rcpp::export]]
 IntegerMatrix calculate_solution_commonness_site_rcpp(IntegerMatrix solution_matrix, 
@@ -14,7 +33,7 @@ IntegerMatrix calculate_solution_commonness_site_rcpp(IntegerMatrix solution_mat
     solution_commonness(site, j) = sum((solution_matrix(_, j) + solution_matrix(_, site)) > 1);
   }
   
-  for (int j = site; j < nrows; j++) {
+  for (int j = site + 1; j < nrows; j++) {
     solution_commonness(j, site) = sum((solution_matrix(_, j) + solution_matrix(_, site)) > 1);
   }
   
@@ -22,15 +41,14 @@ IntegerMatrix calculate_solution_commonness_site_rcpp(IntegerMatrix solution_mat
 
 }
 
-
 /*** R
 dim(new_solution)
 
-new_solution <- matrix(sample(0:1, 48, replace = TRUE), 6, 8)
+new_solution <- matrix(sample(0:1, 480000, replace = TRUE), 6000, 8000)
 
-solution_commonness <- matrix(sample(0:8, 64, replace = TRUE), 8, 8)
+solution_commonness <- matrix(sample(0:8, 640000, replace = TRUE), 8000, 8000)
 
-random_col <- 6
+random_col <- 68
 
 calculate_solution_commonness_site <- function(solution_matrix, solution_commonness, site){
   
@@ -66,7 +84,7 @@ bench::mark(
   calculate_solution_commonness_site(new_solution, solution_commonness, random_col),
   calculate_solution_commonness_site_rcpp(new_solution, solution_commonness, random_col),
   calculate_solution_commonness_site_new(new_solution, solution_commonness, random_col),
-  iterations = 1000
+  iterations = 100
 )
 
 */
