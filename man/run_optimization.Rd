@@ -5,7 +5,7 @@
 \title{run_optimization}
 \usage{
 run_optimization(alpha_list, total_gamma, target, max_runs,
-  energy_threshold, patience, verbose = TRUE)
+  annealing = 0, energy_threshold, patience, verbose = TRUE)
 }
 \arguments{
 \item{alpha_list}{Matrix of predicted alpha diversity in each cell.}
@@ -15,6 +15,8 @@ run_optimization(alpha_list, total_gamma, target, max_runs,
 \item{target}{Pairwise matrix of species in common.}
 
 \item{max_runs}{Max number of loops before stopping.}
+
+\item{annealing}{Probability to keep modified matrix even if energy increased.}
 
 \item{energy_threshold}{Optimization stops if energy threshold is reached.}
 
