@@ -76,8 +76,12 @@ run_optimization <- function(alpha_list,
   
   # create random number for annealing probability
   if (annealing != 0) {
+    
     annealing_random <- stats::runif(n = max_runs, min = 0, max = 1)
-  } else {
+  } 
+  
+  else {
+    
     annealing_random <- rep(0, max_runs)
   }
   
