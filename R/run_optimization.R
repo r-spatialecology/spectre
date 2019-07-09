@@ -6,6 +6,7 @@
 #' @param total_gamma Total (estimated) species in the system.
 #' @param target Pairwise matrix of species in common.
 #' @param max_runs Max number of loops before stopping.
+#' @param annealing Probability to keep modified matrix even if energy increased.
 #' @param energy_threshold Optimization stops if energy threshold is reached.
 #' @param patience Number of runs with no improvement before stopping.
 #' @param verbose It TRUE, progress report is printed
@@ -21,8 +22,13 @@
 #' @references xxx
 
 #' @export
-run_optimization <- function(alpha_list, total_gamma, target, 
-                             max_runs, energy_threshold, patience, 
+run_optimization <- function(alpha_list, 
+                             total_gamma, 
+                             target, 
+                             max_runs,
+                             annealing = 0,
+                             energy_threshold, 
+                             patience, 
                              verbose = TRUE) {
   
   # get dimensions of matrix
@@ -68,6 +74,17 @@ run_optimization <- function(alpha_list, total_gamma, target,
   random_row_2 <- rcpp_sample(x = seq_len(n_row), 
                               size = max_runs, replace = TRUE)
   
+  # create random number for annealing probability
+  if (annealing != 0) {
+    
+    annealing_random <- stats::runif(n = max_runs, min = 0, max = 1)
+  } 
+  
+  else {
+    
+    annealing_random <- rep(0, max_runs)
+  }
+  
   # for loop not longer than max_runs
   for (i in seq_len(max_runs)) {
     
@@ -97,7 +114,7 @@ run_optimization <- function(alpha_list, total_gamma, target,
     energy_new <- abs(sum(solution_commonness - target, na.rm = TRUE))
 
     # check if energy decreased
-    if (energy_new < energy) {
+    if (energy_new < energy || annealing_random[i] < annealing) {
       
       # keep new solution
       current_solution <- new_solution

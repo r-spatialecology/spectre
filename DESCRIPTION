@@ -12,7 +12,8 @@ Depends:
     R (>= 3.1)
 Imports: 
     ggplot2,
-    Rcpp (>= 1.0.1)
+    Rcpp (>= 1.0.1), 
+    stats
 Suggests: 
     testthat,
     knitr,
