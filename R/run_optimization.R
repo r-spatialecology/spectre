@@ -7,7 +7,7 @@
 #' @param target Pairwise matrix of species in common.
 #' @param max_runs Max number of loops before stopping.
 #' @param annealing Probability to keep modified matrix even if energy increased.
-#' @param energy_threshold Optimization stops if energy threshold is reached.
+#' @param energy_threshold Optimization stops if energy threshold is reached. This is set as a value between 0 and 1 determining the proportion of error accepted
 #' @param patience Number of runs with no improvement before stopping.
 #' @param verbose It TRUE, progress report is printed
 #' 
@@ -59,7 +59,7 @@ run_optimization <- function(alpha_list,
   solution_commonness[upper.tri(solution_commonness, diag = TRUE)] <- NA
   
   # calculate the difference between target and current solution
-  energy <- abs(sum(solution_commonness - target, na.rm = TRUE))
+  energy <- sum(solution_commonness != target, na.rm = TRUE) / sum(!is.na(target), na.rm = TRUE)
   
   # init patience counter
   unchanged_steps <- 0
@@ -111,7 +111,7 @@ run_optimization <- function(alpha_list,
                                                                    current_col)
 
     # calculate the difference between target and new solution
-    energy_new <- abs(sum(solution_commonness - target, na.rm = TRUE))
+    energy_new <- sum(solution_commonness != target, na.rm = TRUE) / sum(!is.na(target), na.rm = TRUE)
 
     # check if energy decreased
     if (energy_new < energy || annealing_random[i] < annealing) {
