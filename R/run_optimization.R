@@ -142,7 +142,7 @@ run_optimization <- function(alpha_list,
     # print progress
     if (verbose) {
       message("\r> Progress: max_runs: ", i, "/", max_runs,
-              " || energy = ", energy, "\t\t",
+              " || energy = ", round(energy, 5), "\t\t\t",
               appendLF = FALSE)
     }
   }
@@ -150,7 +150,7 @@ run_optimization <- function(alpha_list,
   # write result in new line if progress was printed
   if (verbose) {
     message("\r")
-    message(paste("> Optimization finished with an energy =", energy))
+    message(paste("> Optimization finished with an energy =", round(energy, 5)))
   }
   
   result <- list(current_solution, 
