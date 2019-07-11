@@ -56,7 +56,8 @@ run_optimization <- function(alpha_list,
   # calculate the site x site commonness for the current solution
   solution_commonness <- calculate_solution_commonness_rcpp(current_solution)
   
-  solution_commonness[upper.tri(solution_commonness, diag = TRUE)] <- NA
+  # Not necessary?
+  # solution_commonness[upper.tri(solution_commonness, diag = TRUE)] <- NA
   
   # calculate the difference between target and current solution
   energy <- abs(sum(solution_commonness - target, na.rm = TRUE))

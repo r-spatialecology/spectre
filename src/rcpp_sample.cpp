@@ -1,29 +1,9 @@
-#include <Rcpp.h>
-using namespace Rcpp;
+#include "rcpp_sample.h"
 
-//' rcpp_sample
-//'
-//' @description Rcpp sample function
-//'
-//' @param x Vector of elements to sample from.
-//' @param size Size of the sample.
-//' @param replace Sample with replacement.
-//'
-//' @details
-//' \code{Rcpp} implementation of the \code{sample} function.
-//'
-//' @seealso
-//' \code{\link{sample}}
-//'
-//' @return vector
-//'
-//' @name rcpp_sample
-//' @export
-// [[Rcpp::export]]
-Rcpp::NumericVector rcpp_sample(Rcpp::NumericVector x, int size, bool replace = false) {
-  
+Rcpp::IntegerVector rcpp_sample(Rcpp::IntegerVector x, int size, bool replace) {
+
   return Rcpp::sample(x, size, replace);
-  
+
 }
 
 /*** R

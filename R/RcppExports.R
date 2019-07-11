@@ -9,6 +9,10 @@ calculate_solution_commonness_site_rcpp <- function(solution_matrix, solution_co
     .Call('_spectre_calculate_solution_commonness_site_rcpp', PACKAGE = 'spectre', solution_matrix, solution_commonness, site)
 }
 
+mh_optimizer <- function(alpha_list, total_gamma, target, acceptance_rate_threshold = 0.2, max_iterations = 100000L, burn_in = 20000L, seed = 0L) {
+    .Call('_spectre_mh_optimizer', PACKAGE = 'spectre', alpha_list, total_gamma, target, acceptance_rate_threshold, max_iterations, burn_in, seed)
+}
+
 #' rcpp_sample
 #'
 #' @description Rcpp sample function
