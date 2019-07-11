@@ -26,7 +26,7 @@ run_optimization <- function(alpha_list,
                              total_gamma, 
                              target, 
                              max_runs,
-                             annealing = 0,
+                             annealing = 0.1,
                              energy_threshold, 
                              patience, 
                              verbose = TRUE) {
@@ -64,15 +64,15 @@ run_optimization <- function(alpha_list,
   # init patience counter
   unchanged_steps <- 0
   
-  # create random col/row ids
+  # # create random col/row ids
   random_col <- rcpp_sample(x = seq_len(n_col),
                             size = max_runs, replace = TRUE)
-  
-  random_row_1 <- rcpp_sample(x = seq_len(n_row), 
-                            size = max_runs, replace = TRUE)
-  
-  random_row_2 <- rcpp_sample(x = seq_len(n_row), 
-                              size = max_runs, replace = TRUE)
+
+  # random_row_1 <- rcpp_sample(x = seq_len(n_row), 
+  #                           size = max_runs, replace = TRUE)
+  # 
+  # random_row_2 <- rcpp_sample(x = seq_len(n_row), 
+  #                             size = max_runs, replace = TRUE)
   
   # create random number for annealing probability
   if (annealing != 0) {
@@ -91,19 +91,28 @@ run_optimization <- function(alpha_list,
     # create a new modified site x species grid
     new_solution <- current_solution
 
-    # get random ids
+    # get random col id
     current_col <- random_col[i]
     
-    current_row_1 <- random_row_1[i]
+    # get random row 1
+    current_row_1 <- rcpp_sample(x = seq_len(n_row),
+                                 size = 1)
     
-    current_row_2 <- random_row_2[i]
-
+    # value of row 1
+    value_1 <- current_solution[current_row_1, 
+                                current_col]
+    
+    # sample row where value != value_1
+    current_row_2 <- rcpp_sample(x = which(current_solution[, current_col] != value_1), 
+                                 size = 1)
+    
+    # value_2 opposite to value 1
+    value_2 <- ifelse(test = value_1 == 1, yes = 0, no = 1)
+    
     # change values
-    new_solution[current_row_1, current_col] <- current_solution[current_row_2, 
-                                                                 current_col]
+    new_solution[current_row_1, current_col] <- value_2
     
-    new_solution[current_row_2, current_col] <- current_solution[current_row_1, 
-                                                                 current_col]
+    new_solution[current_row_2, current_col] <- value_1
 
     # calculate the site x site commonness for the new solution
     solution_commonness <- calculate_solution_commonness_site_rcpp(new_solution, 
