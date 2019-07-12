@@ -94,6 +94,11 @@ run_optimization <- function(alpha_list,
     # get random col id
     current_col <- random_col[i]
     
+    # swap a random presence with a random absence
+    
+    get_absent_species(current_solution, current_col)
+    get_present_species(current_solution, current_col)
+    
     # get random row 1
     current_row_1 <- rcpp_sample(x = seq_len(n_row),
                                  size = 1)
@@ -168,4 +173,13 @@ run_optimization <- function(alpha_list,
   names(result) <- c("optimized_grid", "energy")
 
   return(result)
+}
+
+#' @export
+get_swap_rows <- function(v) {
+  species1 <- rcpp_sample(x = seq_len(length(v)),
+                          size = 1)
+  species2 <- rcpp_sample(x = which(v != v[species1]), 
+                          size = 1)
+  return(c(species1, species2))
 }
