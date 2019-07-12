@@ -5,8 +5,20 @@ calculate_solution_commonness_rcpp <- function(solution_matrix) {
     .Call('_spectre_calculate_solution_commonness_rcpp', PACKAGE = 'spectre', solution_matrix)
 }
 
+calculate_solution_commonness_rcpp_p <- function(solution_matrix) {
+    .Call('_spectre_calculate_solution_commonness_rcpp_p', PACKAGE = 'spectre', solution_matrix)
+}
+
+calculate_solution_commonness_rcpp_old <- function(solution_matrix) {
+    .Call('_spectre_calculate_solution_commonness_rcpp_old', PACKAGE = 'spectre', solution_matrix)
+}
+
 calculate_solution_commonness_site_rcpp <- function(solution_matrix, solution_commonness, site) {
     .Call('_spectre_calculate_solution_commonness_site_rcpp', PACKAGE = 'spectre', solution_matrix, solution_commonness, site)
+}
+
+calculate_solution_commonness_site_rcpp_p <- function(solution_matrix, solution_commonness, site) {
+    .Call('_spectre_calculate_solution_commonness_site_rcpp_p', PACKAGE = 'spectre', solution_matrix, solution_commonness, site)
 }
 
 #' rcpp_sample
