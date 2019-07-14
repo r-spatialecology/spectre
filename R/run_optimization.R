@@ -7,7 +7,7 @@
 #' @param target Pairwise matrix of species in common.
 #' @param max_runs Max number of loops before stopping.
 #' @param annealing Probability to keep modified matrix even if energy increased.
-#' @param energy_threshold Optimization stops if energy threshold is reached.
+#' @param energy_threshold Optimization stops if energy threshold is reached. This is set as a value between 0 and 1 determining the proportion of error accepted
 #' @param patience Number of runs with no improvement before stopping.
 #' @param verbose It TRUE, progress report is printed
 #' 
@@ -26,7 +26,7 @@ run_optimization <- function(alpha_list,
                              total_gamma, 
                              target, 
                              max_runs,
-                             annealing = 0,
+                             annealing = 0.1,
                              energy_threshold, 
                              patience, 
                              verbose = TRUE) {
@@ -60,20 +60,20 @@ run_optimization <- function(alpha_list,
   # solution_commonness[upper.tri(solution_commonness, diag = TRUE)] <- NA
   
   # calculate the difference between target and current solution
-  energy <- abs(sum(solution_commonness - target, na.rm = TRUE))
+  energy <- sum(solution_commonness != target, na.rm = TRUE) / sum(!is.na(target), na.rm = TRUE)
   
   # init patience counter
   unchanged_steps <- 0
   
-  # create random col/row ids
+  # # create random col/row ids
   random_col <- rcpp_sample(x = seq_len(n_col),
                             size = max_runs, replace = TRUE)
-  
-  random_row_1 <- rcpp_sample(x = seq_len(n_row), 
-                            size = max_runs, replace = TRUE)
-  
-  random_row_2 <- rcpp_sample(x = seq_len(n_row), 
-                              size = max_runs, replace = TRUE)
+
+  # random_row_1 <- rcpp_sample(x = seq_len(n_row), 
+  #                           size = max_runs, replace = TRUE)
+  # 
+  # random_row_2 <- rcpp_sample(x = seq_len(n_row), 
+  #                             size = max_runs, replace = TRUE)
   
   # create random number for annealing probability
   if (annealing != 0) {
@@ -92,19 +92,28 @@ run_optimization <- function(alpha_list,
     # create a new modified site x species grid
     new_solution <- current_solution
 
-    # get random ids
+    # get random col id
     current_col <- random_col[i]
     
-    current_row_1 <- random_row_1[i]
+    # get random row 1
+    current_row_1 <- rcpp_sample(x = seq_len(n_row),
+                                 size = 1)
     
-    current_row_2 <- random_row_2[i]
-
+    # value of row 1
+    value_1 <- current_solution[current_row_1, 
+                                current_col]
+    
+    # sample row where value != value_1
+    current_row_2 <- rcpp_sample(x = which(current_solution[, current_col] != value_1), 
+                                 size = 1)
+    
+    # value_2 opposite to value 1
+    value_2 <- ifelse(test = value_1 == 1, yes = 0, no = 1)
+    
     # change values
-    new_solution[current_row_1, current_col] <- current_solution[current_row_2, 
-                                                                 current_col]
+    new_solution[current_row_1, current_col] <- value_2
     
-    new_solution[current_row_2, current_col] <- current_solution[current_row_1, 
-                                                                 current_col]
+    new_solution[current_row_2, current_col] <- value_1
 
     # calculate the site x site commonness for the new solution
     solution_commonness <- calculate_solution_commonness_site_rcpp(new_solution, 
@@ -112,7 +121,7 @@ run_optimization <- function(alpha_list,
                                                                    current_col)
 
     # calculate the difference between target and new solution
-    energy_new <- abs(sum(solution_commonness - target, na.rm = TRUE))
+    energy_new <- sum(solution_commonness != target, na.rm = TRUE) / sum(!is.na(target), na.rm = TRUE)
 
     # check if energy decreased
     if (energy_new < energy || annealing_random[i] < annealing) {
@@ -143,7 +152,7 @@ run_optimization <- function(alpha_list,
     # print progress
     if (verbose) {
       message("\r> Progress: max_runs: ", i, "/", max_runs,
-              " || energy = ", energy, "\t\t",
+              " || energy = ", round(energy, 5), "\t\t\t",
               appendLF = FALSE)
     }
   }
@@ -151,7 +160,7 @@ run_optimization <- function(alpha_list,
   # write result in new line if progress was printed
   if (verbose) {
     message("\r")
-    message(paste("> Optimization finished with an energy =", energy))
+    message(paste("> Optimization finished with an energy =", round(energy, 5)))
   }
   
   result <- list(current_solution, 
