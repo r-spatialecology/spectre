@@ -52,15 +52,57 @@ BEGIN_RCPP
 END_RCPP
 }
 // rcpp_sample
+<<<<<<< HEAD
 Rcpp::IntegerVector rcpp_sample(Rcpp::IntegerVector x, int size, bool replace);
+=======
+IntegerVector rcpp_sample(IntegerVector x, int size, bool replace);
+>>>>>>> swap_species
 RcppExport SEXP _spectre_rcpp_sample(SEXP xSEXP, SEXP sizeSEXP, SEXP replaceSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+<<<<<<< HEAD
     Rcpp::traits::input_parameter< Rcpp::IntegerVector >::type x(xSEXP);
+=======
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+>>>>>>> swap_species
     Rcpp::traits::input_parameter< int >::type size(sizeSEXP);
     Rcpp::traits::input_parameter< bool >::type replace(replaceSEXP);
     rcpp_result_gen = Rcpp::wrap(rcpp_sample(x, size, replace));
+    return rcpp_result_gen;
+END_RCPP
+}
+// which_not
+IntegerVector which_not(IntegerVector x, int y);
+RcppExport SEXP _spectre_which_not(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< IntegerVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< int >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(which_not(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_swap_rows_rcpp
+IntegerVector get_swap_rows_rcpp(const IntegerVector v);
+RcppExport SEXP _spectre_get_swap_rows_rcpp(SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerVector >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_swap_rows_rcpp(v));
+    return rcpp_result_gen;
+END_RCPP
+}
+// get_swap_rows_rcpp_bruteforce
+IntegerVector get_swap_rows_rcpp_bruteforce(const IntegerVector v);
+RcppExport SEXP _spectre_get_swap_rows_rcpp_bruteforce(SEXP vSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerVector >::type v(vSEXP);
+    rcpp_result_gen = Rcpp::wrap(get_swap_rows_rcpp_bruteforce(v));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -71,6 +113,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_spectre_calculate_solution_commonness_rcpp_old", (DL_FUNC) &_spectre_calculate_solution_commonness_rcpp_old, 1},
     {"_spectre_calculate_solution_commonness_site_rcpp", (DL_FUNC) &_spectre_calculate_solution_commonness_site_rcpp, 3},
     {"_spectre_rcpp_sample", (DL_FUNC) &_spectre_rcpp_sample, 3},
+    {"_spectre_which_not", (DL_FUNC) &_spectre_which_not, 2},
+    {"_spectre_get_swap_rows_rcpp", (DL_FUNC) &_spectre_get_swap_rows_rcpp, 1},
+    {"_spectre_get_swap_rows_rcpp_bruteforce", (DL_FUNC) &_spectre_get_swap_rows_rcpp_bruteforce, 1},
     {NULL, NULL, 0}
 };
 

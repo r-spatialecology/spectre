@@ -48,3 +48,15 @@ rcpp_sample <- function(x, size, replace = FALSE) {
     .Call('_spectre_rcpp_sample', PACKAGE = 'spectre', x, size, replace)
 }
 
+which_not <- function(x, y) {
+    .Call('_spectre_which_not', PACKAGE = 'spectre', x, y)
+}
+
+get_swap_rows_rcpp <- function(v) {
+    .Call('_spectre_get_swap_rows_rcpp', PACKAGE = 'spectre', v)
+}
+
+get_swap_rows_rcpp_bruteforce <- function(v) {
+    .Call('_spectre_get_swap_rows_rcpp_bruteforce', PACKAGE = 'spectre', v)
+}
+
