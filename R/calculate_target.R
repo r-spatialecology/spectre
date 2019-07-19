@@ -6,16 +6,18 @@
 #' @return matrix of common species between each site
 
 
-calculate_commonness <- function(alpha, beta){
+calculate_target <- function(alpha, beta){
   #Create an empty matrix to fill
-  commonness_mat <- matrix(NA, ncol = ncol(beta), nrow = nrow(beta))
+  target_mat <- matrix(NA, ncol = ncol(beta), nrow = nrow(beta))
   
   for(i in 1:ncol(beta)){
     
     for(j in 1:nrow(beta)){
-      commonness_mat[j,i] <- ceiling(((1 - bmo[j,i])*(alpha_list[j] + alpha_list[i])) / 2)
+      target_mat[j,i] <- ceiling(((1 - beta[j,i])*(alpha_list[j] + alpha_list[i])) / 2)
     } 
   }
   
-  return(commonness_mat)
+  target_mat[upper.tri(target_mat, diag = TRUE)] <- NA
+  
+  return(target_mat)
 }
