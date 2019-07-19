@@ -54,12 +54,12 @@ run_optimization <- function(alpha_list,
   }
 
   # calculate the site x site commonness for the current solution
-  solution_commonness <- calculate_solution_commonness_rcpp(current_solution)
+  solution_commonness <- spectre:::calculate_solution_commonness_rcpp(current_solution)
   
   solution_commonness[upper.tri(solution_commonness, diag = TRUE)] <- NA
   
   # calculate the difference between target and current solution
-  energy <- sum(solution_commonness != target, na.rm = TRUE) / sum(!is.na(target), na.rm = TRUE)
+  energy <- sum(abs(solution_commonness - target), na.rm = TRUE) / sum(target, na.rm = TRUE)
   
   # init patience counter
   unchanged_steps <- 0
@@ -120,7 +120,7 @@ run_optimization <- function(alpha_list,
                                                                    current_col)
 
     # calculate the difference between target and new solution
-    energy_new <- sum(solution_commonness != target, na.rm = TRUE) / sum(!is.na(target), na.rm = TRUE)
+    energy_new <- sum(abs(solution_commonness - target), na.rm = TRUE) / sum(target, na.rm = TRUE)
 
     # check if energy decreased
     if (energy_new < energy || annealing_random[i] < annealing) {
