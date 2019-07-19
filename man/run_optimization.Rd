@@ -5,7 +5,7 @@
 \title{run_optimization}
 \usage{
 run_optimization(alpha_list, total_gamma, target, max_runs,
-  annealing = 0, energy_threshold, patience, verbose = TRUE)
+  annealing = 0.1, energy_threshold, patience, verbose = TRUE)
 }
 \arguments{
 \item{alpha_list}{Matrix of predicted alpha diversity in each cell.}
@@ -18,7 +18,7 @@ run_optimization(alpha_list, total_gamma, target, max_runs,
 
 \item{annealing}{Probability to keep modified matrix even if energy increased.}
 
-\item{energy_threshold}{Optimization stops if energy threshold is reached.}
+\item{energy_threshold}{Optimization stops if energy threshold is reached. This is set as a value between 0 and 1 determining the proportion of error accepted}
 
 \item{patience}{Number of runs with no improvement before stopping.}
 
