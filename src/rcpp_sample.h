@@ -24,4 +24,12 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 Rcpp::IntegerVector rcpp_sample(Rcpp::IntegerVector x, int size, bool replace = false);
 
+// [[Rcpp::export]]
+IntegerVector get_swap_rows_rcpp(const IntegerVector &v);
+
+// [[Rcpp::export]]
+IntegerVector which_not_vec(const IntegerVector x, const IntegerVector y);
+
+// [[Rcpp::export]]
+IntegerVector which_not(const IntegerVector x, const int y);
 #endif // RCPP_SAMPLE_H

@@ -3,24 +3,26 @@
 #include <chrono>
 #include "calculate_solution_commonness.h"
 #include "rcpp_sample.h"
+//omp_set_nested(1);
 
 List mh_optimizer(IntegerVector alpha_list,
-                  const int total_gamma,
+                  const unsigned total_gamma,
                   IntegerMatrix target,
                   const double acceptance_rate_threshold,
                   const unsigned max_iterations,
                   const unsigned burn_in, unsigned long seed)
 {
+    RNGScope scope; // needed for debugging
     // get dimensions of matrix
-    const int n_row = total_gamma;
-    const int n_col = alpha_list.length();
+    const unsigned n_row = total_gamma;
+    const unsigned n_col = alpha_list.length();
 
     // check for sanity to avoid an infinite loop later on
-    const int check = sum(alpha_list);
+    const unsigned check = sum(alpha_list);
     assert(check > 0);
     assert(check < total_gamma * n_col);
 
-    std::vector<unsigned> energy_vector;
+    std::vector<double> energy_vector;
     energy_vector.reserve(max_iterations);
     std::vector<unsigned> iteration_count;
     iteration_count.reserve(max_iterations);
@@ -34,15 +36,16 @@ List mh_optimizer(IntegerVector alpha_list,
     if (seed < 1) {
         seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     }
+
     std::mt19937 rng(seed);
     std::uniform_int_distribution<unsigned> site_dist(0, current_solution.ncol() - 1);
-    std::uniform_int_distribution<unsigned> species_dist(0, current_solution.nrow() - 1);
+    //std::uniform_int_distribution<unsigned> species_dist(0, current_solution.nrow() - 1);
     std::uniform_real_distribution<double> real_dist_01(0, 1);
 
     // loop changes the alpha number of species in each site to present (i.e. 1)
     const IntegerVector species_seq = seq_len(n_row);
-    for (int site = 0; site < n_col; site++) {
-        const IntegerVector change_species = rcpp_sample(species_seq, alpha_list[site]);
+    for (unsigned site = 0; site < n_col; site++) {
+        const IntegerVector change_species = sample(species_seq, alpha_list[site], false);
         for (auto species : change_species) {
             current_solution(species, site) = 1;
         }
@@ -52,37 +55,28 @@ List mh_optimizer(IntegerVector alpha_list,
     auto solution_commonness = calculate_solution_commonness_rcpp(current_solution);
 
     // calculate the difference between target and current solution
-    unsigned energy = abs(sum(na_omit(solution_commonness - target)));
+    double energy = calc_energy(target, solution_commonness);
     energy_vector.push_back(energy);
-    iteration_count.push_back(0);
+    iteration_count.push_back(burn_in);
+    acceptance_rate.push_back(0.0);
 
-    unsigned accepted = 0;
+    double accepted = 0;
 
-    for (unsigned iter = 0; iter < max_iterations + burn_in; ++iter) {
+    for (unsigned iter = 0; iter < max_iterations + burn_in; iter++) {
         // swap species occurrence in a random site
         const unsigned site = site_dist(rng);
-        const unsigned species1 = species_dist(rng);
-        const unsigned species2 = species_dist(rng);
+        auto species = get_swap_rows_rcpp(current_solution(_, site));
 
-        // check if species1 and species2 are neither both present nor both absent
-        // if one species is present (=1) and the other not (=0),
-        // the sum of both is 1 which C++ interprets as true:
-        if (!(current_solution(species1, site) + current_solution(species2, site))) {
-            iter--;
-            continue; // bad luck, try again...
-        }
-
-        // change values
-        std::swap(current_solution(site, species1), current_solution(site, species2));
-
+        // swap species
+        std::swap(current_solution(species[0], site), current_solution(species[1], site));
+///BUG: swapping seems not to work!
         // calculate commoness for both solutions
-        ///TODO: use site function
-        const auto new_solution_commonness =
-                //calculate_solution_commonness_site_rcpp(current_solution,)
-               calculate_solution_commonness_rcpp(current_solution);
-        const unsigned new_energy = abs(sum(na_omit(new_solution_commonness - target)));
+        auto new_solution_commonness = calculate_solution_commonness_site_rcpp(current_solution, solution_commonness, site + 1);
+       // update_solution_commonness_site_rcpp(current_solution, new_solution_commonness, site + 1);
 
-        // if proposed solution is better, accept, else calculate jump probability
+        const double new_energy = calc_energy(target, new_solution_commonness);
+
+        // if proposed solution is better or same, accept, else calculate jump probability
         if (new_energy <= energy) {
             if (iter > burn_in) {
                 accepted++;
@@ -90,15 +84,15 @@ List mh_optimizer(IntegerVector alpha_list,
                 energy_vector.push_back(energy);
                 iteration_count.push_back(iter);
                 acceptance_rate.push_back(accepted / iter);
-                if (acceptance_rate.back() < acceptance_rate_threshold) {
-                    break;
-                }
+                //                if (acceptance_rate.back() < acceptance_rate_threshold) {
+                //                    break;
+                //                }
             }
             continue;
         }
 
         // accept anyway?
-        const double jump_probability = energy / new_energy;
+        const double jump_probability = energy; ///TODO: adjust
         if (jump_probability > real_dist_01(rng)) {
             if (iter > burn_in) {
                 accepted++;
@@ -106,15 +100,15 @@ List mh_optimizer(IntegerVector alpha_list,
                 energy_vector.push_back(energy);
                 iteration_count.push_back(iter);
                 acceptance_rate.push_back(accepted / iter);
-                if (acceptance_rate.back() < acceptance_rate_threshold) {
-                    break;
-                }
+                //                if (acceptance_rate.back() < acceptance_rate_threshold) {
+                //                    break;
+                //                }
             }
             continue;
         }
 
         // not accepted, undo changes
-        std::swap(current_solution(site, species1), current_solution(site, species2));
+        std::swap(current_solution(species[0], site), current_solution(species[1], site));
     }
 
     // generate dataframe for i and energy
@@ -122,6 +116,17 @@ List mh_optimizer(IntegerVector alpha_list,
             _["energy"] = energy, _["acceptance_rate"] = acceptance_rate);
 
     List results = List::create(current_solution, measures_df);
-
+    //std::cout << "Optimization finished with an energy = " << energy << std::endl;
     return(results);
+}
+
+double calc_energy(const IntegerVector target, const IntegerVector solution_commonness)
+{
+    // calculate the difference between target and current solution
+    return(sum(abs(na_omit(target - solution_commonness))) /
+            (double)sum(na_omit(target)));
+}
+
+void species_swap_rcpp(IntegerMatrix &mat, const IntegerVector species, unsigned site) {
+    std::swap(mat(species[0] - 1, site - 1), mat(species[1] - 1, site - 1));
 }
