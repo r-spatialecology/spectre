@@ -18,7 +18,7 @@ Suggests:
     testthat,
     knitr,
     rmarkdown
-LinkingTo: Rcpp, RcppParallel
+LinkingTo: Rcpp
 ByteCompile: true
 Encoding: UTF-8
 LazyData: true

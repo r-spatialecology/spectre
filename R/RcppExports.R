@@ -13,20 +13,20 @@ update_solution_commonness_site_rcpp <- function(solution_matrix, solution_commo
     invisible(.Call('_spectre_update_solution_commonness_site_rcpp', PACKAGE = 'spectre', solution_matrix, solution_commonness, site))
 }
 
-mh_optimizer <- function(alpha_list, total_gamma, target, acceptance_rate_threshold = 0.2, max_iterations = 1000L, burn_in = 200L, seed = 0L) {
-    .Call('_spectre_mh_optimizer', PACKAGE = 'spectre', alpha_list, total_gamma, target, acceptance_rate_threshold, max_iterations, burn_in, seed)
+mh_optimizer <- function(alpha_list, total_gamma, target, max_iterations = 1000L, seed = 0L, verbose = TRUE, base_probability_jump = 1.0) {
+    .Call('_spectre_mh_optimizer', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, seed, verbose, base_probability_jump)
 }
 
-calc_energy <- function(target, solution_commonness) {
-    .Call('_spectre_calc_energy', PACKAGE = 'spectre', target, solution_commonness)
+mh_optimizer_neutral <- function(alpha_list, total_gamma, solution_commonness_target, max_iterations = 1000L, seed = 0L, verbose = TRUE) {
+    .Call('_spectre_mh_optimizer_neutral', PACKAGE = 'spectre', alpha_list, total_gamma, solution_commonness_target, max_iterations, seed, verbose)
+}
+
+calc_energy <- function(solution_commonness, solution_commonness_target) {
+    .Call('_spectre_calc_energy', PACKAGE = 'spectre', solution_commonness, solution_commonness_target)
 }
 
 species_swap_rcpp <- function(mat, species, site) {
     invisible(.Call('_spectre_species_swap_rcpp', PACKAGE = 'spectre', mat, species, site))
-}
-
-get_swap_rows_rcpp_bruteforce <- function(v) {
-    .Call('_spectre_get_swap_rows_rcpp_bruteforce', PACKAGE = 'spectre', v)
 }
 
 #' rcpp_sample
@@ -51,8 +51,12 @@ rcpp_sample <- function(x, size, replace = FALSE) {
     .Call('_spectre_rcpp_sample', PACKAGE = 'spectre', x, size, replace)
 }
 
-get_swap_rows_rcpp <- function(v) {
-    .Call('_spectre_get_swap_rows_rcpp', PACKAGE = 'spectre', v)
+get_swap_rows_rcpp <- function(v, cpp_index) {
+    .Call('_spectre_get_swap_rows_rcpp', PACKAGE = 'spectre', v, cpp_index)
+}
+
+get_swap_rows_rcpp_bruteforce <- function(v, cpp_index) {
+    .Call('_spectre_get_swap_rows_rcpp_bruteforce', PACKAGE = 'spectre', v, cpp_index)
 }
 
 which_not_vec <- function(x, y) {

@@ -32,186 +32,38 @@ run_optimization <- function(alpha_list,
                              verbose = TRUE) {
   
   # get dimensions of matrix
-  n_row <- total_gamma
-  n_col <- length(alpha_list)
+  n_species <- total_gamma
+  n_sites <- length(alpha_list)
   
-  # generate initial solution
-  current_solution <- matrix(data = 0, 
-                             nrow = n_row, 
-                             ncol = n_col)
-  
-  # generate dataframe for i and energy
-  energy_df <- data.frame(i = rep(NA, max_runs), 
-                          energy = rep(NA, max_runs))
-  
-  # loop changes the alpha number of species in each site to present (i.e. 1)
-  for (n in seq_len(n_col)) {
-    
-    change_locations <- rcpp_sample(x = seq_len(n_row),
-                                    size = alpha_list[n])
-    
-    current_solution[change_locations, n] <- 1
-  }
-  
-  # calculate the site x site commonness for the current solution
-  solution_commonness <- spectre:::calculate_solution_commonness_rcpp(current_solution)
-  
-  solution_commonness[upper.tri(solution_commonness, diag = TRUE)] <- NA
-  
-  # calculate the difference between target and current solution
-  energy <- sum(abs(solution_commonness - target), na.rm = TRUE) / sum(target, na.rm = TRUE)
-  
-  # init patience counter
-  unchanged_steps <- 0
-  
-  # # create random col/row ids
-  random_col <- rcpp_sample(x = seq_len(n_col),
-                            size = max_runs, replace = TRUE)
-  
-  # random_row_1 <- rcpp_sample(x = seq_len(n_row), 
-  #                           size = max_runs, replace = TRUE)
-  # 
-  # random_row_2 <- rcpp_sample(x = seq_len(n_row), 
-  #                             size = max_runs, replace = TRUE)
-  
-  # create random number for annealing probability
-  if (annealing != 0) {
-    
-    annealing_random <- stats::runif(n = max_runs, min = 0, max = 1)
-  } 
-  
-  else {
-    
-    annealing_random <- rep(0, max_runs)
-  }
-  
-  # for loop not longer than max_runs
-  for (i in seq_len(max_runs)) {
-    
-    # create a new modified site x species grid
-    new_solution <- current_solution
-    
-    # get random col id
-    current_col <- random_col[i]
-    
-    # get random row 1
-    current_row_1 <- rcpp_sample(x = seq_len(n_row),
-                                 size = 1)
-    
-    # value of row 1
-    value_1 <- current_solution[current_row_1, 
-                                current_col]
-    
-    # sample row where value != value_1
-    current_row_2 <- rcpp_sample(x = which(current_solution[, current_col] != value_1), 
-                                 size = 1)
-    
-    # value_2 opposite to value 1
-    value_2 <- ifelse(test = value_1 == 1, yes = 0, no = 1)
-    
-    # change values
-    new_solution[current_row_1, current_col] <- value_2
-    
-    new_solution[current_row_2, current_col] <- value_1
-    
-    # calculate the site x site commonness for the new solution
-    solution_commonness <- calculate_solution_commonness_site_rcpp(new_solution, 
-                                                                   solution_commonness, 
-                                                                   current_col)
-    
-    # calculate the difference between target and new solution
-    energy_new <- sum(abs(solution_commonness - target), na.rm = TRUE) / sum(target, na.rm = TRUE)
-    
-    # check if energy decreased
-    if (energy_new < energy || annealing_random[i] < annealing) {
-      
-      # keep new solution
-      current_solution <- new_solution
-      
-      # keep new energy
-      energy <- energy_new
-      
-      # reset patience counter
-      unchanged_steps <- 0
-    } 
-    
-    # increase patience counter
-    else {
-      unchanged_steps <- unchanged_steps + 1
-    }
-    
-    # exit loop if enery threshold or patience counter max is reached
-    if (energy <= energy_threshold || unchanged_steps > patience) {
-      break
-    }
-    
-    # save energy in df
-    energy_df[i, ] <- c(i, energy)
-    
-    # print progress
-    if (verbose) {
-      message("\r> Progress: max_runs: ", i, "/", max_runs,
-              " || energy = ", round(energy, 5), "\t\t\t",
-              appendLF = FALSE)
-    }
-  }
-  
-  # write result in new line if progress was printed
-  if (verbose) {
-    message("\r")
-    message(paste("> Optimization finished with an energy =", round(energy, 5)))
-  }
-  
-  result <- list(current_solution, 
-                 energy_df)
-  
-  names(result) <- c("optimized_grid", "energy")
-  
-  return(result)
-}
 
-run_optimization_2 <- function(alpha_list, 
-                             total_gamma, 
-                             target, 
-                             max_runs,
-                             annealing = 0.1,
-                             energy_threshold, 
-                             patience, 
-                             verbose = TRUE) {
-  
-  # get dimensions of matrix
-  n_row <- total_gamma
-  n_col <- length(alpha_list)
-  
-  # generate initial solution
+  # generate initial solution; loop changes the alpha number of species in each site to present (i.e. 1)
   current_solution <- matrix(data = 0, 
-                             nrow = n_row, 
-                             ncol = n_col)
+                             nrow = n_species, 
+                             ncol = n_sites)
   
-  # generate dataframe for i and energy
-  energy_df <- data.frame(i = rep(NA, max_runs), 
-                          energy = rep(NA, max_runs))
-  
-  # loop changes the alpha number of species in each site to present (i.e. 1)
-  for (n in seq_len(n_col)) {
+  for (n in seq_len(n_sites)) {
     
-    change_locations <- sample(x = seq_len(n_row),
+    change_locations <- rcpp_sample(x = seq_len(n_species),
                                     size = alpha_list[n])
     
     current_solution[change_locations, n] <- 1
   }
   
+  # generate dataframe for i and energy
+  energy_df <- data.frame(i = rep(NA, max_runs), 
+                          energy = rep(NA, max_runs))
+  
   # calculate the site x site commonness for the current solution
-  solution_commonness <- spectre:::calculate_solution_commonness_rcpp(current_solution)
+  solution_commonness <- calculate_solution_commonness_rcpp(current_solution)
   
   # calculate the difference between target and current solution
-  energy <- sum(abs(solution_commonness - target), na.rm = TRUE) / sum(target, na.rm = TRUE)
+  energy <- calc_energy(solution_commonness, target)
   
   # init patience counter
   unchanged_steps <- 0
   
-  # # create random col/row ids
-  random_col <- sample(x = seq_len(n_col),
+  # create random site/species ids
+  random_site <- rcpp_sample(x = seq_len(n_sites),
                             size = max_runs, replace = TRUE)
   
   # create random number for annealing probability
@@ -227,21 +79,36 @@ run_optimization_2 <- function(alpha_list,
     # create a new modified site x species grid
     new_solution <- current_solution
     
-    # get random col id
-    current_col <- random_col[i]
+    # get random site id
+    current_site <- random_site[i]
     
-    swap_species <- get_swap_rows_rcpp_bruteforce(new_solution[ , current_col])
+    # get random species 1
+    current_species_1 <- rcpp_sample(x = seq_len(n_species),
+                                 size = 1)
+    
+    # value of species 1
+    value_1 <- current_solution[current_species_1, 
+                                current_site]
+    
+    # sample species where value != value_1
+    current_species_2 <- rcpp_sample(x = which(current_solution[, current_site] != value_1), 
+                                 size = 1)
+    
+    # value_2 opposite to value 1
+    value_2 <- ifelse(test = value_1 == 1, yes = 0, no = 1)
     
     # change values
-    species_swap_rcpp(new_solution, swap_species, current_col)
+    new_solution[current_species_1, current_site] <- value_2
+    
+    new_solution[current_species_2, current_site] <- value_1
     
     # calculate the site x site commonness for the new solution
     solution_commonness <- calculate_solution_commonness_site_rcpp(new_solution, 
                                                                    solution_commonness, 
-                                                                   current_col)
+                                                                   current_site)
     
     # calculate the difference between target and new solution
-    energy_new <- sum(abs(solution_commonness - target), na.rm = TRUE) / sum(target, na.rm = TRUE)
+    energy_new <- calc_energy(solution_commonness, target)
     
     # check if energy decreased
     if (energy_new < energy || annealing_random[i] < annealing) {
@@ -255,8 +122,8 @@ run_optimization_2 <- function(alpha_list,
       # reset patience counter
       unchanged_steps <- 0
     } else {
-    # increase patience counter
-      unchanged_steps <- unchanged_steps + 1
+      # increase patience counter
+      unchanged_steps <- unchanged_steps + 1 
     }
     
     # exit loop if enery threshold or patience counter max is reached
@@ -278,7 +145,10 @@ run_optimization_2 <- function(alpha_list,
   # write result in new line if progress was printed
   if (verbose) {
     message("\r")
-    message(paste("> Optimization finished with an energy =", round(energy, 5)))
+    message(paste("> Optimization finished with an energy =", round(energy, 5),
+                  "min energy = ", round(min(energy_df$energy), 5), 
+                  "max energy = ", round(max(energy_df$energy), 5),
+                  "improved by = ", round(max(energy_df$energy, na.rm = TRUE) - min(energy_df$energy), 5)))
   }
   
   result <- list(current_solution, 

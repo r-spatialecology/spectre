@@ -1,4 +1,4 @@
-PKG_CXX = clang++
+#PKG_CXX = clang++
 
 PKG_CXX_STD = CXX11STD
 

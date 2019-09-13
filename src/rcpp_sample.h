@@ -25,7 +25,10 @@ using namespace Rcpp;
 Rcpp::IntegerVector rcpp_sample(Rcpp::IntegerVector x, int size, bool replace = false);
 
 // [[Rcpp::export]]
-IntegerVector get_swap_rows_rcpp(const IntegerVector &v);
+IntegerVector get_swap_rows_rcpp(const IntegerVector &v, bool cpp_index);
+
+// [[Rcpp::export]]
+IntegerVector get_swap_rows_rcpp_bruteforce(const IntegerVector &v, bool cpp_index);
 
 // [[Rcpp::export]]
 IntegerVector which_not_vec(const IntegerVector x, const IntegerVector y);

@@ -20,8 +20,9 @@ int main()
     IntegerMatrix target_matrix = R.parseEval("target_matrix");
 
     auto sol_com = calculate_solution_commonness_rcpp(sol);
-    auto energy = calc_energy(target_matrix, sol_com);
-    R["result"] = mh_optimizer(alpha_list, total_gamma, target_matrix);
+    //auto energy = calc_energy(target_matrix, sol_com);
+    //R["result"]
+    auto result = mh_optimizer(alpha_list, total_gamma, target_matrix);
     R.parseEvalQ("saveRDS(result, \"result.rds\"");
 //    IntegerMatrix solution_matrix = R.parseEval("matrix(sample(0:1, 48, replace = TRUE), 6, 8)");
 //    IntegerMatrix solution_commonness = R.parseEval("matrix(sample(0:8, 64, replace = TRUE), 8, 8)");

@@ -16,15 +16,18 @@ IntegerVector which_not_vec(const IntegerVector x, const IntegerVector y) {
   return v[x != y];
 }
 
-IntegerVector get_swap_rows_rcpp(const IntegerVector &v) {
+IntegerVector get_swap_rows_rcpp(const IntegerVector &v, bool cpp_index) {
   RNGScope scope; // needed for debugging
   unsigned species1 = sample(IntegerVector(seq(1, v.size())), 1)[0];
   unsigned species2 = sample(which_not(v, v[species1 - 1]), 1)[0];  // R starts counting at 1
+  if(cpp_index) { // convert to zero-based indexing
+      species1--;
+      species2--;
+  }
   return(IntegerVector::create(species1, species2));
 }
 
-// [[Rcpp::export]]
-IntegerVector get_swap_rows_rcpp_bruteforce(const IntegerVector &v) {
+IntegerVector get_swap_rows_rcpp_bruteforce(const IntegerVector &v, bool cpp_index) {
   RNGScope scope; // needed for debugging
   IntegerVector rows = seq(1, v.size());
   unsigned species1 = sample(rows, 1)[0];
@@ -34,7 +37,10 @@ IntegerVector get_swap_rows_rcpp_bruteforce(const IntegerVector &v) {
   while (v[species1 - 1] == v[species2 - 1]) {  // R starts counting at 1
     species2 = sample(rows, 1)[0];
   }
-
+  if(cpp_index) { // convert to zero-based indexing
+      species1--;
+      species2--;
+  }
   return(IntegerVector::create(species1, species2));
 }
 
