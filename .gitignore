@@ -7,4 +7,5 @@ src/*.so
 src/*.dll
 inst/doc
 Paper/
-Example/
+
+spectre_rcpp_dev/spectre_rcpp_dev.pro.user

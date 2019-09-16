@@ -32,56 +32,44 @@ run_optimization <- function(alpha_list,
                              verbose = TRUE) {
   
   # get dimensions of matrix
-  n_row <- total_gamma
-  n_col <- length(alpha_list)
+  n_species <- total_gamma
+  n_sites <- length(alpha_list)
   
-  # generate initial solution
+
+  # generate initial solution; loop changes the alpha number of species in each site to present (i.e. 1)
   current_solution <- matrix(data = 0, 
-                             nrow = n_row, 
-                             ncol = n_col)
+                             nrow = n_species, 
+                             ncol = n_sites)
+  
+  for (n in seq_len(n_sites)) {
+    
+    change_locations <- rcpp_sample(x = seq_len(n_species),
+                                    size = alpha_list[n])
+    
+    current_solution[change_locations, n] <- 1
+  }
   
   # generate dataframe for i and energy
   energy_df <- data.frame(i = rep(NA, max_runs), 
                           energy = rep(NA, max_runs))
   
-  # loop changes the alpha number of species in each site to present (i.e. 1)
-  for (n in seq_len(n_col)) {
-    
-    change_locations <- rcpp_sample(x = seq_len(n_row),
-                                    size = alpha_list[n])
-    
-    current_solution[change_locations, n] <- 1
-  }
-
   # calculate the site x site commonness for the current solution
-  solution_commonness <- spectre:::calculate_solution_commonness_rcpp(current_solution)
-  
-  solution_commonness[upper.tri(solution_commonness, diag = TRUE)] <- NA
+  solution_commonness <- calculate_solution_commonness_rcpp(current_solution)
   
   # calculate the difference between target and current solution
-  energy <- sum(abs(solution_commonness - target), na.rm = TRUE) / sum(target, na.rm = TRUE)
+  energy <- calc_energy(solution_commonness, target)
   
   # init patience counter
   unchanged_steps <- 0
   
-  # # create random col/row ids
-  random_col <- rcpp_sample(x = seq_len(n_col),
+  # create random site/species ids
+  random_site <- rcpp_sample(x = seq_len(n_sites),
                             size = max_runs, replace = TRUE)
-
-  # random_row_1 <- rcpp_sample(x = seq_len(n_row), 
-  #                           size = max_runs, replace = TRUE)
-  # 
-  # random_row_2 <- rcpp_sample(x = seq_len(n_row), 
-  #                             size = max_runs, replace = TRUE)
   
   # create random number for annealing probability
   if (annealing != 0) {
-    
     annealing_random <- stats::runif(n = max_runs, min = 0, max = 1)
-  } 
-  
-  else {
-    
+  } else {
     annealing_random <- rep(0, max_runs)
   }
   
@@ -90,38 +78,38 @@ run_optimization <- function(alpha_list,
     
     # create a new modified site x species grid
     new_solution <- current_solution
-
-    # get random col id
-    current_col <- random_col[i]
     
-    # get random row 1
-    current_row_1 <- rcpp_sample(x = seq_len(n_row),
+    # get random site id
+    current_site <- random_site[i]
+    
+    # get random species 1
+    current_species_1 <- rcpp_sample(x = seq_len(n_species),
                                  size = 1)
     
-    # value of row 1
-    value_1 <- current_solution[current_row_1, 
-                                current_col]
+    # value of species 1
+    value_1 <- current_solution[current_species_1, 
+                                current_site]
     
-    # sample row where value != value_1
-    current_row_2 <- rcpp_sample(x = which(current_solution[, current_col] != value_1), 
+    # sample species where value != value_1
+    current_species_2 <- rcpp_sample(x = which(current_solution[, current_site] != value_1), 
                                  size = 1)
     
     # value_2 opposite to value 1
     value_2 <- ifelse(test = value_1 == 1, yes = 0, no = 1)
     
     # change values
-    new_solution[current_row_1, current_col] <- value_2
+    new_solution[current_species_1, current_site] <- value_2
     
-    new_solution[current_row_2, current_col] <- value_1
-
+    new_solution[current_species_2, current_site] <- value_1
+    
     # calculate the site x site commonness for the new solution
     solution_commonness <- calculate_solution_commonness_site_rcpp(new_solution, 
                                                                    solution_commonness, 
-                                                                   current_col)
-
+                                                                   current_site)
+    
     # calculate the difference between target and new solution
-    energy_new <- sum(abs(solution_commonness - target), na.rm = TRUE) / sum(target, na.rm = TRUE)
-
+    energy_new <- calc_energy(solution_commonness, target)
+    
     # check if energy decreased
     if (energy_new < energy || annealing_random[i] < annealing) {
       
@@ -133,11 +121,9 @@ run_optimization <- function(alpha_list,
       
       # reset patience counter
       unchanged_steps <- 0
-    } 
-    
-    # increase patience counter
-    else {
-      unchanged_steps <- unchanged_steps + 1
+    } else {
+      # increase patience counter
+      unchanged_steps <- unchanged_steps + 1 
     }
     
     # exit loop if enery threshold or patience counter max is reached
@@ -159,13 +145,25 @@ run_optimization <- function(alpha_list,
   # write result in new line if progress was printed
   if (verbose) {
     message("\r")
-    message(paste("> Optimization finished with an energy =", round(energy, 5)))
+    message(paste("> Optimization finished with an energy =", round(energy, 5),
+                  "min energy = ", round(min(energy_df$energy), 5), 
+                  "max energy = ", round(max(energy_df$energy), 5),
+                  "improved by = ", round(max(energy_df$energy, na.rm = TRUE) - min(energy_df$energy), 5)))
   }
   
   result <- list(current_solution, 
                  energy_df)
   
   names(result) <- c("optimized_grid", "energy")
-
+  
   return(result)
+}
+
+#' @export
+get_swap_rows <- function(v) {
+  species1 <- rcpp_sample(x = seq_len(length(v)),
+                          size = 1)
+  species2 <- rcpp_sample(x = which(v != v[species1]), 
+                          size = 1)
+  return(c(species1, species2))
 }

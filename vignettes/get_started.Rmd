@@ -16,16 +16,16 @@ knitr::opts_chunk$set(
 
 ```{r setup}
 # library(spectre)
-# species_grid <- run_optimization(alpha_list = alpha_list,
-#                                  total_gamma = estimated_gamma,
-#                                  target = target_matrix,
-#                                  max_runs = 150000000,
-#                                  energy_threshold = 1,
-#                                  patience = 50000)
-# 
-# plot_commonness(species_grid = species_grid, 
-#                 target = target_matrix)
-# plot_energy(species_grid = species_grid)
+ species_grid <- run_optimization(alpha_list = alpha_list,
+                                  total_gamma = estimated_gamma,
+                                  target = target_matrix,
+                                  max_runs = 150000,
+                                  energy_threshold = .1,
+                                  patience = 500)
+ 
+ plot_commonness(species_grid = species_grid, 
+                 target = target_matrix)
+ plot_energy(species_grid = species_grid)
 ```
 
 
