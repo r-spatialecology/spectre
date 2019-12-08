@@ -1,3 +1,4 @@
 *.o
 *.so
 *.dll
+mh_optimizer.cpp.autosave
