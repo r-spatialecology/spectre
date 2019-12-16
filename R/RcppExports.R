@@ -13,20 +13,16 @@ update_solution_commonness_site_rcpp <- function(solution_matrix, solution_commo
     invisible(.Call('_spectre_update_solution_commonness_site_rcpp', PACKAGE = 'spectre', solution_matrix, solution_commonness, site))
 }
 
-mh_optimizer <- function(alpha_list, total_gamma, target, max_iterations = 1000L, seed = 0L, verbose = TRUE, base_probability_jump = 1.0) {
-    .Call('_spectre_mh_optimizer', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, seed, verbose, base_probability_jump)
+mh_optimizer <- function(alpha_list, total_gamma, target, species_prop, max_iterations = 1000L, energy_theshold = 0.05, base_probability_jump = .0, seed = 0L, verbose = TRUE) {
+    .Call('_spectre_mh_optimizer', PACKAGE = 'spectre', alpha_list, total_gamma, target, species_prop, max_iterations, energy_theshold, base_probability_jump, seed, verbose)
 }
 
-mh_optimizer_neutral <- function(alpha_list, total_gamma, solution_commonness_target, max_iterations = 1000L, seed = 0L, verbose = TRUE) {
-    .Call('_spectre_mh_optimizer_neutral', PACKAGE = 'spectre', alpha_list, total_gamma, solution_commonness_target, max_iterations, seed, verbose)
+mh_optimizer_neutral <- function(alpha_list, total_gamma, solution_commonness_target, species_prop, max_iterations = 1000L, seed = 0L, verbose = TRUE) {
+    .Call('_spectre_mh_optimizer_neutral', PACKAGE = 'spectre', alpha_list, total_gamma, solution_commonness_target, species_prop, max_iterations, seed, verbose)
 }
 
 calc_energy <- function(solution_commonness, solution_commonness_target) {
     .Call('_spectre_calc_energy', PACKAGE = 'spectre', solution_commonness, solution_commonness_target)
-}
-
-species_swap_rcpp <- function(mat, species, site) {
-    invisible(.Call('_spectre_species_swap_rcpp', PACKAGE = 'spectre', mat, species, site))
 }
 
 #' rcpp_sample

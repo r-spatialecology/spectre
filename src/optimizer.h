@@ -1,5 +1,6 @@
 #ifndef MH_OPTIMIZER_H
 #define MH_OPTIMIZER_H
+#include <random>
 #include "Rcpp.h"
 
 using namespace Rcpp;
@@ -9,14 +10,17 @@ using namespace Rcpp;
 List mh_optimizer(IntegerVector alpha_list,
                   const unsigned total_gamma,
                   IntegerMatrix target,
+                  NumericVector species_prop,
                   const unsigned max_iterations = 1000,
-                  unsigned long seed = 0, bool verbose = true,
-                  double base_probability_jump = 1.0);
+                  const double energy_theshold = 0.05,
+                  double base_probability_jump = .0,
+                  unsigned long seed = 0, bool verbose = true);
 
 // [[Rcpp::export]]
 List mh_optimizer_neutral(IntegerVector alpha_list,
                           const unsigned total_gamma,
                           IntegerMatrix solution_commonness_target,
+                          NumericVector species_prop,
                           const unsigned max_iterations = 1000,
                           unsigned long seed = 0, bool verbose = true);
 
@@ -24,12 +28,15 @@ List mh_optimizer_neutral(IntegerVector alpha_list,
 double calc_energy(const IntegerVector solution_commonness,
                    const IntegerVector solution_commonness_target);
 
-// [[Rcpp::export]]
+
 void species_swap_rcpp(IntegerMatrix &mat, const IntegerVector species, unsigned site);
 
 // Helper functions
 IntegerMatrix gen_init_solution(const unsigned n_row, const unsigned n_col,
                                 const IntegerVector &alpha_list);
+IntegerMatrix gen_init_solution(const unsigned n_row, const unsigned n_col,
+                                const IntegerVector &alpha_list, NumericVector w,
+                                std::mt19937 &mt, std::uniform_real_distribution<double> &real_dist_01);
 
 IntegerMatrix gen_init_solution(const IntegerVector &alpha_diversities,
                                 const unsigned gamma_diversity);
