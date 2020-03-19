@@ -13,12 +13,8 @@ update_solution_commonness_site_rcpp <- function(solution_matrix, solution_commo
     invisible(.Call('_spectre_update_solution_commonness_site_rcpp', PACKAGE = 'spectre', solution_matrix, solution_commonness, site))
 }
 
-mh_optimizer <- function(alpha_list, total_gamma, target, species_prop, max_iterations = 1000L, energy_theshold = 0.05, base_probability_jump = .0, seed = 0L, verbose = TRUE) {
-    .Call('_spectre_mh_optimizer', PACKAGE = 'spectre', alpha_list, total_gamma, target, species_prop, max_iterations, energy_theshold, base_probability_jump, seed, verbose)
-}
-
-mh_optimizer_neutral <- function(alpha_list, total_gamma, solution_commonness_target, species_prop, max_iterations = 1000L, seed = 0L, verbose = TRUE) {
-    .Call('_spectre_mh_optimizer_neutral', PACKAGE = 'spectre', alpha_list, total_gamma, solution_commonness_target, species_prop, max_iterations, seed, verbose)
+optimizer <- function(alpha_list, total_gamma, target, max_iterations = 20000L, seed = 0L, verbose = TRUE, increment = 0.01) {
+    .Call('_spectre_optimizer', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, seed, verbose, increment)
 }
 
 calc_energy <- function(solution_commonness, solution_commonness_target) {

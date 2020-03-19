@@ -5,11 +5,13 @@
 using namespace Rcpp;
 
 // [[Rcpp::export]]
-IntegerMatrix calculate_solution_commonness_rcpp(IntegerMatrix solution_matrix);
+NumericMatrix calculate_solution_commonness_rcpp(const NumericMatrix solution_matrix);
+
+IntegerMatrix calculate_solution_commonness_rcpp(std::vector<double> solution_matrix);
 
 // [[Rcpp::export]]
-IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix,
-                                                      const IntegerMatrix solution_commonness,
+NumericMatrix calculate_solution_commonness_site_rcpp(const NumericMatrix solution_matrix,
+                                                      const NumericMatrix solution_commonness,
                                                       const int site);
 // [[Rcpp::export]]
 void update_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix,

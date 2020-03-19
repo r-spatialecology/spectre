@@ -6,24 +6,24 @@
 using namespace Rcpp;
 
 // calculate_solution_commonness_rcpp
-IntegerMatrix calculate_solution_commonness_rcpp(IntegerMatrix solution_matrix);
+NumericMatrix calculate_solution_commonness_rcpp(const NumericMatrix solution_matrix);
 RcppExport SEXP _spectre_calculate_solution_commonness_rcpp(SEXP solution_matrixSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerMatrix >::type solution_matrix(solution_matrixSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type solution_matrix(solution_matrixSEXP);
     rcpp_result_gen = Rcpp::wrap(calculate_solution_commonness_rcpp(solution_matrix));
     return rcpp_result_gen;
 END_RCPP
 }
 // calculate_solution_commonness_site_rcpp
-IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix, const IntegerMatrix solution_commonness, const int site);
+NumericMatrix calculate_solution_commonness_site_rcpp(const NumericMatrix solution_matrix, const NumericMatrix solution_commonness, const int site);
 RcppExport SEXP _spectre_calculate_solution_commonness_site_rcpp(SEXP solution_matrixSEXP, SEXP solution_commonnessSEXP, SEXP siteSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const IntegerMatrix >::type solution_matrix(solution_matrixSEXP);
-    Rcpp::traits::input_parameter< const IntegerMatrix >::type solution_commonness(solution_commonnessSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type solution_matrix(solution_matrixSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type solution_commonness(solution_commonnessSEXP);
     Rcpp::traits::input_parameter< const int >::type site(siteSEXP);
     rcpp_result_gen = Rcpp::wrap(calculate_solution_commonness_site_rcpp(solution_matrix, solution_commonness, site));
     return rcpp_result_gen;
@@ -41,50 +41,31 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
-// mh_optimizer
-List mh_optimizer(IntegerVector alpha_list, const unsigned total_gamma, IntegerMatrix target, NumericVector species_prop, const unsigned max_iterations, const double energy_theshold, double base_probability_jump, unsigned long seed, bool verbose);
-RcppExport SEXP _spectre_mh_optimizer(SEXP alpha_listSEXP, SEXP total_gammaSEXP, SEXP targetSEXP, SEXP species_propSEXP, SEXP max_iterationsSEXP, SEXP energy_thesholdSEXP, SEXP base_probability_jumpSEXP, SEXP seedSEXP, SEXP verboseSEXP) {
+// optimizer
+List optimizer(IntegerVector alpha_list, const unsigned total_gamma, NumericMatrix target, const unsigned max_iterations, unsigned long seed, bool verbose, const double increment);
+RcppExport SEXP _spectre_optimizer(SEXP alpha_listSEXP, SEXP total_gammaSEXP, SEXP targetSEXP, SEXP max_iterationsSEXP, SEXP seedSEXP, SEXP verboseSEXP, SEXP incrementSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< IntegerVector >::type alpha_list(alpha_listSEXP);
     Rcpp::traits::input_parameter< const unsigned >::type total_gamma(total_gammaSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type target(targetSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type species_prop(species_propSEXP);
-    Rcpp::traits::input_parameter< const unsigned >::type max_iterations(max_iterationsSEXP);
-    Rcpp::traits::input_parameter< const double >::type energy_theshold(energy_thesholdSEXP);
-    Rcpp::traits::input_parameter< double >::type base_probability_jump(base_probability_jumpSEXP);
-    Rcpp::traits::input_parameter< unsigned long >::type seed(seedSEXP);
-    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(mh_optimizer(alpha_list, total_gamma, target, species_prop, max_iterations, energy_theshold, base_probability_jump, seed, verbose));
-    return rcpp_result_gen;
-END_RCPP
-}
-// mh_optimizer_neutral
-List mh_optimizer_neutral(IntegerVector alpha_list, const unsigned total_gamma, IntegerMatrix solution_commonness_target, NumericVector species_prop, const unsigned max_iterations, unsigned long seed, bool verbose);
-RcppExport SEXP _spectre_mh_optimizer_neutral(SEXP alpha_listSEXP, SEXP total_gammaSEXP, SEXP solution_commonness_targetSEXP, SEXP species_propSEXP, SEXP max_iterationsSEXP, SEXP seedSEXP, SEXP verboseSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< IntegerVector >::type alpha_list(alpha_listSEXP);
-    Rcpp::traits::input_parameter< const unsigned >::type total_gamma(total_gammaSEXP);
-    Rcpp::traits::input_parameter< IntegerMatrix >::type solution_commonness_target(solution_commonness_targetSEXP);
-    Rcpp::traits::input_parameter< NumericVector >::type species_prop(species_propSEXP);
+    Rcpp::traits::input_parameter< NumericMatrix >::type target(targetSEXP);
     Rcpp::traits::input_parameter< const unsigned >::type max_iterations(max_iterationsSEXP);
     Rcpp::traits::input_parameter< unsigned long >::type seed(seedSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(mh_optimizer_neutral(alpha_list, total_gamma, solution_commonness_target, species_prop, max_iterations, seed, verbose));
+    Rcpp::traits::input_parameter< const double >::type increment(incrementSEXP);
+    rcpp_result_gen = Rcpp::wrap(optimizer(alpha_list, total_gamma, target, max_iterations, seed, verbose, increment));
     return rcpp_result_gen;
 END_RCPP
 }
 // calc_energy
-double calc_energy(const IntegerVector solution_commonness, const IntegerVector solution_commonness_target);
+double calc_energy(const NumericMatrix solution_commonness, const NumericMatrix solution_commonness_target);
 RcppExport SEXP _spectre_calc_energy(SEXP solution_commonnessSEXP, SEXP solution_commonness_targetSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const IntegerVector >::type solution_commonness(solution_commonnessSEXP);
-    Rcpp::traits::input_parameter< const IntegerVector >::type solution_commonness_target(solution_commonness_targetSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type solution_commonness(solution_commonnessSEXP);
+    Rcpp::traits::input_parameter< const NumericMatrix >::type solution_commonness_target(solution_commonness_targetSEXP);
     rcpp_result_gen = Rcpp::wrap(calc_energy(solution_commonness, solution_commonness_target));
     return rcpp_result_gen;
 END_RCPP
@@ -155,8 +136,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_spectre_calculate_solution_commonness_rcpp", (DL_FUNC) &_spectre_calculate_solution_commonness_rcpp, 1},
     {"_spectre_calculate_solution_commonness_site_rcpp", (DL_FUNC) &_spectre_calculate_solution_commonness_site_rcpp, 3},
     {"_spectre_update_solution_commonness_site_rcpp", (DL_FUNC) &_spectre_update_solution_commonness_site_rcpp, 3},
-    {"_spectre_mh_optimizer", (DL_FUNC) &_spectre_mh_optimizer, 9},
-    {"_spectre_mh_optimizer_neutral", (DL_FUNC) &_spectre_mh_optimizer_neutral, 7},
+    {"_spectre_optimizer", (DL_FUNC) &_spectre_optimizer, 7},
     {"_spectre_calc_energy", (DL_FUNC) &_spectre_calc_energy, 2},
     {"_spectre_rcpp_sample", (DL_FUNC) &_spectre_rcpp_sample, 3},
     {"_spectre_get_swap_rows_rcpp", (DL_FUNC) &_spectre_get_swap_rows_rcpp, 2},

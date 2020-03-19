@@ -1,7 +1,6 @@
 #ifndef RCPP_SAMPLE_H
 #define RCPP_SAMPLE_H
 #include <Rcpp.h>
-#include <random>
 using namespace Rcpp;
 
 //' rcpp_sample

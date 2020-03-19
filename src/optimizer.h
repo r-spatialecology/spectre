@@ -1,57 +1,30 @@
 #ifndef MH_OPTIMIZER_H
 #define MH_OPTIMIZER_H
-#include <random>
 #include "Rcpp.h"
 
 using namespace Rcpp;
 
 // [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::export]]
-List mh_optimizer(IntegerVector alpha_list,
-                  const unsigned total_gamma,
-                  IntegerMatrix target,
-                  NumericVector species_prop,
-                  const unsigned max_iterations = 1000,
-                  const double energy_theshold = 0.05,
-                  double base_probability_jump = .0,
-                  unsigned long seed = 0, bool verbose = true);
+List optimizer(IntegerVector alpha_list,
+               const unsigned total_gamma,
+               NumericMatrix target,
+               const unsigned max_iterations = 20000,
+               unsigned long seed = 0, bool verbose = true,
+               const double increment = 0.01);
 
 // [[Rcpp::export]]
-List mh_optimizer_neutral(IntegerVector alpha_list,
-                          const unsigned total_gamma,
-                          IntegerMatrix solution_commonness_target,
-                          NumericVector species_prop,
-                          const unsigned max_iterations = 1000,
-                          unsigned long seed = 0, bool verbose = true);
-
-// [[Rcpp::export]]
-double calc_energy(const IntegerVector solution_commonness,
-                   const IntegerVector solution_commonness_target);
-
-
-void species_swap_rcpp(IntegerMatrix &mat, const IntegerVector species, unsigned site);
+double calc_energy(const NumericMatrix solution_commonness,
+                   const NumericMatrix solution_commonness_target);
 
 // Helper functions
-IntegerMatrix gen_init_solution(const unsigned n_row, const unsigned n_col,
-                                const IntegerVector &alpha_list);
-IntegerMatrix gen_init_solution(const unsigned n_row, const unsigned n_col,
-                                const IntegerVector &alpha_list, NumericVector w,
-                                std::mt19937 &mt, std::uniform_real_distribution<double> &real_dist_01);
-
-IntegerMatrix gen_init_solution(const IntegerVector &alpha_diversities,
+NumericMatrix gen_init_solution(const IntegerVector &alpha_list,
                                 const unsigned gamma_diversity);
-
-unsigned long factorial_loop(unsigned n);
-unsigned long factorial_ln(unsigned n);
-unsigned long factorial_rec(unsigned n);
-unsigned long factorial(unsigned n);
 
 void update_metrics(double &accepted,
                     const double energy, const unsigned iter,
                     std::vector<double> &energy_vector,
                     std::vector<unsigned> &iteration_count,
                     std::vector<double> &acceptance_rate);
-
-double jump_probability(const double new_energy, const double energy, double base_prob);
 
 #endif // MH_OPTIMIZER_H
