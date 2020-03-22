@@ -6,7 +6,8 @@
 #' @name spectre
 #' @docType package
 #' @useDynLib spectre
-#' @importFrom Rcpp sourceCpp
+#' @import Rcpp ggplot2 stats
+#' @importFrom Rcpp evalCpp
 
 "_PACKAGE"
 
@@ -15,3 +16,4 @@ globalVariables(c("energy",
                   "value",
                   "x", 
                   "y"))
+NULL

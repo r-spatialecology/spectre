@@ -3,11 +3,11 @@
 // [[Rcpp::plugins(openmp)]]
 // [[Rcpp::plugins(cpp11)]]
 
-NumericMatrix calculate_solution_commonness_rcpp(const NumericMatrix solution_matrix) {
+IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix) {
 
     // create results matrix, filled with NAs
     int nsites = solution_matrix.ncol();
-    NumericMatrix commonness_mat(nsites, nsites);
+    IntegerMatrix commonness_mat(nsites, nsites);
     std::fill(commonness_mat.begin(), commonness_mat.end(), NumericVector::get_na() ) ;
 
     // iterate over the lower triangular matrix without diagonal
@@ -24,13 +24,13 @@ NumericMatrix calculate_solution_commonness_rcpp(const NumericMatrix solution_ma
 
 }
 
-NumericMatrix calculate_solution_commonness_site_rcpp(const NumericMatrix solution_matrix,
-                                                      const NumericMatrix solution_commonness,
+IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix,
+                                                      const IntegerMatrix solution_commonness,
                                                       const int site) {
 
     const int nrows = solution_commonness.nrow();
     const int site_ = site - 1; // because C++ starts indexing at zero
-    NumericMatrix new_solution_commonness = solution_commonness;
+    IntegerMatrix new_solution_commonness = solution_commonness;
 #pragma omp parallel
     {
 #pragma omp for nowait schedule(static)
@@ -46,8 +46,32 @@ NumericMatrix calculate_solution_commonness_site_rcpp(const NumericMatrix soluti
         }
     }
     return new_solution_commonness;
-
 }
+
+IntegerMatrix calculate_solution_commonness_species_site_rcpp(const IntegerMatrix solution_matrix,
+                                                              const IntegerMatrix solution_commonness,
+                                                              const int site, const int species)
+{
+    const int nrows = solution_commonness.nrow();
+    const int site_ = site - 1; // because C++ starts indexing at zero
+    IntegerMatrix new_solution_commonness = solution_commonness;
+#pragma omp parallel
+    {
+#pragma omp for nowait schedule(static)
+        for (int j = 0; j < site_; j++) {
+            new_solution_commonness(site_, j) = sum(solution_matrix(_, j) *
+                                                     solution_matrix(_, site_));
+        }
+
+#pragma omp for schedule(static)
+        for (int j = site_ + 1; j < nrows; j++) {
+            new_solution_commonness(j, site_) = sum(solution_matrix(_, j) *
+                                                     solution_matrix(_, site_));
+        }
+    }
+    return new_solution_commonness;
+}
+
 
 void update_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix,
                                           IntegerMatrix &solution_commonness,
@@ -67,65 +91,6 @@ void update_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix,
     }
 
 }
-
-//IntegerMatrix calculate_solution_commonness_rcpp_old(IntegerMatrix solution_matrix) {
-
-//    int ncols = solution_matrix.ncol();
-//    IntegerMatrix commonness_s_mat(ncols, ncols);
-
-//    for (int i = 0; i < ncols; i++) {
-//        for (int j = 0; j < ncols; j++) {
-//            commonness_s_mat(j,i) = sum((solution_matrix(_, j) +
-//                                         solution_matrix(_, i)) > 1);
-//        }
-//    }
-
-//    return commonness_s_mat ;
-
-//}
-
-//IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix,
-//                                                      IntegerMatrix solution_commonness,
-//                                                      const int site) {
-
-//    const int nrows = solution_commonness.nrow();
-//    const int site_ = site - 1; // because C++ starts indexing at zero
-
-
-//    for (int j = 0; j < site_; j++) {
-//        solution_commonness(site_, j) = sum((solution_matrix(_, j) +
-//                                             solution_matrix(_, site_)) > 1);
-//    }
-
-//    for (int j = site_ + 1; j < nrows; j++) {
-//        solution_commonness(j, site_) = sum((solution_matrix(_, j) +
-//                                             solution_matrix(_, site_)) > 1);
-//    }
-
-//    return solution_commonness;
-
-//}
-
-// approx 2x faster than old variant
-//IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix) {
-
-//    // create results matrix, filled with NAs
-//    int nsites = solution_matrix.ncol();
-//    IntegerMatrix commonness_mat(nsites, nsites);
-//    std::fill(commonness_mat.begin(), commonness_mat.end(), NumericVector::get_na() ) ;
-
-//    // iterate over the lower triangular matrix without diagonal
-//    // and calculate # of common species between sites
-//    for (int col = 0; col < nsites - 1; col++) {
-//        for (int row = col + 1; row < nsites; row++) {
-//            commonness_mat(row, col) = sum((solution_matrix(_, row) +
-//                                            solution_matrix(_, col)) > 1);
-//        }
-//    }
-
-//    return commonness_mat ;
-
-//}
 
 
 /*** R
@@ -188,3 +153,4 @@ bm2 <- bench::mark(
 # 2 spectre:::calculate_solution_commonness_site_rcpp(new_solution, solution_commonness, random_col)   46.82ms 46.9ms
 
 */
+

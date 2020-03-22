@@ -8,14 +8,14 @@ using namespace Rcpp;
 int main()
 {
     RInside R;
-    R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre/data/alpha_list_test.rda\")");
+    R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/alpha_list_test.rda\")");
     IntegerVector alpha_list = R["alpha_list_test"];
-    R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre/data/estimated_gamma.rda\")");
+    R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/estimated_gamma.rda\")");
     const unsigned total_gamma = R["estimated_gamma"];
-    R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre/data/target_matrix_test.rda\")");
-    NumericMatrix target = R["target_matrix_test"];
+    R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/target_matrix_test.rda\")");
+    IntegerMatrix target = R["target_matrix_test"];
 
-    R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre/data/random_solution.rda\")");
+    R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/random_solution.rda\")");
     auto res = optimizer(alpha_list, 5, target);
 //    IntegerMatrix sol = R.parseEval("current_solution");
 //    IntegerVector alpha_list = R.parseEval("alpha_list");

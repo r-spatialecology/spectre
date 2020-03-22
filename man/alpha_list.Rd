@@ -4,7 +4,9 @@
 \name{alpha_list}
 \alias{alpha_list}
 \title{Matrix of predicted alpha diversity in each cell.}
-\format{vector.}
+\format{
+vector.
+}
 \usage{
 alpha_list
 }

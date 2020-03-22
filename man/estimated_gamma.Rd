@@ -4,7 +4,9 @@
 \name{estimated_gamma}
 \alias{estimated_gamma}
 \title{Total (estimated) species in the system.}
-\format{numeric}
+\format{
+numeric
+}
 \usage{
 estimated_gamma
 }
