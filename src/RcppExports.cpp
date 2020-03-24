@@ -83,6 +83,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// gen_init_solution
+IntegerMatrix gen_init_solution(const IntegerVector alpha_list, const unsigned gamma_diversity);
+RcppExport SEXP _spectre_gen_init_solution(SEXP alpha_listSEXP, SEXP gamma_diversitySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerVector >::type alpha_list(alpha_listSEXP);
+    Rcpp::traits::input_parameter< const unsigned >::type gamma_diversity(gamma_diversitySEXP);
+    rcpp_result_gen = Rcpp::wrap(gen_init_solution(alpha_list, gamma_diversity));
+    return rcpp_result_gen;
+END_RCPP
+}
 // rcpp_sample
 Rcpp::IntegerVector rcpp_sample(Rcpp::IntegerVector x, int size, bool replace);
 RcppExport SEXP _spectre_rcpp_sample(SEXP xSEXP, SEXP sizeSEXP, SEXP replaceSEXP) {
@@ -152,6 +164,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_spectre_update_solution_commonness_site_rcpp", (DL_FUNC) &_spectre_update_solution_commonness_site_rcpp, 3},
     {"_spectre_optimizer", (DL_FUNC) &_spectre_optimizer, 6},
     {"_spectre_calc_energy", (DL_FUNC) &_spectre_calc_energy, 2},
+    {"_spectre_gen_init_solution", (DL_FUNC) &_spectre_gen_init_solution, 2},
     {"_spectre_rcpp_sample", (DL_FUNC) &_spectre_rcpp_sample, 3},
     {"_spectre_get_swap_rows_rcpp", (DL_FUNC) &_spectre_get_swap_rows_rcpp, 2},
     {"_spectre_get_swap_rows_rcpp_bruteforce", (DL_FUNC) &_spectre_get_swap_rows_rcpp_bruteforce, 2},

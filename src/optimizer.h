@@ -18,6 +18,7 @@ double calc_energy(const IntegerMatrix solution_commonness,
                    const IntegerMatrix solution_commonness_target);
 
 // Helper functions
+// [[Rcpp::export]]
 IntegerMatrix gen_init_solution(const IntegerVector alpha_list,
                                 const unsigned gamma_diversity);
 
