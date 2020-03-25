@@ -16,13 +16,66 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
     for (unsigned col = 0; col < nsites - 1; col++) {
         for (unsigned row = col + 1; row < nsites; row++) {
             commonness_mat(row, col) = sum(solution_matrix(_, row) *
-                                            solution_matrix(_, col));
+                                           solution_matrix(_, col));
         }
     }
 
     return commonness_mat ;
 
 }
+
+std::vector<int> calculate_solution_commonness(const std::vector<int> solution_matrix,
+                                               const unsigned n_sites,
+                                               const unsigned n_species) {
+
+    // create results vector
+    std::vector<int> result(n_sites * n_sites, 0);
+
+    // iterate over the lower triangular matrix without diagonal
+    // and calculate # of common species between sites
+#pragma omp parallel for
+    for (unsigned site = 0; site < n_sites; site++) {
+        update_solution_commonness_site(solution_matrix, result, n_sites, n_species, site);
+    }
+
+    return result ;
+}
+
+std::vector<int> calculate_solution_commonness_site(const std::vector<int> solution_matrix,
+                                                    const std::vector<int> solution_commonness,
+                                                    const unsigned n_sites,
+                                                    const unsigned n_species,
+                                                    const unsigned site) {
+    // create results vector
+    std::vector<int> result = solution_commonness;
+    update_solution_commonness_site(solution_matrix, result, n_sites, n_species, site);
+
+    return result ;
+}
+
+void update_solution_commonness_site(const std::vector<int> solution_matrix,
+                                     std::vector<int> &solution_commonness,
+                                     const unsigned n_sites,
+                                     const unsigned n_species,
+                                     const unsigned site) {
+    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+        if (site == other_site) {
+            solution_commonness[site * n_sites + other_site] = NA_INTEGER;
+            continue;
+        } else {
+            for (unsigned species = 0; species < n_species; species++) {
+                if (!solution_matrix[site * n_species + species]) { // no species at current site
+                    continue;
+                } else if (!solution_matrix[other_site * n_species + species]) { // no species at other site
+                    continue;
+                } else {
+                    solution_commonness[site * n_sites + other_site]++;
+                }
+            }
+        }
+    }
+}
+
 
 IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix,
                                                       const IntegerMatrix solution_commonness,
@@ -36,13 +89,13 @@ IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix soluti
 #pragma omp for nowait schedule(static)
         for (int j = 0; j < site_; j++) {
             new_solution_commonness(site_, j) = sum(solution_matrix(_, j) *
-                                                     solution_matrix(_, site_));
+                                                    solution_matrix(_, site_));
         }
 
 #pragma omp for schedule(static)
         for (int j = site_ + 1; j < nrows; j++) {
             new_solution_commonness(j, site_) = sum(solution_matrix(_, j) *
-                                                     solution_matrix(_, site_));
+                                                    solution_matrix(_, site_));
         }
     }
     return new_solution_commonness;
@@ -60,13 +113,13 @@ IntegerMatrix calculate_solution_commonness_species_site_rcpp(const IntegerMatri
 #pragma omp for nowait schedule(static)
         for (int j = 0; j < site_; j++) {
             new_solution_commonness(site_, j) = sum(solution_matrix(_, j) *
-                                                     solution_matrix(_, site_));
+                                                    solution_matrix(_, site_));
         }
 
 #pragma omp for schedule(static)
         for (int j = site_ + 1; j < nrows; j++) {
             new_solution_commonness(j, site_) = sum(solution_matrix(_, j) *
-                                                     solution_matrix(_, site_));
+                                                    solution_matrix(_, site_));
         }
     }
     return new_solution_commonness;
