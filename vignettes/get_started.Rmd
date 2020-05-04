@@ -14,12 +14,21 @@ knitr::opts_chunk$set(
 )
 ```
 
+# run_optimization_rnd_switch - the original version
+
+Algorithm:
+1. create a random solution
+2. select a random site
+3. switch a random present species to not present and a non-present species to present at this site
+4. Undo 3. if solution is worse (some annealing noise may interfere)
+5. goto 2. until max_runs or solution <= energy_threshold
+
 ```{r setup}
 # library(spectre)
- species_grid <- run_optimization(alpha_list = alpha_list,
+ species_grid <- run_optimization_rnd_switch(alpha_list = alpha_list,
                                   total_gamma = estimated_gamma,
                                   target = target_matrix,
-                                  max_runs = 150000,
+                                  max_runs = 1500,
                                   energy_threshold = .1,
                                   patience = 500)
  
@@ -27,5 +36,29 @@ knitr::opts_chunk$set(
                  target = target_matrix)
  plot_energy(species_grid = species_grid)
 ```
+
+# run_optimization_min_conf - minimum conflict
+
+Algorithm:
+1. create a random solution
+2. select a random site
+3. remove a random present species at the site
+4. Try for each absent species at this site, how the enery changes it it was present. Save a list of species for which energy was lowest (= min conflict)
+5. Set a random species from the min-conflict list as present.
+6. goto 2. until max_runs or solution <= energy_threshold 
+
+```{r setup}
+# library(spectre)
+ species_grid <- run_optimization_min_conf(alpha_list = alpha_list,
+                                  total_gamma = estimated_gamma,
+                                  target = target_matrix,
+                                  max_runs = 150,
+                                  energy_threshold = .1)
+ 
+ plot_commonness(species_grid = species_grid, 
+                 target = target_matrix)
+ plot_energy(species_grid = species_grid)
+```
+
 
 

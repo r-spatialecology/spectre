@@ -4,7 +4,9 @@
 \name{target_matrix}
 \alias{target_matrix}
 \title{Pairwise matrix of species in common.}
-\format{matrix}
+\format{
+matrix
+}
 \usage{
 target_matrix
 }
