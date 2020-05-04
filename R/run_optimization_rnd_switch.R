@@ -22,7 +22,7 @@
 #' @references xxx
 
 #' @export
-run_optimization <- function(alpha_list, 
+run_optimization_rnd_switch <- function(alpha_list, 
                              total_gamma, 
                              target, 
                              max_runs,
