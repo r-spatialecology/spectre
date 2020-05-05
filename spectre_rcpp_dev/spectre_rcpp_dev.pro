@@ -5,11 +5,13 @@ CONFIG -= qt
 
 HEADERS += \
         ../src/calculate_solution_commonness.h \
+        ../src/constraint_satisfaction_problem.h \
         ../src/mh_optimizer.h \
         ../src/optimizer.h \
         ../src/rcpp_sample.h
 
 SOURCES += \
+        ../src/constraint_satisfaction_problem.cpp \
         ../src/mh_optimizer.cpp \
         ../src/optimizer.cpp \
         main.cpp \

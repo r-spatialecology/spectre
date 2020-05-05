@@ -15,6 +15,13 @@ List optimizer_min_conf(IntegerVector alpha_list,
                         unsigned long seed = 0, bool verbose = true);
 
 // [[Rcpp::export]]
+List optimizer_backtracking(IntegerVector alpha_list,
+               const unsigned total_gamma,
+               IntegerMatrix target,
+               const unsigned max_iterations = 2000,
+               unsigned long seed = 0, bool verbose = true);
+
+// [[Rcpp::export]]
 double calc_energy(const IntegerMatrix solution_commonness,
                    const IntegerMatrix solution_commonness_target);
 
