@@ -21,6 +21,10 @@ optimizer_min_conf <- function(alpha_list, total_gamma, target, max_iterations =
     .Call('_spectre_optimizer_min_conf', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, energy_theshold, seed, verbose)
 }
 
+optimizer_backtracking <- function(alpha_list, total_gamma, target, max_iterations = 2000L, seed = 0L, verbose = TRUE) {
+    .Call('_spectre_optimizer_backtracking', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, seed, verbose)
+}
+
 calc_energy <- function(solution_commonness, solution_commonness_target) {
     .Call('_spectre_calc_energy', PACKAGE = 'spectre', solution_commonness, solution_commonness_target)
 }

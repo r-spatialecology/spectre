@@ -3,6 +3,7 @@
 #include <chrono>
 #include <math.h>
 #include "calculate_solution_commonness.h"
+#include "constraint_satisfaction_problem.h"
 #include "rcpp_sample.h"
 //omp_set_nested(1);
 
@@ -95,6 +96,32 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
     return(results);
 }
 
+List optimizer_backtracking(IntegerVector alpha_list, const unsigned total_gamma,
+               IntegerMatrix target, const unsigned max_iterations,
+               unsigned long seed, bool verbose)
+{
+    RNGScope scope; // needed for debugging in Qt Creator
+
+    Constraint_satisfaction_problem csr(as<std::vector<unsigned> >(alpha_list),
+                                        total_gamma,
+                                        as<std::vector<int> >(target));
+    long iter = max_iterations - csr.optimize(max_iterations);
+    const unsigned n_sites = alpha_list.size();
+    IntegerMatrix solution(total_gamma, n_sites);
+
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned species = 0; species < total_gamma; species++) {
+            solution(species, site) = csr.solution[site][species];
+        }
+    }
+
+    List results = List::create(Rcpp::Named("optimized_grid") = solution);
+    if (verbose) {
+            Rcout << "\n > Optimization stopped after " << iter
+                  << " steps";
+    }
+    return(results);
+}
 
 double calc_energy(const IntegerMatrix solution_commonness,
                    const IntegerMatrix solution_commonness_target)

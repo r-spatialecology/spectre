@@ -28,7 +28,7 @@ Algorithm:
  species_grid <- run_optimization_rnd_switch(alpha_list = alpha_list,
                                   total_gamma = estimated_gamma,
                                   target = target_matrix,
-                                  max_runs = 1500,
+                                  max_runs = 2500,
                                   energy_threshold = .1,
                                   patience = 500)
  
@@ -52,7 +52,7 @@ Algorithm:
  species_grid <- run_optimization_min_conf(alpha_list = alpha_list,
                                   total_gamma = estimated_gamma,
                                   target = target_matrix,
-                                  max_runs = 150,
+                                  max_runs = 500,
                                   energy_threshold = .1)
  
  plot_commonness(species_grid = species_grid, 
@@ -60,5 +60,26 @@ Algorithm:
  plot_energy(species_grid = species_grid)
 ```
 
+# run_optimization_backtracking
 
+Algorithm:
+1. reset all sites (i.e. the first n species are present)
+2. select the second site
+3. check if the current site is consistent with the site before 
+4a. if consistent && not all sites consistent: site = site + 1; go to 3.
+4b. if not consistent: choose next species combination of the site; if there is one, go to 3.
+5. if there is no next species combination of the site: reset site; site = site - 1; go to 4b (i.e. Backtrack)
+6. stop if max_steps reached or solution found in 4a
 
+```{r setup}
+# library(spectre)
+ species_grid <- run_optimization_min_conf(alpha_list = alpha_list,
+                                  total_gamma = estimated_gamma,
+                                  target = target_matrix,
+                                  max_runs = 1000,
+                                  energy_threshold = .1)
+ 
+ plot_commonness(species_grid = species_grid, 
+                 target = target_matrix)
+ plot_energy(species_grid = species_grid)
+```
