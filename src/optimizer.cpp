@@ -115,7 +115,10 @@ List optimizer_backtracking(IntegerVector alpha_list, const unsigned total_gamma
         }
     }
 
-    List results = List::create(Rcpp::Named("optimized_grid") = solution);
+    const auto solution_commonness = calculate_solution_commonness_rcpp(solution);
+    const double energy = calc_energy(solution_commonness, target);
+    List results = List::create(Rcpp::Named("optimized_grid") = solution,
+                                Rcpp::Named("energy") = energy);
     if (verbose) {
             Rcout << "\n > Optimization stopped after " << iter
                   << " steps";
