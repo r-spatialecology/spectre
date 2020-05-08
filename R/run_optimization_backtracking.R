@@ -17,7 +17,7 @@
 #' @references xxx
 
 #' @export
-run_optimization_min_conf <- function(alpha_list, 
+run_optimization_backtracking <- function(alpha_list, 
                                       total_gamma, 
                                       target, 
                                       max_runs,
