@@ -47,7 +47,7 @@ Algorithm:
 5. Set a random species from the min-conflict list as present.
 6. goto 2. until max_runs or solution <= energy_threshold 
 
-```{r setup}
+```{r setup_2}
 # library(spectre)
  species_grid <- run_optimization_min_conf(alpha_list = alpha_list,
                                   total_gamma = estimated_gamma,
@@ -71,7 +71,7 @@ Algorithm:
 5. if there is no next species combination of the site: reset site; site = site - 1; go to 4b (i.e. Backtrack)
 6. stop if max_steps reached or solution found in 4a
 
-```{r setup}
+```{r setup_3}
 # library(spectre)
  species_grid <- run_optimization_min_conf(alpha_list = alpha_list,
                                   total_gamma = estimated_gamma,
