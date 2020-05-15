@@ -30,14 +30,15 @@ The solution matrix can then be used to run the spectre optimization algorithms.
 #### Step 1: Generate virtualspecies
 
 # Define parameters:
-landscape_size <- 50
+ncol <- 50
+nrow <- 50
 gamma <- 100
-correlation <- 0 # low values = little spatial autocorrelation
-community_size <- 0.1 # 10\% of gamma -> 10 communities
+corr_within <- 0 # low values = little spatial autocorrelation
+corr_among <- 0.1 # 10\% of gamma -> 10 communities
 beta <- 0.75  # lower beta = wider species distributions
 
-# Generate species and create list of alpha diversit:
-spp <- generate_data_virtualspecies(landscape_size, correlation, community_size, gamma, beta)
+## Generate species:
+spp <- generate_data_virtualspecies(ncol, nrow, corr_within, corr_among, gamma, beta)
 alpha <- getValues(sum(spp))
 
 #### Step 2: Transform to solution matrix and calculate target matrix:

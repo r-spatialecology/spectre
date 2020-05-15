@@ -4,20 +4,16 @@
 \alias{generate_data_virtualspecies}
 \title{generate_data_virtualspecies}
 \usage{
-generate_data_virtualspecies(
-  landscape_size,
-  correlation,
-  community_size,
-  gamma,
-  beta
-)
+generate_data_virtualspecies(ncol, nrow, corr_within, corr_among, gamma, beta)
 }
 \arguments{
-\item{landscape_size}{size (sidelength) of the landscape}
+\item{ncol}{size of the landscape (columns)}
 
-\item{correlation}{strength of spatial autocorrelation within each species}
+\item{nrow}{size of the landscape (rows)}
 
-\item{community_size}{size of species communities, defined as proportion of gamma (defines strength of spatial autocorrelation between species: large communities = strong correlation)}
+\item{corr_within}{strength of spatial autocorrelation within each species}
+
+\item{corr_among}{defines strength of spatial autocorrelation among species}
 
 \item{gamma}{Total (estimated) species in the landscape}
 
@@ -37,26 +33,27 @@ In order to provide both, control over spatial autocorrelation within and betwee
 \item Correlation among species:
 We assume, that a community has a certain habitat suitability. Each community however, may consist of multiple species.
 Thus, when creating sitability maps, we do not neccessarily create one for each species, but one for each community.
-Thus, if community_size = 0, each species will build its own community, resulting in low correlation among species.
-If community_size = 1, the same suitability map will be used for each species, resulting in very high correlation among species.
+Thus, if corr_among = 0, each species will build its own community, resulting in low correlation among species.
+If corr_among = 1, the same suitability map will be used for each species, resulting in very high correlation among species.
 \item Correlation within species:
 We also want to investigate the effect of spatial clustering within each species.
 Thus, we use the gaussian field landscape of NLMR. We can use the correlation parameter to define the strength of spatial autocorrelation.
-When correlation = 0, the landscape suitability is distributed more or less random, wheres spatial clustering is present for higher values.
+When corr_within = 0, the landscape suitability is distributed more or less random, wheres spatial clustering is present for higher values.
 }
 
 The function will finally report a rasterstack with species distribution (presence/absence) of each species.
 }
 \examples{
 
-landscape_size <- 50
+ncol <- 50
+nrow <- 50
 gamma <- 100
-correlation <- 0 # low values = little spatial autocorrelation
-community_size <- 0.1 # 10\% of gamma -> 10 communities
+corr_within <- 0 # low values = little spatial autocorrelation
+corr_among <- 0.1 # 10\% of gamma -> 10 communities
 beta <- 0.75  # lower beta = wider species distributions
 
 ## Generate species:
-spp <- generate_data_virtualspecies(landscape_size, correlation, community_size, gamma, beta)
+spp <- generate_data_virtualspecies(ncol, nrow, corr_within, corr_among, gamma, beta)
 ## Investigate distributions:
 raster::plot(spp)
 ## Calculate species richness:

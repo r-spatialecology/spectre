@@ -62,95 +62,104 @@ run_optimization_rnd_switch <- function(alpha_list,
   # init patience counter
   unchanged_steps <- 0
   
-  # create random site/species ids
-  random_site <- rcpp_sample(x = seq_len(n_sites),
-                            size = max_runs, replace = TRUE)
-  
-  # create random number for annealing probability
-  if (annealing != 0) {
-    annealing_random <- stats::runif(n = max_runs, min = 0, max = 1)
-  } else {
-    annealing_random <- rep(0, max_runs)
-  }
-  
-  # for loop not longer than max_runs
-  for (i in seq_len(max_runs)) {
+  # identify sites which have optimization potential (remove sites with species richness = gamma and no species)
+  potential_sites <- seq_len(n_sites)[which(colSums(current_solution) != 0 & colSums(current_solution) != n_species)]
+  print(potential_sites)
+  # Only execute optimization if there is at least one potential site for optimization:
+  if(length(potential_sites) == 0) {
+    warning("Nothing to optimize here!")
+  } else
+  {
+    # create random site/species ids
+    random_site <- rcpp_sample(x = potential_sites,
+                               size = max_runs, replace = TRUE)
     
-    # create a new modified site x species grid
-    new_solution <- current_solution
-    
-    # get random site id
-    current_site <- random_site[i]
-    
-    # get random species 1
-    current_species_1 <- rcpp_sample(x = seq_len(n_species),
-                                 size = 1)
-    
-    # value of species 1
-    value_1 <- current_solution[current_species_1, 
-                                current_site]
-    
-    # sample species where value != value_1
-    current_species_2 <- rcpp_sample(x = which(current_solution[, current_site] != value_1), 
-                                 size = 1)
-    
-    # value_2 opposite to value 1
-    value_2 <- ifelse(test = value_1 == 1, yes = 0, no = 1)
-    
-    # change values
-    new_solution[current_species_1, current_site] <- value_2
-    
-    new_solution[current_species_2, current_site] <- value_1
-    
-    # calculate the site x site commonness for the new solution
-    solution_commonness <- calculate_solution_commonness_site_rcpp(new_solution, 
-                                                                   solution_commonness, 
-                                                                   current_site)
-    
-    # calculate the difference between target and new solution
-    energy_new <- calc_energy(solution_commonness, target)
-    
-    # check if energy decreased
-    if (energy_new < energy || annealing_random[i] < annealing) {
-      
-      # keep new solution
-      current_solution <- new_solution
-      
-      # keep new energy
-      energy <- energy_new
-      
-      # reset patience counter
-      unchanged_steps <- 0
+    # create random number for annealing probability
+    if (annealing != 0) {
+      annealing_random <- stats::runif(n = max_runs, min = 0, max = 1)
     } else {
-      # increase patience counter
-      unchanged_steps <- unchanged_steps + 1 
+      annealing_random <- rep(0, max_runs)
     }
     
-    # exit loop if enery threshold or patience counter max is reached
-    if (energy <= energy_threshold || unchanged_steps > patience) {
-      break
+    # for loop not longer than max_runs
+    for (i in seq_len(max_runs)) {
+      
+      # create a new modified site x species grid
+      new_solution <- current_solution
+      
+      # get random site id
+      current_site <- random_site[i]
+      
+      # get random species 1
+      current_species_1 <- rcpp_sample(x = seq_len(n_species),
+                                       size = 1)
+      
+      # value of species 1
+      value_1 <- current_solution[current_species_1, 
+                                  current_site]
+      
+      # sample species where value != value_1
+      current_species_2 <- rcpp_sample(x = which(current_solution[, current_site] != value_1), 
+                                       size = 1)
+      
+      # value_2 opposite to value 1
+      value_2 <- ifelse(test = value_1 == 1, yes = 0, no = 1)
+      
+      # change values
+      new_solution[current_species_1, current_site] <- value_2
+      
+      new_solution[current_species_2, current_site] <- value_1
+      
+      # calculate the site x site commonness for the new solution
+      solution_commonness <- calculate_solution_commonness_site_rcpp(new_solution, 
+                                                                     solution_commonness, 
+                                                                     current_site)
+      
+      # calculate the difference between target and new solution
+      energy_new <- calc_energy(solution_commonness, target)
+      
+      # check if energy decreased
+      if (energy_new < energy || annealing_random[i] < annealing) {
+        
+        # keep new solution
+        current_solution <- new_solution
+        
+        # keep new energy
+        energy <- energy_new
+        
+        # reset patience counter
+        unchanged_steps <- 0
+      } else {
+        # increase patience counter
+        unchanged_steps <- unchanged_steps + 1 
+      }
+      
+      # exit loop if enery threshold or patience counter max is reached
+      if (energy <= energy_threshold || unchanged_steps > patience) {
+        break
+      }
+      
+      # save energy in df
+      energy_df[i, ] <- c(i, energy)
+      
+      # print progress
+      if (verbose) {
+        message("\r> Progress: max_runs: ", i, "/", max_runs,
+                " || energy = ", round(energy, 5), "\t\t\t",
+                appendLF = FALSE)
+      }
     }
     
-    # save energy in df
-    energy_df[i, ] <- c(i, energy)
-    
-    # print progress
+    # write result in new line if progress was printed
     if (verbose) {
-      message("\r> Progress: max_runs: ", i, "/", max_runs,
-              " || energy = ", round(energy, 5), "\t\t\t",
-              appendLF = FALSE)
+      message("\r")
+      message(paste("> Optimization finished with an energy =", round(energy, 5),
+                    "min energy = ", round(min(energy_df$energy), 5), 
+                    "max energy = ", round(max(energy_df$energy), 5),
+                    "improved by = ", round(max(energy_df$energy, na.rm = TRUE) - min(energy_df$energy), 5)))
     }
   }
-  
-  # write result in new line if progress was printed
-  if (verbose) {
-    message("\r")
-    message(paste("> Optimization finished with an energy =", round(energy, 5),
-                  "min energy = ", round(min(energy_df$energy), 5), 
-                  "max energy = ", round(max(energy_df$energy), 5),
-                  "improved by = ", round(max(energy_df$energy, na.rm = TRUE) - min(energy_df$energy), 5)))
-  }
-  
+ 
   result <- list(current_solution, 
                  energy_df)
   
