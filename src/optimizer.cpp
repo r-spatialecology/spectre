@@ -1,6 +1,7 @@
 #include "optimizer.h"
 #include <random>
 #include <chrono>
+#include <limits>
 #include <math.h>
 #include "calculate_solution_commonness.h"
 #include "constraint_satisfaction_problem.h"
@@ -172,7 +173,7 @@ std::vector<unsigned> calc_min_conflict_species(const unsigned site,
     const auto gamma_div = current_solution.nrow();
     const IntegerMatrix commoness = calculate_solution_commonness_rcpp(current_solution);
     auto solution = current_solution;
-    double energy = 100.0;
+    double energy = std::numeric_limits<double>::max(); // makes sure that the first energy_ is smaller
     std::vector<unsigned> min_conflict_species;
 
     // try for each species at this site where the enery would be minimal
