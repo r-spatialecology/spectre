@@ -201,21 +201,3 @@ std::vector<unsigned> calc_min_conflict_species(const unsigned site,
 
     return min_conflict_species;
 }
-
-
-
-std::vector<unsigned> calc_constraints(const IntegerMatrix target)
-{
-    const unsigned n_sites = target.nrow();
-    std::vector<unsigned> constraints(n_sites);
-
-    for (unsigned site = 0; site < n_sites; site++) {
-        for (int j = 0; j < site - 1; j++) {
-            constraints[site] += target(site, j);
-        }
-
-        for (int j = site + 1; j < n_sites; j++) {
-            constraints[site] += target(j, site);
-        }
-    }
-}

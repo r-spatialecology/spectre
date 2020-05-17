@@ -21,8 +21,9 @@ hist(alpha_list_sim) # visual check of richness per site
 target_matrix_sim <- spectre:::generate_data_simple(total_gamma = total_gamma_sim, n_sites = n_sites_sim, alpha_list = alpha_list_sim)
 
 # solve / optimize 
-res_sim <- spectre:::optimizer(alpha_list_sim, total_gamma_sim, target_matrix_sim, 20000 )
+res_sim2 <- spectre:::optimizer_min_conf(alpha_list_sim, total_gamma_sim, target_matrix_sim, 20000, 0.0)
 spectre::plot_energy(res_sim)
+spectre::plot_energy(res_sim2)
 spectre::plot_commonness(res_sim, target_matrix_sim)
 
 # end of simulated data section 
