@@ -29,6 +29,7 @@ run_optimization_min_conf <- function(alpha_list,
                               total_gamma = total_gamma, 
                               target = target, 
                               max_iterations = max_runs,
+                              energy_threshold = energy_threshold,
                               seed = seed, 
                               verbose = verbose)
 
