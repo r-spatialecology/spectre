@@ -10,6 +10,7 @@ public:
 
     int optimize(long max_steps_ = 5000);
     std::vector<std::vector<int> > solution;
+    std::vector<unsigned> solved_sites;
 
 private:
     long max_steps = 0;

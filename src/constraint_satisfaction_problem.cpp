@@ -40,21 +40,25 @@ int Constraint_satisfaction_problem::optimize(long max_steps_)
         while (max_steps-- > 0 && site < n_sites && site >= 0) {
             if (check_consistency(site)) {
                 site++;
+                solved_sites.push_back(site);
                 Rcout << "\n optimized to site: " << site;
             } else if (!iterate_species(solution[site])) {
                 site = backtrack(site);
-                Rcout << "\n backtracked to site: " << site;
+                solved_sites.push_back(site);
+                //Rcout << "\n backtracked to site: " << site;
             }
         }
     } else { // no max_steps are given, just try your best forever
         while (site < n_sites && site >= 0) {
-           // max_steps--;
+            // max_steps--;
             if (check_consistency(site)) {
                 site++;
-                Rcout << "\n optimized to site: " << site;
+                solved_sites.push_back(site);
+                //Rcout << "\n optimized to site: " << site;
             } else if (!iterate_species(solution[site])) {
                 site = backtrack(site);
-                Rcout << "\n backtracked to site: " << site;
+                solved_sites.push_back(site);
+                //Rcout << "\n backtracked to site: " << site;
             }
         }
     }
