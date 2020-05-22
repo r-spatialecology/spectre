@@ -20,7 +20,7 @@
 run_optimization_backtracking <- function(alpha_list, 
                                       total_gamma, 
                                       target, 
-                                      max_runs,
+                                      max_runs, 
                                       energy_threshold,
                                       seed = 0,
                                       verbose = TRUE) {
