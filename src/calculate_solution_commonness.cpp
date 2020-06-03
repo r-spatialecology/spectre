@@ -24,7 +24,7 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
 
 }
 
-std::vector<int> calculate_solution_commonness(const std::vector<int> solution_matrix,
+std::vector<int> calculate_solution_commonness(const std::vector<int> &solution_matrix,
                                                const unsigned n_sites,
                                                const unsigned n_species) {
 
@@ -41,8 +41,8 @@ std::vector<int> calculate_solution_commonness(const std::vector<int> solution_m
     return result ;
 }
 
-std::vector<int> calculate_solution_commonness_site(const std::vector<int> solution_matrix,
-                                                    const std::vector<int> solution_commonness,
+std::vector<int> calculate_solution_commonness_site(const std::vector<int> &solution_matrix,
+                                                    const std::vector<int> &solution_commonness,
                                                     const unsigned n_sites,
                                                     const unsigned n_species,
                                                     const unsigned site) {
@@ -53,28 +53,7 @@ std::vector<int> calculate_solution_commonness_site(const std::vector<int> solut
     return result ;
 }
 
-void update_solution_commonness_site(const std::vector<int> solution_matrix,
-                                     std::vector<int> &solution_commonness,
-                                     const unsigned n_sites,
-                                     const unsigned n_species,
-                                     const unsigned site) {
-    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-        if (site == other_site) {
-            solution_commonness[site * n_sites + other_site] = NA_INTEGER;
-            continue;
-        } else {
-            for (unsigned species = 0; species < n_species; species++) {
-                if (!solution_matrix[site * n_species + species]) { // no species at current site
-                    continue;
-                } else if (!solution_matrix[other_site * n_species + species]) { // no species at other site
-                    continue;
-                } else {
-                    solution_commonness[site * n_sites + other_site]++;
-                }
-            }
-        }
-    }
-}
+
 
 
 IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix,
@@ -145,6 +124,51 @@ void update_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix,
 
 }
 
+void update_solution_commonness_site(const std::vector<int> &solution_matrix,
+                                     std::vector<int> &solution_commonness,
+                                     const unsigned n_sites,
+                                     const unsigned n_species,
+                                     const unsigned site) {
+    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+        if (site == other_site) {
+            solution_commonness[site * n_sites + other_site] = NA_INTEGER;
+            continue;
+        } else {
+            for (unsigned species = 0; species < n_species; species++) {
+                if (!solution_matrix[site * n_species + species]) { // no species at current site
+                    continue;
+                } else if (!solution_matrix[other_site * n_species + species]) { // no species at other site
+                    continue;
+                } else {
+                    solution_commonness[site * n_sites + other_site]++;
+                }
+            }
+        }
+    }
+}
+
+void update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix,
+                                     std::vector<std::vector<int> > &solution_commonness,
+                                     const unsigned n_sites,
+                                     const unsigned n_species,
+                                     const unsigned site) {
+    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+        if (site == other_site) {
+            solution_commonness[site][other_site] = NA_INTEGER;
+            continue;
+        } else {
+            for (unsigned species = 0; species < n_species; species++) {
+                if (!solution_matrix[site][other_site]) { // no species at current site
+                    continue;
+                } else if (!solution_matrix[site][other_site]) { // no species at other site
+                    continue;
+                } else {
+                    solution_commonness[site][other_site]++;
+                }
+            }
+        }
+    }
+}
 
 /*** R
 # Big
@@ -206,4 +230,3 @@ bm2 <- bench::mark(
 # 2 spectre:::calculate_solution_commonness_site_rcpp(new_solution, solution_commonness, random_col)   46.82ms 46.9ms
 
 */
-
