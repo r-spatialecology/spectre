@@ -4,13 +4,14 @@
 #include <limits>
 #include <math.h>
 #include "calculate_solution_commonness.h"
-#include "constraint_satisfaction_problem.h"
+#include "backtracking.h"
+#include "minconf.h"
 #include "rcpp_sample.h"
 //omp_set_nested(1);
 
 List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                         IntegerMatrix target, const unsigned max_iterations,
-                        const double energy_theshold,
+                        const double energy_threshold,
                         unsigned long seed, bool verbose)
 {
     RNGScope scope; // needed for debugging in Qt Creator
@@ -76,7 +77,7 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
         const auto current_energy = calc_energy(current_commonness, target);
         update_metrics(current_energy, iter, energy_vector, iteration_count);
 
-        if (current_energy <= energy_theshold) {
+        if (current_energy <= energy_threshold) {
             break;
         }
     }
@@ -97,27 +98,58 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
     return(results);
 }
 
+List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
+                         IntegerMatrix target, const unsigned max_iterations,
+                         const double energy_threshold,
+                         unsigned long seed, bool verbose)
+{
+    MinConf mc(as<std::vector<unsigned> >(alpha_list),
+                                        total_gamma,
+                                        as<std::vector<int> >(target));
+    long iter = max_iterations - mc.optimize(max_iterations, energy_threshold, seed);
+    const unsigned n_sites = alpha_list.size();
+    IntegerMatrix solution(total_gamma, n_sites);
+
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned species = 0; species < total_gamma; species++) {
+            solution(species, site) = mc.solution[site][species];
+        }
+    }
+
+    const auto solution_commonness = calculate_solution_commonness_rcpp(solution);
+    const double energy = calc_energy(solution_commonness, target);
+    List results = List::create(Rcpp::Named("optimized_grid") = solution,
+                                Rcpp::Named("energy") = energy,
+                                Rcpp::Named("solved_sites") = mc.solved_species);
+    if (verbose) {
+            Rcout << "\n > Optimization stopped after " << iter
+                  << " steps";
+    }
+    return(results);
+}
+
+
 List optimizer_backtracking(IntegerVector alpha_list, const unsigned total_gamma,
                IntegerMatrix target, const unsigned max_iterations,
                unsigned long seed, bool verbose)
 {
     RNGScope scope; // needed for debugging in Qt Creator
 
-    Constraint_satisfaction_problem csr(as<std::vector<unsigned> >(alpha_list),
+    Backtracking bt(as<std::vector<unsigned> >(alpha_list),
                                         total_gamma,
                                         as<std::vector<int> >(target));
-    long iter = max_iterations - csr.optimize(max_iterations);
+    long iter = max_iterations - bt.optimize(max_iterations);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
 
     for (unsigned site = 0; site < n_sites; site++) {
         for (unsigned species = 0; species < total_gamma; species++) {
-            solution(species, site) = csr.solution[site][species];
+            solution(species, site) = bt.solution[site][species];
         }
     }
 
     IntegerVector solved_sites;
-    solved_sites.assign(csr.solved_sites.begin(), csr.solved_sites.end());
+    solved_sites.assign(bt.solved_sites.begin(), bt.solved_sites.end());
 
     const auto solution_commonness = calculate_solution_commonness_rcpp(solution);
     const double energy = calc_energy(solution_commonness, target);

@@ -11,7 +11,15 @@ List optimizer_min_conf(IntegerVector alpha_list,
                         const unsigned total_gamma,
                         IntegerMatrix target,
                         const unsigned max_iterations = 2000,
-                        const double energy_theshold = 0.1,
+                        const double energy_threshold = 0.1,
+                        unsigned long seed = 0, bool verbose = true);
+
+// [[Rcpp::export]]
+List optimizer_min_conf2(IntegerVector alpha_list,
+                        const unsigned total_gamma,
+                        IntegerMatrix target,
+                        const unsigned max_iterations = 2000,
+                        const double energy_threshold = 0.1,
                         unsigned long seed = 0, bool verbose = true);
 
 // [[Rcpp::export]]
