@@ -11,9 +11,6 @@ Constraint_satisfaction_problem::Constraint_satisfaction_problem(const std::vect
 
     for (unsigned site = 0; site < n_sites; site++) {
         solution[site].resize(gamma_div);
-        for (unsigned species = 0; species < alpha_list[site]; species++) {
-            solution[site][species] = 1;
-        }
 
         // convert target matrix to a more convenient format
         target[site].resize(n_sites);

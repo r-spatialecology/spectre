@@ -12,7 +12,7 @@ public:
 
     std::vector<std::vector<int> > solution;
     std::vector<unsigned> solved_sites;
-    unsigned solved_species = 0;
+    int solved_species = 0;
 
 protected:
     long max_steps = 0;

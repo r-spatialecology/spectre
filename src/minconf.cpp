@@ -14,13 +14,13 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
     rng = std::mt19937(seed);
     std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
 
-    auto iter = max_steps;
+    auto iter = max_steps_;
     auto missing_species = alpha_list;
-    // unsigned max_alpha = *(std::max_element(alpha_list.begin(), alpha_list.end()));
     std::vector<unsigned> max_common_species(n_sites);
-    unsigned max_common_species_all = 0;
     std::vector<int> currently_added_species(n_sites);
 
+    // find the highest commonness for each site and overall
+    unsigned max_common_species_all = 0;
     for (unsigned site = 0; site < n_sites; site++) {
         max_common_species[site] = *(std::max_element(target[site].begin(), target[site].end()));
         if (max_common_species_all < max_common_species[site]) {
@@ -28,7 +28,7 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
         }
     }
 
-    // assign all necessary species first
+    // assign all species that are necessary to fulfill commonness first
     for (unsigned common_species = 1; common_species <= max_common_species_all; common_species++) {
         // set a new target with max. common_species
         const auto target_tmp = target_cur(common_species);
@@ -42,8 +42,8 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
         }
 
         // optimize last added species
-        auto commonness = calculate_commonness();
-        while(calc_energy(commonness, target_tmp) > max_energy) {
+        auto energy = calc_energy(calculate_commonness(), target_tmp);
+        while(energy > max_energy) {
             if(iter-- == 0) {
                 break;
             }
@@ -51,7 +51,8 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
             const auto site = site_dist(rng);
             solution[site][currently_added_species[site]] = 0;
             currently_added_species[site] = add_species_min_conf(site, target_tmp);
-            commonness = calculate_commonness();
+            const auto commonness = calculate_commonness();
+            energy = calc_energy(commonness, target_tmp);
         }
         if (iter < 1) {
             break;
@@ -64,7 +65,8 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
     for (unsigned site = 0; site < n_sites; site++) {
         if(missing_species[site] > 0) {
             sites_idx.push_back(site);
-        }
+        }    // unsigned max_alpha = *(std::max_element(alpha_list.begin(), alpha_list.end()));
+
     }
 
     // assign all remaining species
@@ -73,7 +75,7 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
         const auto site = sites_idx.back();
 
         if(missing_species[site]--) {
-        currently_added_species[site] = add_species_min_conf(site, target);
+            currently_added_species[site] = add_species_min_conf(site, target);
         } else {
             sites_idx.pop_back();
         }
@@ -127,7 +129,6 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site,
                                                          const std::vector<std::vector<int> > &target)
 {
     const double epsilon = 0.00001;
-    const auto commoness = calculate_commonness();
     double energy = std::numeric_limits<double>::max(); // makes sure that the first energy_ is smaller
     std::vector<unsigned> min_conflict_species;
 
@@ -165,7 +166,8 @@ std::vector<std::vector<int> > MinConf::calculate_commonness()
     return result;
 }
 
-double MinConf::calc_energy(const std::vector<std::vector<int> > &commonness, const std::vector<std::vector<int> > &target)
+double MinConf::calc_energy(const std::vector<std::vector<int> > &commonness,
+                            const std::vector<std::vector<int> > &target)
 {
     long long sum_target = 0;
     long long sum_diff = 0;

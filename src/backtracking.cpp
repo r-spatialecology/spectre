@@ -7,6 +7,13 @@ int Backtracking::optimize(long max_steps_)
     int site = 1;
     max_steps = max_steps_;
 
+    // Add species as a block
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned species = 0; species < alpha_list[site]; species++) {
+            solution[site][species] = 1;
+        }
+    }
+
     if (max_steps_ > 0) { // if max steps are given
         while (max_steps-- > 0 && site < n_sites && site >= 0) {
             if (check_consistency(site)) {
@@ -121,8 +128,8 @@ void Backtracking::reset_site(int site)
 
 template <class T>
 T Backtracking::count_before(const T x,
-                                                const std::vector<int> &site,
-                                                const unsigned species)
+                             const std::vector<int> &site,
+                             const unsigned species)
 {
     unsigned counter = 0;
     for (int pos = species - 1; pos >= 0; pos--) {

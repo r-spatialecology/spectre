@@ -120,7 +120,7 @@ List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
     const double energy = calc_energy(solution_commonness, target);
     List results = List::create(Rcpp::Named("optimized_grid") = solution,
                                 Rcpp::Named("energy") = energy,
-                                Rcpp::Named("solved_sites") = mc.solved_species);
+                                Rcpp::Named("solved_species") = mc.solved_species);
     if (verbose) {
             Rcout << "\n > Optimization stopped after " << iter
                   << " steps";

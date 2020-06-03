@@ -154,13 +154,13 @@ void update_solution_commonness_site(const std::vector<std::vector<int> > &solut
                                      const unsigned site) {
     for (unsigned other_site = 0; other_site < n_sites; other_site++) {
         if (site == other_site) {
-            solution_commonness[site][other_site] = NA_INTEGER;
+            solution_commonness[site][other_site] = -1; // i.e. NA
             continue;
         } else {
             for (unsigned species = 0; species < n_species; species++) {
-                if (!solution_matrix[site][other_site]) { // no species at current site
+                if (!solution_matrix[site][species]) { // no species at current site
                     continue;
-                } else if (!solution_matrix[site][other_site]) { // no species at other site
+                } else if (!solution_matrix[other_site][species]) { // no species at other site
                     continue;
                 } else {
                     solution_commonness[site][other_site]++;
