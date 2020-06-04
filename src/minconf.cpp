@@ -51,6 +51,9 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
         }
     }
 
+    iteration_count.push_back(0);
+    energy_vector.push_back(calc_energy(calculate_commonness(), target));
+
     // optimize
     auto energy = calc_energy(calculate_commonness(), target);
     while(energy > max_energy) {
@@ -63,22 +66,11 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
         currently_added_species[site] = add_species_min_conf(site, target);
         const auto commonness = calculate_commonness();
         energy = calc_energy(commonness, target);
+        iteration_count.push_back(iter);
+        energy_vector.push_back(energy);
     }
 
     return iter;
-}
-
-std::vector<std::vector<int> > MinConf::target_cur(int n_common)
-{
-    auto result = target;
-    for (unsigned site = 0; site < n_sites; site++) { // could be optimized due to symmetry
-        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-            if (result[site][other_site] > n_common) {
-                result[site][other_site] = n_common;
-            }
-        }
-    }
-    return result;
 }
 
 int MinConf::add_species_min_conf(unsigned site, const std::vector<std::vector<int> > &target)

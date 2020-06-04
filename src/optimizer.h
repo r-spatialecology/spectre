@@ -16,18 +16,18 @@ List optimizer_min_conf(IntegerVector alpha_list,
 
 // [[Rcpp::export]]
 List optimizer_min_conf2(IntegerVector alpha_list,
-                        const unsigned total_gamma,
-                        IntegerMatrix target,
-                        const unsigned max_iterations = 2000,
-                        const double energy_threshold = 0.1,
-                        unsigned long seed = 0, bool verbose = true);
+                         const unsigned total_gamma,
+                         IntegerMatrix target,
+                         const unsigned max_iterations = 2000,
+                         const double energy_threshold = 0.1,
+                         unsigned long seed = 0, bool verbose = true);
 
 // [[Rcpp::export]]
 List optimizer_backtracking(IntegerVector alpha_list,
-               const unsigned total_gamma,
-               IntegerMatrix target,
-               const unsigned max_iterations = 2000,
-               unsigned long seed = 0, bool verbose = true);
+                            const unsigned total_gamma,
+                            IntegerMatrix target,
+                            const unsigned max_iterations = 2000,
+                            bool verbose = true);
 
 // [[Rcpp::export]]
 double calc_energy(const IntegerMatrix solution_commonness,

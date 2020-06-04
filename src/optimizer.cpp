@@ -116,22 +116,27 @@ List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
         }
     }
 
-    const auto solution_commonness = calculate_solution_commonness_rcpp(solution);
-    const double energy = calc_energy(solution_commonness, target);
+
+    // generate dataframe for i and energy
+    DataFrame measures_df = DataFrame::create(_["i"] = mc.iteration_count,
+            _["energy"] = mc.energy_vector);
+
     List results = List::create(Rcpp::Named("optimized_grid") = solution,
-                                Rcpp::Named("energy") = energy,
-                                Rcpp::Named("solved_species") = mc.solved_species);
+                                Rcpp::Named("energy") = measures_df);
     if (verbose) {
-            Rcout << "\n > Optimization stopped after " << iter
-                  << " steps";
+        double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
+              << " (highest energy was: " << worst_energy << " %, improved by: "
+              << worst_energy - best_energy << " %)";
     }
+
     return(results);
 }
-
+///TODO: maxconf to find most conflicting species in optimization
 
 List optimizer_backtracking(IntegerVector alpha_list, const unsigned total_gamma,
-               IntegerMatrix target, const unsigned max_iterations,
-               unsigned long seed, bool verbose)
+               IntegerMatrix target, const unsigned max_iterations, bool verbose)
 {
     RNGScope scope; // needed for debugging in Qt Creator
 
