@@ -2,14 +2,14 @@ testthat::context("Test backtracking")
 
 library(dplyr)
 
-testdata <- matrix(c(0,0,0,1,0,0,
-                     0,0,1,0,0,0,
-                     1,0,0,0,1,0,
-                     0,0,1,0,0,1,
-                     1,1,1,1,1,0), nrow = 6, ncol = 5)
-alpha_list_test <- testdata %>% as_tibble() %>% summarise_all(funs(sum)) %>% slice(1) %>% unlist(., use.names = FALSE)
-total_gamma_test <- testdata %>% as_tibble() %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
-target_matrix_test <- spectre:::calculate_solution_commonness_rcpp(testdata)
+testdata <- tibble("1" = c(0,0,0,1,0,0),
+                   "2" = c(0,0,1,0,0,0),
+                   "3" = c(1,0,0,0,1,0),
+                   "4" = c(0,0,1,0,0,1),
+                   "5" = c(1,1,1,1,1,0))
+alpha_list_test <- testdata %>% summarise_all(sum) %>% as.numeric()
+total_gamma_test <- testdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
+target_matrix_test <- testdata %>% as.matrix() %>% spectre:::calculate_solution_commonness_rcpp()
 
 res_sim1 <- spectre::run_optimization_backtracking(alpha_list = alpha_list_test, 
                                                    total_gamma = total_gamma_test, 
@@ -17,11 +17,12 @@ res_sim1 <- spectre::run_optimization_backtracking(alpha_list = alpha_list_test,
                                                    max_runs = 200, 
                                                    energy_threshold =  0.0,
                                                    verbose = FALSE)
-resultdata <- res_sim1$optimized_grid
-
-alpha_list_result <- resultdata %>% as_tibble() %>% summarise_all(funs(sum)) %>% slice(1) %>% unlist(., use.names = FALSE)
-total_gamma_result <- resultdata %>% as_tibble() %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
-target_matrix_result <- spectre:::calculate_solution_commonness_rcpp(resultdata)
+suppressWarnings(
+  resultdata <- res_sim1$optimized_grid %>% as_tibble()
+)
+alpha_list_result <- resultdata %>% summarise_all(sum) %>% as.numeric()
+total_gamma_result <- resultdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
+target_matrix_result <- spectre:::calculate_solution_commonness_rcpp(res_sim1$optimized_grid)
 
 testthat::expect_equal(alpha_list_test, alpha_list_result)
 testthat::expect_equal(total_gamma_test, total_gamma_result)
