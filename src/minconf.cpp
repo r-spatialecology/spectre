@@ -19,66 +19,50 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
     std::vector<unsigned> max_common_species(n_sites);
     std::vector<int> currently_added_species(n_sites);
 
-    // find the highest commonness for each site and overall
-    unsigned max_common_species_all = 0;
-    for (unsigned site = 0; site < n_sites; site++) {
-        max_common_species[site] = *(std::max_element(target[site].begin(), target[site].end()));
-        if (max_common_species_all < max_common_species[site]) {
-            max_common_species_all = max_common_species[site];
+    // random first site
+    {
+        const unsigned site = 0;
+        for (unsigned species = 0; species < alpha_list[site]; species++) {
+            solution[site][species] = 1;
+            missing_species[site]--;
+        }
+        std::shuffle(solution[site].begin(), solution[site].end(), rng);
+    }
+
+    // solve all dependencies site-by-site
+    for (unsigned site = 0; site < (n_sites - 1); site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            int common_species = target[site][other_site];
+            if (common_species > 0) {
+                if (missing_species[other_site]) {
+                    while (common_species--) {
+                        currently_added_species[other_site] = add_species_min_conf(other_site, target);
+                        missing_species[other_site]--;
+                    }
+                }
+            }
+        }
+
+        // assign all remaining species to the next site
+        const unsigned next_site = site + 1;
+        while (missing_species[next_site]) {
+            currently_added_species[next_site] = add_species_min_conf(site + 1, target);
+            missing_species[next_site]--;
         }
     }
 
-    // assign all species that are necessary to fulfill commonness first
-    for (unsigned common_species = 1; common_species <= max_common_species_all; common_species++) {
-        // set a new target with max. common_species
-        const auto target_tmp = target_cur(common_species);
-
-        // add species
-        for (unsigned site = 0; site < n_sites; site++) {
-            if (max_common_species[site] >= common_species) {
-                currently_added_species[site] = add_species_min_conf(site, target_tmp);
-                missing_species[site]--;
-            }
-        }
-
-        // optimize last added species
-        auto energy = calc_energy(calculate_commonness(), target_tmp);
-        while(energy > max_energy) {
-            if(iter-- == 0) {
-                break;
-            }
-
-            const auto site = site_dist(rng);
-            solution[site][currently_added_species[site]] = 0;
-            currently_added_species[site] = add_species_min_conf(site, target_tmp);
-            const auto commonness = calculate_commonness();
-            energy = calc_energy(commonness, target_tmp);
-        }
-        if (iter < 1) {
+    // optimize
+    auto energy = calc_energy(calculate_commonness(), target);
+    while(energy > max_energy) {
+        if(iter-- == 0) {
             break;
         }
-        solved_species++;
-    }
 
-    // get the indices of sites where still species are missing
-    std::vector<unsigned> sites_idx;
-    for (unsigned site = 0; site < n_sites; site++) {
-        if(missing_species[site] > 0) {
-            sites_idx.push_back(site);
-        }    // unsigned max_alpha = *(std::max_element(alpha_list.begin(), alpha_list.end()));
-
-    }
-
-    // assign all remaining species
-    while (sites_idx.size()) {
-        std::shuffle(sites_idx.begin(), sites_idx.end(), rng);
-        const auto site = sites_idx.back();
-
-        if(missing_species[site]--) {
-            currently_added_species[site] = add_species_min_conf(site, target);
-        } else {
-            sites_idx.pop_back();
-        }
+        const auto site = site_dist(rng);
+        solution[site][currently_added_species[site]] = 0; // would be better to use species with least common species
+        currently_added_species[site] = add_species_min_conf(site, target);
+        const auto commonness = calculate_commonness();
+        energy = calc_energy(commonness, target);
     }
 
     return iter;
