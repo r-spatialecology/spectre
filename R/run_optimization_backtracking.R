@@ -22,14 +22,12 @@ run_optimization_backtracking <- function(alpha_list,
                                       target, 
                                       max_runs, 
                                       energy_threshold,
-                                      seed = 0,
                                       verbose = TRUE) {
   
   result = optimizer_backtracking(alpha_list = alpha_list, 
                                   total_gamma = total_gamma, 
                                   target = target, 
                                   max_iterations = max_runs,
-                                  seed = seed, 
                                   verbose = verbose)
   
   return(result)
