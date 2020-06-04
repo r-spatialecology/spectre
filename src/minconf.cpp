@@ -34,11 +34,10 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
             int common_species = target[site][other_site];
             if (common_species > 0) {
-                if (missing_species[other_site]) {
-                    while (common_species--) {
-                        currently_added_species[other_site] = add_species_min_conf(other_site, target);
-                        missing_species[other_site]--;
-                    }
+                while (missing_species[other_site] &&
+                       common_species--) {
+                    currently_added_species[other_site] = add_species_min_conf(other_site, target);
+                    missing_species[other_site]--;
                 }
             }
         }
@@ -46,7 +45,7 @@ int MinConf::optimize(long max_steps_, double max_energy, long long seed)
         // assign all remaining species to the next site
         const unsigned next_site = site + 1;
         while (missing_species[next_site]) {
-            currently_added_species[next_site] = add_species_min_conf(site + 1, target);
+            currently_added_species[next_site] = add_species_min_conf(next_site, target);
             missing_species[next_site]--;
         }
     }
