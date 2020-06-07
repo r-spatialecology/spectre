@@ -7,6 +7,7 @@ class Backtracking : public Constraint_satisfaction_problem
 public:
     using Constraint_satisfaction_problem::Constraint_satisfaction_problem;
     int optimize(long max_steps_ = 5000);
+    std::vector<unsigned> solved_sites;
 
 private:
     bool iterate_species(std::vector<int> &site);

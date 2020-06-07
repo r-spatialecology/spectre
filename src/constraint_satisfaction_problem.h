@@ -11,7 +11,6 @@ public:
                                     const std::vector<int> &fixed_species = std::vector<int>());
 
     std::vector<std::vector<int> > solution;
-    std::vector<unsigned> solved_sites;
 
 protected:
     long max_steps = 0;
