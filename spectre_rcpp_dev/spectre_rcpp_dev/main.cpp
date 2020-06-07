@@ -1,22 +1,22 @@
 #include <iostream>
 #include <RInside.h>
 #include <Rcpp.h>
-#include "../src/optimizer.h"
+#include "../../src/optimizer.h"
 using namespace Rcpp;
 
 
 int main()
 {
     RInside R;
-    R.parseEvalQ("load(\"/home/bacchus/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/alpha_list.rda\")");
-    IntegerVector alpha_list = R["alpha_list"];
+    R.parseEvalQ("alpha15 <- readRDS(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/alpha15.rds\")");
+    IntegerVector alpha_list = R["alpha15"];
     R.parseEvalQ("load(\"/home/bacchus/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/estimated_gamma.rda\")");
     const unsigned total_gamma = R["estimated_gamma"];
-    R.parseEvalQ("load(\"/home/bacchus/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/target_matrix.rda\")");
-    IntegerMatrix target = R["target_matrix"];
+    R.parseEvalQ("target15 <- readRDS(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/target15.rds\")");
+    IntegerMatrix target = R["target15"];
 
     R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/random_solution.rda\")");
-    auto res = optimizer_min_conf(alpha_list, total_gamma, target, 150);
+    auto res = optimizer_min_conf2(alpha_list, 15, target, 15000);
 //    IntegerMatrix sol = R.parseEval("current_solution");
 //    IntegerVector alpha_list = R.parseEval("alpha_list");
 //    int total_gamma = R.parseEval("estimated_gamma");
