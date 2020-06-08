@@ -5,13 +5,13 @@ library(spectre)
 # the aim is to test/compare algorithm performance under different conditions:
 # i.e. number of sites, gamma diversity and average richness per site
 # as a start, we assume no correlations between sites
-total_gamma_sim <- 70 
+total_gamma_sim <- 30 
 n_sites_sim <- 25 
 
 # average number of species per site, if equal richness across all sites is demanded, change "sd_sim" to "0".
 # to allow both for constant and varying richness across sites, I used round( rnorm() ) instead of rpois() here. 
-mean_alpha_sim <- 30 
-sd_sim <- 10 # variation in mean / change to 0 if no variation is needed 
+mean_alpha_sim <- 10 
+sd_sim <- 3 # variation in mean / change to 0 if no variation is needed 
 alpha_list_sim <- round(rnorm(n = n_sites_sim, mean = mean_alpha_sim, sd = sd_sim))
 alpha_list_sim[alpha_list_sim < 1] <- 1 # only positive species numbers allowed 
 print(alpha_list_sim) # check
@@ -21,10 +21,21 @@ hist(alpha_list_sim) # visual check of richness per site
 target_matrix_sim <- spectre:::generate_data_simple(total_gamma = total_gamma_sim, n_sites = n_sites_sim, alpha_list = alpha_list_sim)
 
 # solve / optimize 
-res_sim2 <- spectre:::optimizer_min_conf(alpha_list_sim, total_gamma_sim, target_matrix_sim, 20000, 0.0)
-spectre::plot_energy(res_sim)
+res_sim1 <- spectre::run_optimization_min_conf(alpha_list_sim, total_gamma_sim, target_matrix_sim, 20000, 0.0)
+res_sim2 <- spectre:::optimizer_min_conf2(alpha_list_sim, total_gamma_sim, target_matrix_sim, 20000, 0.0)
+
+spectre::plot_energy(res_sim1)
 spectre::plot_energy(res_sim2)
-spectre::plot_commonness(res_sim, target_matrix_sim)
+spectre::plot_commonness(res_sim1, target_matrix_sim)
+spectre::plot_commonness(res_sim2, target_matrix_sim)
+
+alpha_list_res1 <- alpha_list_sim
+alpha_list_res2 <- alpha_list_sim
+for (site in 1:n_sites_sim) {
+  alpha_list_res1[site] <-  sum(res_sim1$optimized_grid[,site])
+  alpha_list_res2[site] <-  sum(res_sim2$optimized_grid[,site])
+}
+res_sim2$optimized_grid[,1]
 
 # end of simulated data section 
 # =============================
