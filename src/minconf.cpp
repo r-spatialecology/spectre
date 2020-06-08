@@ -52,6 +52,9 @@ int MinConf::optimize1(long max_steps_, double max_energy, long long seed)
 int MinConf::optimize2(long max_steps_, double max_energy, long long seed)
 {
     // Random number generator
+    if (seed == 0) {
+        seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
+    }
     rng = std::mt19937(seed);
     std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
 
