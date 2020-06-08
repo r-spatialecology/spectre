@@ -18,6 +18,7 @@ public:
     std::vector<std::vector<int> > test_calculate_commonness();
     double test_calc_energy(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target);
+    void test_gen_init_solution();
 };
 
 #endif // TESTMINCONF_H
