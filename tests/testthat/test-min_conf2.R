@@ -12,7 +12,8 @@ target_matrix_test <- testdata %>% as.matrix() %>% spectre:::calculate_solution_
 
 res_sim1 <- spectre:::optimizer_min_conf2(alpha_list_test, 
                                           total_gamma_test, 
-                                          target_matrix_test, 200, 0.0,
+                                          target_matrix_test,
+                                          matrix() ,200, 0.0,
                                           verbose = FALSE)
 suppressWarnings(
   resultdata <- res_sim1$optimized_grid %>% as_tibble()

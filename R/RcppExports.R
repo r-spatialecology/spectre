@@ -21,12 +21,12 @@ optimizer_min_conf <- function(alpha_list, total_gamma, target, max_iterations =
     .Call('_spectre_optimizer_min_conf', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, energy_threshold, seed, verbose)
 }
 
-optimizer_min_conf1 <- function(alpha_list, total_gamma, target, max_iterations = 2000L, energy_threshold = 0.1, seed = 0L, verbose = TRUE) {
-    .Call('_spectre_optimizer_min_conf1', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, energy_threshold, seed, verbose)
+optimizer_min_conf1 <- function(alpha_list, total_gamma, target, fixed_species, max_iterations = 2000L, energy_threshold = 0.1, seed = 0L, verbose = TRUE) {
+    .Call('_spectre_optimizer_min_conf1', PACKAGE = 'spectre', alpha_list, total_gamma, target, fixed_species, max_iterations, energy_threshold, seed, verbose)
 }
 
-optimizer_min_conf2 <- function(alpha_list, total_gamma, target, max_iterations = 2000L, energy_threshold = 0.1, seed = 0L, verbose = TRUE) {
-    .Call('_spectre_optimizer_min_conf2', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, energy_threshold, seed, verbose)
+optimizer_min_conf2 <- function(alpha_list, total_gamma, target, fixed_species, max_iterations = 2000L, energy_threshold = 0.1, seed = 0L, verbose = TRUE) {
+    .Call('_spectre_optimizer_min_conf2', PACKAGE = 'spectre', alpha_list, total_gamma, target, fixed_species, max_iterations, energy_threshold, seed, verbose)
 }
 
 optimizer_backtracking <- function(alpha_list, total_gamma, target, max_iterations = 2000L, verbose = TRUE) {

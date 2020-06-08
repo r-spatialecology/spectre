@@ -99,13 +99,15 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
 }
 
 List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
-                         IntegerMatrix target, const unsigned max_iterations,
+                         IntegerMatrix target, IntegerMatrix fixed_species,
+                         const unsigned max_iterations,
                          const double energy_threshold,
                          unsigned long seed, bool verbose)
 {
     MinConf mc(as<std::vector<unsigned> >(alpha_list),
-                                        total_gamma,
-                                        as<std::vector<int> >(target));
+               total_gamma,
+               as<std::vector<int> >(target),
+               as<std::vector<int> >(fixed_species));
     long iter = max_iterations - mc.optimize1(max_iterations, energy_threshold, seed);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
@@ -135,13 +137,15 @@ List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
 }
 
 List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
-                         IntegerMatrix target, const unsigned max_iterations,
+                         IntegerMatrix target, IntegerMatrix fixed_species,
+                         const unsigned max_iterations,
                          const double energy_threshold,
                          unsigned long seed, bool verbose)
 {
     MinConf mc(as<std::vector<unsigned> >(alpha_list),
-                                        total_gamma,
-                                        as<std::vector<int> >(target));
+               total_gamma,
+               as<std::vector<int> >(target),
+               as<std::vector<int> >(fixed_species));
     long iter = max_iterations - mc.optimize2(max_iterations, energy_threshold, seed);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
@@ -171,13 +175,13 @@ List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
 }
 
 List optimizer_backtracking(IntegerVector alpha_list, const unsigned total_gamma,
-               IntegerMatrix target, const unsigned max_iterations, bool verbose)
+                            IntegerMatrix target, const unsigned max_iterations, bool verbose)
 {
     RNGScope scope; // needed for debugging in Qt Creator
 
     Backtracking bt(as<std::vector<unsigned> >(alpha_list),
-                                        total_gamma,
-                                        as<std::vector<int> >(target));
+                    total_gamma,
+                    as<std::vector<int> >(target));
     long iter = max_iterations - bt.optimize(max_iterations);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
@@ -197,8 +201,8 @@ List optimizer_backtracking(IntegerVector alpha_list, const unsigned total_gamma
                                 Rcpp::Named("energy") = energy,
                                 Rcpp::Named("solved_sites") = solved_sites);
     if (verbose) {
-            Rcout << "\n > Optimization stopped after " << iter
-                  << " steps";
+        Rcout << "\n > Optimization stopped after " << iter
+              << " steps";
     }
     return(results);
 }
