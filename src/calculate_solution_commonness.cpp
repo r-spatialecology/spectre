@@ -147,29 +147,6 @@ void update_solution_commonness_site(const std::vector<int> &solution_matrix,
     }
 }
 
-void update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix,
-                                     std::vector<std::vector<int> > &solution_commonness,
-                                     const unsigned n_sites,
-                                     const unsigned n_species,
-                                     const unsigned site) {
-    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-        if (site == other_site) {
-            solution_commonness[site][other_site] = -1; // i.e. NA
-            continue;
-        } else {
-            for (unsigned species = 0; species < n_species; species++) {
-                if (!solution_matrix[site][species]) { // no species at current site
-                    continue;
-                } else if (!solution_matrix[other_site][species]) { // no species at other site
-                    continue;
-                } else {
-                    solution_commonness[site][other_site]++;
-                }
-            }
-        }
-    }
-}
-
 /*** R
 # Big
 new_solution <- matrix(sample(0:1, 480000, replace = TRUE), 6000, 8000)

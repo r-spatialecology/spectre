@@ -37,9 +37,5 @@ void update_solution_commonness_site(const std::vector<int> &solution_matrix,
                                      const unsigned n_sites,
                                      const unsigned n_species,
                                      const unsigned site);
-void update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix,
-                                     std::vector<std::vector<int> > &solution_commonness,
-                                     const unsigned n_sites,
-                                     const unsigned n_species,
-                                     const unsigned site);
+
 #endif // CALCULATE_SOLUTION_COMMONNESS_H
