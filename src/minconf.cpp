@@ -76,9 +76,10 @@ int MinConf::optimize2(long max_steps_, double max_energy, long long seed)
     }
 
     // solve all dependencies site-by-site
-    auto commonness = calculate_commonness();
+
     for (unsigned site = 0; site < (n_sites - 1); site++) {
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            const auto commonness = calculate_commonness();
             int common_species = target[site][other_site] - commonness[site][other_site];
             if (common_species > 0) {
                 while (missing_species[other_site] &&
