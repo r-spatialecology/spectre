@@ -1,5 +1,6 @@
 #include "catch.h"
 #include "test-minconf.h"
+#include <RInside.h>
 
 void TestMinConf::test_add_species_min_conf(unsigned site, const std::vector<std::vector<int> > &target)
 {
@@ -158,44 +159,47 @@ TEST_CASE("Tests for the MinConf class") {
     }
 }
 
-//// BUG: Test doesn't work for some reason, but the actual code does. You can trust me ;-)
-//TEST_CASE("optimizer recognizes a fitting solution") {
-//    std::vector<unsigned> alpha_list = {14, 12, 8, 12, 15, 10, 10, 15, 5, 13, 11, 11, 11, 8, 8, 13, 13, 11, 6, 12, 9, 11, 8, 12, 10};
-//    const unsigned n_sites = alpha_list.size();
-//    unsigned gamma = 30;
-//    std::vector<int> target(alpha_list.size() * alpha_list.size());
-
-//    TestMinConf mc(alpha_list,
-//                   gamma,
-//                   target);
-//    mc.test_gen_init_solution();
-//    auto true_solution = mc.solution;
-//    std::vector<int> fixed_species(n_sites * gamma);
-//    for (unsigned site = 0; site < n_sites; site++) {
-//        for (unsigned species = 0; species < gamma; species++) {
-//            fixed_species[site * gamma + species] = true_solution[site][species];
-//        }
-//    }
-
-//    auto true_target = mc.test_calculate_commonness();
-
-//    for (unsigned site = 0; site < n_sites; site++) {
-//        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-//            target[other_site * n_sites + site] = true_target[site][other_site];
-//        }
-//    }
-
-//    TestMinConf test_mc(alpha_list,
-//                        gamma,
-//                        target,
-//                        fixed_species);
+TEST_CASE("optimizer recognizes a fitting solution") {
+    using namespace Rcpp;
+    RInside R;
+    R.parseEvalQ("total_gamma_sim <- 30; n_sites_sim <- 25; mean_alpha_sim <- 15; sd_sim <- 5");
+    R.parseEvalQ("alpha_list_sim <- round(rnorm(n = n_sites_sim, mean = mean_alpha_sim, sd = sd_sim))");
+    R.parseEvalQ("alpha_list_sim[alpha_list_sim < 1] <- 1");
+    IntegerMatrix true_solution(30, 25);
+    const auto alpha_list = as<std::vector<unsigned> >(R.parseEval("alpha_list_sim"));
+    const unsigned n_sites = 25;
+    const unsigned gamma = 30;
+    for (unsigned site = 0; site < n_sites; site++) {
+        const unsigned alpha = static_cast<unsigned>(alpha_list[site]);
+        IntegerVector site_solution(gamma);
+        for (unsigned species = 0; species < alpha; species++) {
+            site_solution[species] = 1;
+        }
+        std::random_shuffle(site_solution.begin(), site_solution.end());
+        for (unsigned species = 0; species < gamma; species++) {
+            true_solution(species, site) = site_solution[species];
+        }
+    }
+    R["true_solution"] = true_solution;
+    IntegerMatrix target = R.parseEval("spectre:::calculate_solution_commonness_rcpp(true_solution)");
 
 
-//    SECTION("Min-conf-1") {
-//        int iter = test_mc.optimize1(5, 0.0, 0);
-//        auto energy = test_mc.energy_vector;
-//        CHECK(iter == 5);
-//        CHECK(energy.back() == Approx(0.0));
-//    }
+    TestMinConf mc1(alpha_list,
+                    gamma,
+                    as<std::vector<int> >(target),
+                    as<std::vector<int> >(true_solution));
+    const auto iter1 = mc1.optimize1(5);
+    const auto energy = mc1.energy_vector;
+    CHECK(iter1 == 5);
+    CHECK(energy.back() == 0.0);
 
-//}
+    TestMinConf mc2(alpha_list,
+                    gamma,
+                    as<std::vector<int> >(target),
+                    as<std::vector<int> >(true_solution));
+
+    const auto iter2 = mc2.optimize2(5);
+    const auto energy2 = mc2.energy_vector;
+    CHECK(iter2 == 5);
+    CHECK(energy2.back() == 0.0);
+}
