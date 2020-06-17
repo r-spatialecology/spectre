@@ -21,15 +21,12 @@
 run_optimization_min_conf_1 <- function(alpha_list, 
                                       total_gamma, 
                                       target,
-                                      fixed_species = 0,
+                                      fixed_species = matrix(),
                                       max_runs,
                                       energy_threshold,
                                       seed = 0,
                                       verbose = TRUE) {
   
-  if (fixed_species == 0) {
-    fixed_species <- matrix()
-  }
   result = optimizer_min_conf1(alpha_list = alpha_list, 
                                total_gamma = total_gamma, 
                                target = target, 
