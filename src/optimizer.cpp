@@ -98,8 +98,10 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
     return(results);
 }
 
-List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
+List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,
+                         const unsigned tabu,
+                         const bool fixed_partial_solution,
                          const unsigned max_iterations,
                          const double energy_threshold,
                          unsigned long seed, bool verbose)
@@ -107,7 +109,50 @@ List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
     MinConf mc(as<std::vector<unsigned> >(alpha_list),
                total_gamma,
                as<std::vector<int> >(target),
-               as<std::vector<int> >(fixed_species));
+               as<std::vector<int> >(fixed_species),
+               fixed_partial_solution, tabu);
+    long iter = max_iterations - mc.optimize0(max_iterations, energy_threshold, seed);
+    const unsigned n_sites = alpha_list.size();
+    IntegerMatrix solution(total_gamma, n_sites);
+
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned species = 0; species < total_gamma; species++) {
+            solution(species, site) = mc.solution[site][species];
+        }
+    }
+
+
+    // generate dataframe for i and energy
+    DataFrame measures_df = DataFrame::create(_["i"] = mc.iteration_count,
+            _["energy"] = mc.energy_vector);
+
+    List results = List::create(Rcpp::Named("optimized_grid") = solution,
+                                Rcpp::Named("energy") = measures_df);
+    if (verbose) {
+        double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
+              << " (highest energy was: " << worst_energy << " %, improved by: "
+              << worst_energy - best_energy << " %)";
+    }
+
+    return(results);
+}
+
+
+List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
+                         IntegerMatrix target, IntegerMatrix fixed_species,
+                         const unsigned tabu,
+                         const bool fixed_partial_solution,
+                         const unsigned max_iterations,
+                         const double energy_threshold,
+                         unsigned long seed, bool verbose)
+{
+    MinConf mc(as<std::vector<unsigned> >(alpha_list),
+               total_gamma,
+               as<std::vector<int> >(target),
+               as<std::vector<int> >(fixed_species),
+               fixed_partial_solution, tabu);
     long iter = max_iterations - mc.optimize1(max_iterations, energy_threshold, seed);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
@@ -138,6 +183,8 @@ List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
 
 List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,
+                         const unsigned tabu,
+                         const bool fixed_partial_solution,
                          const unsigned max_iterations,
                          const double energy_threshold,
                          unsigned long seed, bool verbose)
@@ -145,7 +192,8 @@ List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
     MinConf mc(as<std::vector<unsigned> >(alpha_list),
                total_gamma,
                as<std::vector<int> >(target),
-               as<std::vector<int> >(fixed_species));
+               as<std::vector<int> >(fixed_species),
+               fixed_partial_solution, tabu);
     long iter = max_iterations - mc.optimize2(max_iterations, energy_threshold, seed);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
@@ -265,8 +313,6 @@ std::vector<unsigned> calc_min_conflict_species(const unsigned site,
         const IntegerMatrix commoness_new =
                 calculate_solution_commonness_site_rcpp(solution, commoness, site + 1); // _rcpp functions start indexing at 1
 
-        //        auto commoness_ = as<std::vector<int> >(commoness_new);
-        //        auto target_ = as<std::vector<int> >(target);
         double energy_ = calc_energy(commoness_new, target);
 
         if (energy_ < energy) {
