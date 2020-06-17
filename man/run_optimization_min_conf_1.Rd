@@ -8,7 +8,7 @@ run_optimization_min_conf_1(
   alpha_list,
   total_gamma,
   target,
-  fixed_species = 0,
+  fixed_species = matrix(),
   max_runs,
   energy_threshold,
   seed = 0,
