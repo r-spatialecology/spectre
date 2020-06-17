@@ -113,11 +113,11 @@ res_sim2$optimized_grid
 
 spectre::plot_energy(res_sim)
 spectre::plot_energy(res_sim0)
-spectre::plot_energy(res_sim1)
+spectre::plot_energy(res_sim01)
 spectre::plot_energy(res_sim2)
 
 spectre::plot_commonness(res_sim0, target_matrix_sim)
-spectre::plot_commonness(res_sim1, target_matrix_sim)
+spectre::plot_commonness(res_sim01, target_matrix_sim)
 spectre::plot_commonness(res_sim2, target_matrix_sim)
 spectre::plot_commonness(res_sim3, target_matrix_sim)
 

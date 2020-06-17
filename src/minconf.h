@@ -23,6 +23,7 @@ protected:
 
     void gen_init_solution();
     void set_fixed_species();
+    void set_fixed_species(unsigned site);
     void add_species_min_conf(unsigned site,
                               const std::vector<std::vector<int> > &target,
                               const std::string severity = "none");
@@ -36,8 +37,8 @@ protected:
                                                     const std::vector<unsigned> pesent_species,
                                                     const std::vector<std::vector<int> > &target,
                                                     const std::string severity = "none");
-    unsigned next_site(const std::vector<std::vector<int> > &commonness,
-                       const std::vector<std::vector<int> > &target);
+    std::vector<unsigned> worst_sites(const std::vector<std::vector<int> > &commonness,
+                                      const std::vector<std::vector<int> > &target);
     int next_site(const std::vector<unsigned> &missing_species);
     void add_species_allsites(unsigned &n_species_missing, std::vector<unsigned> &missing_species);
 };

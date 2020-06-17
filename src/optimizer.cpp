@@ -139,7 +139,6 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
     return(results);
 }
 
-
 List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,
                          const unsigned tabu,
