@@ -23,7 +23,9 @@ run_optimization_min_conf_1(
 
 \item{target}{Pairwise matrix of species in common.}
 
-\item{fixed_species}{Partial solution with species that are considered as given.}
+\item{fixed_species}{Fixed partial solution with species that are considered as given. Those species are not going to be changed during optimization.}
+
+\item{partial_solution}{Partial or complete initial solution as a start for the optimization.}
 
 \item{max_iterations}{Max number of loops before stopping.}
 

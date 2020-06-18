@@ -5,7 +5,8 @@
 #' @param alpha_list Matrix of predicted alpha diversity in each cell.
 #' @param total_gamma Total (estimated) species in the system.
 #' @param target Pairwise matrix of species in common.
-#' @param fixed_species Partial solution with species that are considered as given.
+#' @param fixed_species Fixed partial solution with species that are considered as given. Those species are not going to be changed during optimization.
+#' @param partial_solution Partial or complete initial solution as a start for the optimization.
 #' @param max_iterations Max number of loops before stopping.
 #' @param energy_threshold Optimization stops if energy threshold is reached. This is set as a value between 0 and 1 determining the proportion of error accepted
 #' @param seed Seed for random number generator. seed = 0 means that a time stamp is used as seed. 
