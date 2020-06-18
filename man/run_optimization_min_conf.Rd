@@ -8,7 +8,7 @@ run_optimization_min_conf(
   alpha_list,
   total_gamma,
   target,
-  max_runs,
+  max_iterations,
   energy_threshold,
   seed = 0,
   verbose = TRUE
@@ -21,7 +21,7 @@ run_optimization_min_conf(
 
 \item{target}{Pairwise matrix of species in common.}
 
-\item{max_runs}{Max number of loops before stopping.}
+\item{max_iterations}{Max number of loops before stopping.}
 
 \item{energy_threshold}{Optimization stops if energy threshold is reached. This is set as a value between 0 and 1 determining the proportion of error accepted}
 
