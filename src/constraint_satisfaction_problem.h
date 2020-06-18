@@ -9,15 +9,14 @@ public:
     Constraint_satisfaction_problem(const std::vector<unsigned> &alpha_list,
                                     const unsigned gamma_div,
                                     const std::vector<int> &target,
-                                    const std::vector<int> &partial_solution_ = std::vector<int>(),
-                                    const bool fixed_partial_solution = true,
-                                    unsigned tabu = 0);
+                                    const std::vector<int> &fixed_species_ = std::vector<int>(),
+                                    const std::vector<int> &partial_solution = std::vector<int>());
 
     std::vector<std::vector<int> > solution;
 
 protected:
     long max_steps = 0;
-    std::vector<std::vector<int> > partial_solution;
+    std::vector<std::vector<int> > fixed_species;
     std::vector<std::vector<int> > fixed_species_idx;
     std::vector<std::vector<int> > target;
     const std::vector<unsigned> alpha_list;
@@ -30,7 +29,7 @@ protected:
                        int omit_site = -1);
     std::vector<unsigned> present_species_index(unsigned site, bool omit_fixed_species = true);
     std::vector<unsigned> present_species_index(unsigned site,
-                                                const std::vector<std::vector<int> > partial_solution);
+                                                const std::vector<std::vector<int> > fixed_species);
     std::vector<unsigned> absent_species_index(unsigned site);
     std::vector<std::vector<int> > calculate_commonness();
     std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution);

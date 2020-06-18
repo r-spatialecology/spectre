@@ -100,8 +100,7 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
 
 List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,
-                         const unsigned tabu,
-                         const bool fixed_partial_solution,
+                         IntegerMatrix partial_solution,
                          const unsigned max_iterations,
                          const double energy_threshold,
                          unsigned long seed, bool verbose)
@@ -110,7 +109,7 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
                total_gamma,
                as<std::vector<int> >(target),
                as<std::vector<int> >(fixed_species),
-               fixed_partial_solution, tabu);
+               as<std::vector<int> >(partial_solution));
     long iter = max_iterations - mc.optimize0(max_iterations, energy_threshold, seed);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
@@ -141,8 +140,7 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
 
 List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,
-                         const unsigned tabu,
-                         const bool fixed_partial_solution,
+                         IntegerMatrix partial_solution,
                          const unsigned max_iterations,
                          const double energy_threshold,
                          unsigned long seed, bool verbose)
@@ -151,7 +149,7 @@ List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
                total_gamma,
                as<std::vector<int> >(target),
                as<std::vector<int> >(fixed_species),
-               fixed_partial_solution, tabu);
+               as<std::vector<int> >(partial_solution));
     long iter = max_iterations - mc.optimize1(max_iterations, energy_threshold, seed);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
@@ -182,8 +180,7 @@ List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
 
 List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,
-                         const unsigned tabu,
-                         const bool fixed_partial_solution,
+                         IntegerMatrix partial_solution,
                          const unsigned max_iterations,
                          const double energy_threshold,
                          unsigned long seed, bool verbose)
@@ -192,7 +189,7 @@ List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
                total_gamma,
                as<std::vector<int> >(target),
                as<std::vector<int> >(fixed_species),
-               fixed_partial_solution, tabu);
+               as<std::vector<int> >(partial_solution));
     long iter = max_iterations - mc.optimize2(max_iterations, energy_threshold, seed);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);

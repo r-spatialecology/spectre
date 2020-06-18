@@ -18,8 +18,8 @@ protected:
     std::mt19937 rng;
     const double epsilon = 0.00001;
     const std::vector<long long> factorials {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600};
-    std::vector<unsigned> tabu_species_list;
-    std::vector<unsigned> tabu_sites_list;
+//    std::vector<unsigned> tabu_species_list;
+//    std::vector<unsigned> tabu_sites_list;
 
     void gen_init_solution();
     void set_fixed_species();

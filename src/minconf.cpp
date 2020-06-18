@@ -13,7 +13,7 @@ int MinConf::optimize0(long max_steps_, double max_energy, long long seed)
     std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
     auto iter = max_steps_;
     //gen_init_solution();
-    if (partial_solution.size()) {
+    if (fixed_species.size()) {
         set_fixed_species();
     }
 
@@ -57,7 +57,7 @@ int MinConf::optimize0(long max_steps_, double max_energy, long long seed)
                 for (unsigned species = 0; species < gamma_div; species++) {
                     solution[site][species] = 0;
                 }
-                if (partial_solution.size()) {
+                if (fixed_species.size()) {
                     set_fixed_species(site);
                 }
                 missing_species[site] = alpha_list[site] - present_species_index(site).size();
@@ -119,7 +119,7 @@ int MinConf::optimize1(long max_steps_, double max_energy, long long seed)
 
     auto iter = max_steps_;
     gen_init_solution();
-    if (partial_solution.size()) {
+    if (fixed_species.size()) {
         set_fixed_species();
     }
 
@@ -173,7 +173,7 @@ int MinConf::optimize2(long max_steps_, double max_energy, long long seed)
         }
         std::shuffle(solution[site].begin(), solution[site].end(), rng);
     }
-    if (partial_solution.size()) {
+    if (fixed_species.size()) {
         set_fixed_species();
         for (unsigned site = 0; site < n_sites; site++) {
             const bool omit_fixed_species = false;
@@ -321,7 +321,7 @@ int MinConf::optimize2(long max_steps_, double max_energy, long long seed)
                 for (unsigned species = 0; species < gamma_div; species++) {
                     solution[site][species] = 0;
                 }
-                if (partial_solution.size()) {
+                if (fixed_species.size()) {
                     set_fixed_species(site);
                 }
                 missing_species[site] = alpha_list[site] - present_species_index(site).size();
@@ -395,7 +395,7 @@ void MinConf::set_fixed_species()
 void MinConf::set_fixed_species(unsigned site)
 {
     auto site_present_species = present_species_index(site);
-    const auto fixed_species_idx = present_species_index(site, partial_solution);
+    const auto fixed_species_idx = present_species_index(site, fixed_species);
 
     // remove fixed species from present_species to avoid removal of that species
     for (unsigned idx = 0; idx < fixed_species_idx.size(); idx++) {
@@ -570,14 +570,14 @@ std::vector<unsigned> MinConf::worst_sites(const std::vector<std::vector<int> > 
     std::vector<std::pair<double, unsigned> > energy_site(n_sites);
 
     for (unsigned site = 0; site < n_sites; site++) {
-        if (tabu_sites_list.size()) { // omit this site if on the tabu_sites_list
-            std::vector<unsigned>::iterator it = std::find(tabu_sites_list.begin(),
-                                                           tabu_sites_list.end(),
-                                                           site);
-            if (it != tabu_sites_list.end()) {
-                continue;
-            }
-        }
+//        if (tabu_sites_list.size()) { // omit this site if on the tabu_sites_list
+//            std::vector<unsigned>::iterator it = std::find(tabu_sites_list.begin(),
+//                                                           tabu_sites_list.end(),
+//                                                           site);
+//            if (it != tabu_sites_list.end()) {
+//                continue;
+//            }
+//        }
         // calculate energy w/o the current site
         const double energy = calc_energy(commonness, target, "none", site);
         energy_site[site] = std::make_pair(energy, site);

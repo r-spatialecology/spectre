@@ -5,14 +5,13 @@
 Constraint_satisfaction_problem::Constraint_satisfaction_problem(const std::vector<unsigned> &alpha_list,
                                                                  const unsigned gamma_div,
                                                                  const std::vector<int> &target_,
-                                                                 const std::vector<int> &partial_solution_,
-                                                                 const bool fixed_partial_solution,
-                                                                 unsigned tabu)
+                                                                 const std::vector<int> &fixed_species_,
+                                                                 const std::vector<int> &partial_solution)
     : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size())
 {
     solution.resize(n_sites);
     target.resize(n_sites);
-    tabu_list.resize(tabu, std::numeric_limits<unsigned>::max()); // species list should be smaller than that...
+    //  tabu_list.resize(tabu, std::numeric_limits<unsigned>::max()); // species list should be smaller than that...
 
     for (unsigned site = 0; site < n_sites; site++) {
         solution[site].resize(gamma_div);
@@ -30,24 +29,34 @@ Constraint_satisfaction_problem::Constraint_satisfaction_problem(const std::vect
         }
     }
 
-    if (partial_solution_.size() > 1) {
-        if(partial_solution_.size() != n_sites * gamma_div) {
+    if (partial_solution.size() > 1) {
+        if(partial_solution.size() != n_sites * gamma_div) {
+            std::cerr << "The size of the partial_solution vector does not match n_sites * gamma_div. "
+                      << "partial_solution ignored."
+                      << std::endl;
+        } else {
+            for (unsigned site = 0; site < n_sites; site++) {
+                for (unsigned species = 0; species < gamma_div; species++) {
+                    if (partial_solution[site * gamma_div + species]) {
+                        solution[site][species] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    if (fixed_species_.size() > 1) {
+        if(fixed_species_.size() != n_sites * gamma_div) {
             std::cerr << "The size of the fixed_species vector does not match n_sites * gamma_div. "
                       << "fixed_species ignored."
                       << std::endl;
         } else {
-            partial_solution.resize(n_sites);
-            if (fixed_partial_solution) {
-                fixed_species_idx.resize(n_sites);
-            }
+            fixed_species.resize(n_sites);
             for (unsigned site = 0; site < n_sites; site++) {
-                partial_solution[site].resize(gamma_div);
+                fixed_species[site].resize(gamma_div);
                 for (unsigned species = 0; species < gamma_div; species++) {
-                    if(partial_solution_[site * gamma_div + species]) {
-                        partial_solution[site][species] = 1;
-                        if (fixed_partial_solution){
-                            fixed_species_idx[site].push_back(species);
-                        }
+                    if(fixed_species_[site * gamma_div + species]) {
+                        fixed_species[site][species] = 1;
                     }
                 }
             }
@@ -108,8 +117,8 @@ std::vector<unsigned> Constraint_satisfaction_problem::present_species_index(uns
 {
     std::vector<unsigned> species_idx;
     for (unsigned species = 0; species < gamma_div; species++) {
-        if (omit_fixed_species && partial_solution.size()) {
-            if (partial_solution[site][species] == solution[site][species]) {
+        if (omit_fixed_species && fixed_species.size()) {
+            if (fixed_species[site][species] == solution[site][species]) {
                 continue;
             }
         }
