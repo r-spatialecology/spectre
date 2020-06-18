@@ -44,7 +44,7 @@ When corr_within = 0, the landscape suitability is distributed more or less rand
 The function will finally report a rasterstack with species distribution (presence/absence) of each species.
 }
 \examples{
-
+\dontrun{
 ncol <- 50
 nrow <- 50
 gamma <- 100
@@ -58,5 +58,5 @@ spp <- generate_data_virtualspecies(ncol, nrow, corr_within, corr_among, gamma, 
 raster::plot(spp)
 ## Calculate species richness:
 alpha <- sum(spp)
-
+}
 }

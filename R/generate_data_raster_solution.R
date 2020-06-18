@@ -15,7 +15,7 @@
 #' 
 #' @return Matrix (species X sites)
 #' @examples 
-#' 
+#' \dontrun{
 #' # 1. Generate random landscape with NLMR:
 #' landscape <- NLMR::nlm_random(ncol=50, nrow=50) 
 #' # 2. Rescale to derive species richness values:
@@ -58,7 +58,7 @@
 #' landscapetools::show_landscape(alpha)
 #' solution <- generate_data_raster_solution(alpha, gamma)
 #' target <- calculate_solution_commonness_rcpp(solution)
-#' 
+#' }
 #' @export
 
 generate_data_raster_solution <- function(landscape, gamma)

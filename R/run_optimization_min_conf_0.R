@@ -28,6 +28,8 @@ run_optimization_min_conf_0 <- function(alpha_list,
                                         energy_threshold,
                                         seed = 0,
                                         verbose = TRUE) {
+is.numeric(1)
+is.integer(0.5)
   
   if(is.null(fixed_species)) {
     fixed_species <- matrix()
@@ -35,7 +37,7 @@ run_optimization_min_conf_0 <- function(alpha_list,
   if (is.null(partial_solution)) {
     partial_solution <- matrix()
   }
-  result = optimizer_min_conf0(alpha_list = alpha_list, 
+  result = optimizer_min_conf0_rcpp(alpha_list = alpha_list, 
                                total_gamma = total_gamma, 
                                target = target, 
                                fixed_species,

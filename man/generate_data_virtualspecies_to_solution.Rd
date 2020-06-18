@@ -21,7 +21,7 @@ This can for example be used for species derive from the virtual species functio
 The solution matrix can then be used to run the spectre optimization algorithms.
 }
 \examples{
-
+\dontrun{
 ## This example presents the complete workflow of generating virtual species distributions
 ## over trasnfromation to solution matrix
 ## to execution of spectre optimization algorithms:' 
@@ -49,5 +49,5 @@ target <- calculate_solution_commonness_rcpp(solution)
 #### Step 3: Execute optimization
 
 result <- spectre::run_optimization_min_conf(alpha, gamma, target, max_runs = 20000)
-
+}
 }

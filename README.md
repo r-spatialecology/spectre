@@ -1,12 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# spectre
+# OurFOAM
 
 <!-- badges: start -->
 
 [![Travis build
 status](https://travis-ci.org/marcosci/dynamicfoam.svg?branch=master)](https://travis-ci.org/marcosci/dynamicfoam)
+[![R build
+status](https://github.com/r-spatialecology/spectre/workflows/R-CMD-check/badge.svg)](https://github.com/r-spatialecology/spectre/actions)
 <!-- badges: end -->
 
 The goal of OurFOAM is to …
@@ -32,7 +34,7 @@ devtools::install_github("marcosci/dynamicfoam")
 This is a basic example which shows you how to solve a common problem:
 
 ``` r
-library(OurFOAM)
+library(spectre)
 ## basic example code
 ```
 
