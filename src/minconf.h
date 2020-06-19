@@ -13,6 +13,7 @@ public:
     int optimize2(long max_steps_ = 5000, double max_energy = 0.0, long long seed = 0);
     std::vector<int> iteration_count;
     std::vector<double> energy_vector;
+    bool solution_has_best_enery = true;
 
 protected:
     std::mt19937 rng;
@@ -40,7 +41,7 @@ protected:
     std::vector<unsigned> worst_sites(const std::vector<std::vector<int> > &commonness,
                                       const std::vector<std::vector<int> > &target);
     int next_site(const std::vector<unsigned> &missing_species);
-    void add_species_allsites(unsigned &n_species_missing, std::vector<unsigned> &missing_species);
+    bool add_missing_species(std::vector<unsigned> &missing_species);
 };
 
 #endif // MINCONF_H

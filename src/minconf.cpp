@@ -92,6 +92,10 @@ int MinConf::optimize0(long max_steps_, double max_energy, long long seed)
         }
     }
 
+    if(add_missing_species(missing_species)) {
+        solution_has_best_enery = false;
+    }
+
     energy = calc_energy(calculate_commonness(solution), target);
 
     if (calc_energy(calculate_commonness(current_best_solution), target) <
@@ -357,6 +361,10 @@ int MinConf::optimize2(long max_steps_, double max_energy, long long seed)
         }
     }
 
+    if(add_missing_species(missing_species)) {
+        solution_has_best_enery = false;
+    }
+
     energy = calc_energy(calculate_commonness(solution), target);
 
     if (calc_energy(calculate_commonness(current_best_solution), target) <
@@ -570,14 +578,14 @@ std::vector<unsigned> MinConf::worst_sites(const std::vector<std::vector<int> > 
     std::vector<std::pair<double, unsigned> > energy_site(n_sites);
 
     for (unsigned site = 0; site < n_sites; site++) {
-//        if (tabu_sites_list.size()) { // omit this site if on the tabu_sites_list
-//            std::vector<unsigned>::iterator it = std::find(tabu_sites_list.begin(),
-//                                                           tabu_sites_list.end(),
-//                                                           site);
-//            if (it != tabu_sites_list.end()) {
-//                continue;
-//            }
-//        }
+        //        if (tabu_sites_list.size()) { // omit this site if on the tabu_sites_list
+        //            std::vector<unsigned>::iterator it = std::find(tabu_sites_list.begin(),
+        //                                                           tabu_sites_list.end(),
+        //                                                           site);
+        //            if (it != tabu_sites_list.end()) {
+        //                continue;
+        //            }
+        //        }
         // calculate energy w/o the current site
         const double energy = calc_energy(commonness, target, "none", site);
         energy_site[site] = std::make_pair(energy, site);
@@ -626,14 +634,15 @@ int MinConf::next_site(const std::vector<unsigned> &missing_species)
     return -1;
 }
 
-
-void MinConf::add_species_allsites(unsigned &n_species_missing, std::vector<unsigned> &missing_species)
+bool MinConf::add_missing_species(std::vector<unsigned> &missing_species)
 {
+    bool retval = false;
     for (unsigned site = 0; site < n_sites; site++) {
-        if (missing_species[site]) {
+        while (missing_species[site]) {
             add_species_min_conf(site, target);
             missing_species[site]--;
+            retval = true;
         }
     }
-    n_species_missing--;
+    return retval;
 }

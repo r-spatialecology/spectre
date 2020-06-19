@@ -135,6 +135,10 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
               << worst_energy - best_energy << " %)";
     }
 
+    if (!mc.solution_has_best_enery) {
+        Rcout << "\n Warning: this solution does not neccessarily correnpond to the lowes energy. \n";
+    }
+
     return(results);
 }
 
@@ -213,6 +217,10 @@ List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
         Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
               << " (highest energy was: " << worst_energy << " %, improved by: "
               << worst_energy - best_energy << " %)";
+    }
+
+    if (!mc.solution_has_best_enery) {
+        Rcout << "\n Warning: this solution does not neccessarily correnpond to the lowes energy. \n";
     }
 
     return(results);
