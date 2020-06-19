@@ -23,7 +23,7 @@ jobs:
     - name: change directory
       run: cd spectre_rcpp_dev/spectre_tests
     - name: Install deps
-      run: apt install -y qt5-qmake liblzma-dev libbz2-dev
+      run: apt update && apt install -y qt5-qmake liblzma-dev libbz2-dev
     - name: install RInside and Rcpp
       run: R -e 'install.packages(c("RInside", "Rcpp"))'
     - name: run qmake
