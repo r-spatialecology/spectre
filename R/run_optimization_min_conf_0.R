@@ -37,7 +37,7 @@ is.integer(0.5)
   if (is.null(partial_solution)) {
     partial_solution <- matrix()
   }
-  result = optimizer_min_conf0_rcpp(alpha_list = alpha_list, 
+  result = optimizer_min_conf0(alpha_list = alpha_list, 
                                total_gamma = total_gamma, 
                                target = target, 
                                fixed_species,
