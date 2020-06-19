@@ -20,14 +20,12 @@ jobs:
     - uses: actions/checkout@v2
     - name: install spectre
       run: R -e 'devtools::install()'
-    - name: change directory
-      run: cd spectre_rcpp_dev/spectre_tests
     - name: Install deps
       run: apt update && apt install -y qt5-qmake liblzma-dev libbz2-dev
     - name: install RInside and Rcpp
       run: R -e 'install.packages(c("RInside", "Rcpp"))'
     - name: run qmake
-      run: qmake -qt=qt5 spectre_tests.pro
+      run: cd spectre_rcpp_dev/spectre_tests && qmake -qt=qt5 spectre_tests.pro
     - name: make
       run: make
     - name: run unit test
