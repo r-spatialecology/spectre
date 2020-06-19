@@ -3,9 +3,10 @@
 ^\.travis\.yml$
 ^README\.Rmd$
 ^LICENSE\.md$
-^\.github$
 ^\.spectre_rcpp_dev$
 ^vignettes\.R$
 ^spectre_rcpp_dev$
 ^results$
 ^tests/testIdeas\.R$
+^codecov\.yml$
+^\.github$

@@ -1,37 +1,49 @@
-name: CI-build
+# This is a basic workflow to help you get started with Actions
 
+name: r-build
+
+# Controls when the action will run. Triggers the workflow on push or pull request
 on:
   push:
     branches:
       - master
+      - dev
   pull_request:
-    branches:
+    branches: 
       - master
+      - dev
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "build"
   build:
-    name: setup_runners
+    # The type of runner that the job will run on
     runs-on: ${{ matrix.config.os }}
+
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+
     strategy:
       fail-fast: false
       matrix:
         config:
           - {os: windows-latest, r: 'release'}
           - {os: macOS-latest, r: 'release'}
-          - {os: ubuntu-latest, r: 'release'}
+          - {os: ubuntu-16.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/xenial/latest"}
 
-    env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: ${{ matrix.config.rspm }}
 
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - uses: actions/checkout@v2
+
       - uses: r-lib/actions/setup-r@master
         with:
           r-version: ${{ matrix.config.r }}
+
+      - uses: r-lib/actions/setup-pandoc@master
+
       - name: Query dependencies
         run: |
-          install.packages('remotes')
+          install.packages("remotes")
           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
         shell: Rscript {0}
@@ -56,24 +68,11 @@ jobs:
       - name: Install dependencies
         run: |
           remotes::install_deps(dependencies = TRUE)
-          devtools::install(upgrade = FALSE)
         shell: Rscript {0}
 
-      - name: Build
-        env:
-          _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: devtools::build(binary = TRUE)
+      - name: Build binary
+        run: |
+          install.packages("devtools")
+          devtools::build(binary = TRUE)
         shell: Rscript {0}
-        
-      - name: Document
-        env:
-          _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: devtools::document()
-        shell: Rscript {0}
-
-      - name: Check
-        env:
-          _R_CHECK_CRAN_INCOMING_REMOTE_: false
-        run: if (!identical(devtools::check(cran = FALSE, document = FALSE, args = "--no-tests")[["errors"]], character(0))) stop("Check with Errors")
-        shell: Rscript {0}
-        
+    
