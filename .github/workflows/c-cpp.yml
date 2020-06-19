@@ -18,13 +18,19 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: install spectre
+      run: R -e 'devtools::install()'
     - name: change directory
       run: cd spectre_rcpp_dev/spectre_tests
-    - name: Install qmake
-      run: apt-get install -y qt5-qmake  
+    - name: Install deps
+      run: apt install -y qt5-qmake liblzma-dev libbz2-dev
+    - name: install RInside and Rcpp
+      run: R -e 'install.packages(c("RInside", "Rcpp"))'
     - name: run qmake
-      run: qmake spectre_tests.pro
+      run: qmake -qt=qt5 spectre_tests.pro
     - name: make
       run: make
     - name: run unit test
-      run: ./spectre_tests
+      run: | 
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib/R/lib/
+        ./spectre_tests
