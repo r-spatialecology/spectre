@@ -11,12 +11,12 @@ alpha_list_test <- testdata %>% summarise_all(sum) %>% as.numeric()
 total_gamma_test <- testdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
 target_matrix_test <- testdata %>% as.matrix() %>% spectre:::calculate_solution_commonness_rcpp()
 
-res_sim1 <- run_optimization_min_conf(alpha_list = alpha_list_test, 
-                                      total_gamma = total_gamma_test, 
-                                      target = target_matrix_test, 
-                                      max_iterations = 200, 
-                                      energy_threshold = 0.0,
-                                      verbose = FALSE)
+res_sim1 <- run_optimization_min_conf_0(alpha_list = alpha_list_test, 
+                                        total_gamma = total_gamma_test, 
+                                        target = target_matrix_test, 
+                                        max_iterations = 200, 
+                                        energy_threshold = 0.0,
+                                        verbose = FALSE)
 res_sim2 <- run_optimization_min_conf_1(alpha_list = alpha_list_test, 
                                         total_gamma = total_gamma_test, 
                                         target = target_matrix_test,
@@ -58,7 +58,7 @@ testthat::expect_equal(target_matrix_test, target_matrix_result1)
 
 alpha_list_result2 <- resultdata2 %>% summarise_all(sum) %>% as.numeric()
 total_gamma_result2 <- resultdata2 %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
-target_matrix_result2 <- spectre:::calculate_solution_commonness_rcpp(res_sim3$optimized_grid)
+target_matrix_result2 <- calculate_solution_commonness_rcpp(res_sim3$optimized_grid)
 
 testthat::expect_equal(alpha_list_test, alpha_list_result2)
 testthat::expect_equal(total_gamma_test, total_gamma_result2)

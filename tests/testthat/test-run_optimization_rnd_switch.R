@@ -24,7 +24,7 @@ suppressWarnings(
 
 alpha_list_result <- resultdata %>% summarise_all(sum) %>% as.numeric()
 total_gamma_result <- resultdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
-target_matrix_result <- spectre:::calculate_solution_commonness_rcpp(res_sim1$optimized_grid)
+target_matrix_result <- calculate_solution_commonness_rcpp(res_sim1$optimized_grid)
 
 testthat::expect_equal(alpha_list_test, alpha_list_result)
 testthat::expect_equal(total_gamma_test, total_gamma_result)

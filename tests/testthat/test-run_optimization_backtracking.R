@@ -11,7 +11,7 @@ alpha_list_test <- testdata %>% summarise_all(sum) %>% as.numeric()
 total_gamma_test <- testdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
 target_matrix_test <- testdata %>% as.matrix() %>% spectre:::calculate_solution_commonness_rcpp()
 
-res_sim1 <- spectre::run_optimization_backtracking(alpha_list = alpha_list_test, 
+res_sim1 <- run_optimization_backtracking(alpha_list = alpha_list_test, 
                                                    total_gamma = total_gamma_test, 
                                                    target = target_matrix_test, 
                                                    max_runs = 200, 
@@ -22,7 +22,7 @@ suppressWarnings(
 )
 alpha_list_result <- resultdata %>% summarise_all(sum) %>% as.numeric()
 total_gamma_result <- resultdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
-target_matrix_result <- spectre:::calculate_solution_commonness_rcpp(res_sim1$optimized_grid)
+target_matrix_result <- calculate_solution_commonness_rcpp(res_sim1$optimized_grid)
 
 testthat::expect_equal(alpha_list_test, alpha_list_result)
 testthat::expect_equal(total_gamma_test, total_gamma_result)
