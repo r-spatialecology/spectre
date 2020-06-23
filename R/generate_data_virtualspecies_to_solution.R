@@ -12,7 +12,7 @@
 #' 
 #' @return matrix (species X sites)
 #' @examples 
-#' 
+#' \dontrun{
 #' ## This example presents the complete workflow of generating virtual species distributions
 #' ## over trasnfromation to solution matrix
 #' ## to execution of spectre optimization algorithms:' 
@@ -40,7 +40,7 @@
 #' #### Step 3: Execute optimization
 #' 
 #' result <- spectre::run_optimization_min_conf(alpha, gamma, target, max_runs = 20000)
-#' 
+#' }
 #' @export
 
 generate_data_virtualspecies_to_solution <- function(spp) {

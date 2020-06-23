@@ -9,7 +9,7 @@ Description: One paragraph description of what the package does as one
         or more full sentences.
 License: CC0
 Depends: 
-    R (>= 3.1)
+    R (>= 3.5)
 Imports: 
     ggplot2,
     Rcpp (>= 1.0.1), 
@@ -17,7 +17,8 @@ Imports:
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    covr
 LinkingTo: Rcpp
 ByteCompile: true
 Encoding: UTF-8

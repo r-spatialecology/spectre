@@ -4,13 +4,14 @@
 #include <limits>
 #include <math.h>
 #include "calculate_solution_commonness.h"
-#include "constraint_satisfaction_problem.h"
+#include "backtracking.h"
+#include "minconf.h"
 #include "rcpp_sample.h"
 //omp_set_nested(1);
 
 List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                         IntegerMatrix target, const unsigned max_iterations,
-                        const double energy_theshold,
+                        const double energy_threshold,
                         unsigned long seed, bool verbose)
 {
     RNGScope scope; // needed for debugging in Qt Creator
@@ -76,7 +77,7 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
         const auto current_energy = calc_energy(current_commonness, target);
         update_metrics(current_energy, iter, energy_vector, iteration_count);
 
-        if (current_energy <= energy_theshold) {
+        if (current_energy <= energy_threshold) {
             break;
         }
     }
@@ -97,27 +98,154 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
     return(results);
 }
 
-List optimizer_backtracking(IntegerVector alpha_list, const unsigned total_gamma,
-               IntegerMatrix target, const unsigned max_iterations,
-               unsigned long seed, bool verbose)
+List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
+                         IntegerMatrix target, IntegerMatrix fixed_species,
+                         IntegerMatrix partial_solution,
+                         const unsigned max_iterations,
+                         const double energy_threshold,
+                         unsigned long seed, bool verbose)
 {
-    RNGScope scope; // needed for debugging in Qt Creator
-
-    Constraint_satisfaction_problem csr(as<std::vector<unsigned> >(alpha_list),
-                                        total_gamma,
-                                        as<std::vector<int> >(target));
-    long iter = max_iterations - csr.optimize(max_iterations);
+    MinConf mc(as<std::vector<unsigned> >(alpha_list),
+               total_gamma,
+               as<std::vector<int> >(target),
+               as<std::vector<int> >(fixed_species),
+               as<std::vector<int> >(partial_solution));
+    long iter = max_iterations - mc.optimize0(max_iterations, energy_threshold, seed);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
 
     for (unsigned site = 0; site < n_sites; site++) {
         for (unsigned species = 0; species < total_gamma; species++) {
-            solution(species, site) = csr.solution[site][species];
+            solution(species, site) = mc.solution[site][species];
+        }
+    }
+
+
+    // generate dataframe for i and energy
+    DataFrame measures_df = DataFrame::create(_["i"] = mc.iteration_count,
+            _["energy"] = mc.energy_vector);
+
+    List results = List::create(Rcpp::Named("optimized_grid") = solution,
+                                Rcpp::Named("energy") = measures_df);
+    if (verbose) {
+        double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
+              << " (highest energy was: " << worst_energy << " %, improved by: "
+              << worst_energy - best_energy << " %)";
+    }
+
+    if (!mc.solution_has_best_enery) {
+        Rcout << "\n Warning: this solution does not neccessarily correnpond to the lowes energy. \n";
+    }
+
+    return(results);
+}
+
+List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
+                         IntegerMatrix target, IntegerMatrix fixed_species,
+                         IntegerMatrix partial_solution,
+                         const unsigned max_iterations,
+                         const double energy_threshold,
+                         unsigned long seed, bool verbose)
+{
+    MinConf mc(as<std::vector<unsigned> >(alpha_list),
+               total_gamma,
+               as<std::vector<int> >(target),
+               as<std::vector<int> >(fixed_species),
+               as<std::vector<int> >(partial_solution));
+    long iter = max_iterations - mc.optimize1(max_iterations, energy_threshold, seed);
+    const unsigned n_sites = alpha_list.size();
+    IntegerMatrix solution(total_gamma, n_sites);
+
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned species = 0; species < total_gamma; species++) {
+            solution(species, site) = mc.solution[site][species];
+        }
+    }
+
+
+    // generate dataframe for i and energy
+    DataFrame measures_df = DataFrame::create(_["i"] = mc.iteration_count,
+            _["energy"] = mc.energy_vector);
+
+    List results = List::create(Rcpp::Named("optimized_grid") = solution,
+                                Rcpp::Named("energy") = measures_df);
+    if (verbose) {
+        double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
+              << " (highest energy was: " << worst_energy << " %, improved by: "
+              << worst_energy - best_energy << " %)";
+    }
+
+    return(results);
+}
+
+List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
+                         IntegerMatrix target, IntegerMatrix fixed_species,
+                         IntegerMatrix partial_solution,
+                         const unsigned max_iterations,
+                         const double energy_threshold,
+                         unsigned long seed, bool verbose)
+{
+    MinConf mc(as<std::vector<unsigned> >(alpha_list),
+               total_gamma,
+               as<std::vector<int> >(target),
+               as<std::vector<int> >(fixed_species),
+               as<std::vector<int> >(partial_solution));
+    long iter = max_iterations - mc.optimize2(max_iterations, energy_threshold, seed);
+    const unsigned n_sites = alpha_list.size();
+    IntegerMatrix solution(total_gamma, n_sites);
+
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned species = 0; species < total_gamma; species++) {
+            solution(species, site) = mc.solution[site][species];
+        }
+    }
+
+
+    // generate dataframe for i and energy
+    DataFrame measures_df = DataFrame::create(_["i"] = mc.iteration_count,
+            _["energy"] = mc.energy_vector);
+
+    List results = List::create(Rcpp::Named("optimized_grid") = solution,
+                                Rcpp::Named("energy") = measures_df);
+    if (verbose) {
+        double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
+              << " (highest energy was: " << worst_energy << " %, improved by: "
+              << worst_energy - best_energy << " %)";
+    }
+
+    if (!mc.solution_has_best_enery) {
+        Rcout << "\n Warning: this solution does not neccessarily correnpond to the lowes energy. \n";
+    }
+
+    return(results);
+}
+
+List optimizer_backtracking(IntegerVector alpha_list, const unsigned total_gamma,
+                            IntegerMatrix target, const unsigned max_iterations, bool verbose)
+{
+    RNGScope scope; // needed for debugging in Qt Creator
+
+    Backtracking bt(as<std::vector<unsigned> >(alpha_list),
+                    total_gamma,
+                    as<std::vector<int> >(target));
+    long iter = max_iterations - bt.optimize(max_iterations);
+    const unsigned n_sites = alpha_list.size();
+    IntegerMatrix solution(total_gamma, n_sites);
+
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned species = 0; species < total_gamma; species++) {
+            solution(species, site) = bt.solution[site][species];
         }
     }
 
     IntegerVector solved_sites;
-    solved_sites.assign(csr.solved_sites.begin(), csr.solved_sites.end());
+    solved_sites.assign(bt.solved_sites.begin(), bt.solved_sites.end());
 
     const auto solution_commonness = calculate_solution_commonness_rcpp(solution);
     const double energy = calc_energy(solution_commonness, target);
@@ -125,8 +253,8 @@ List optimizer_backtracking(IntegerVector alpha_list, const unsigned total_gamma
                                 Rcpp::Named("energy") = energy,
                                 Rcpp::Named("solved_sites") = solved_sites);
     if (verbose) {
-            Rcout << "\n > Optimization stopped after " << iter
-                  << " steps";
+        Rcout << "\n > Optimization stopped after " << iter
+              << " steps";
     }
     return(results);
 }
@@ -189,8 +317,6 @@ std::vector<unsigned> calc_min_conflict_species(const unsigned site,
         const IntegerMatrix commoness_new =
                 calculate_solution_commonness_site_rcpp(solution, commoness, site + 1); // _rcpp functions start indexing at 1
 
-        //        auto commoness_ = as<std::vector<int> >(commoness_new);
-        //        auto target_ = as<std::vector<int> >(target);
         double energy_ = calc_energy(commoness_new, target);
 
         if (energy_ < energy) {

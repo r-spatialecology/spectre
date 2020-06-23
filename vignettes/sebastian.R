@@ -5,13 +5,13 @@ library(spectre)
 # the aim is to test/compare algorithm performance under different conditions:
 # i.e. number of sites, gamma diversity and average richness per site
 # as a start, we assume no correlations between sites
-total_gamma_sim <- 70 
+total_gamma_sim <- 30
 n_sites_sim <- 25 
 
 # average number of species per site, if equal richness across all sites is demanded, change "sd_sim" to "0".
 # to allow both for constant and varying richness across sites, I used round( rnorm() ) instead of rpois() here. 
-mean_alpha_sim <- 30 
-sd_sim <- 10 # variation in mean / change to 0 if no variation is needed 
+mean_alpha_sim <- 12 
+sd_sim <- 5 # variation in mean / change to 0 if no variation is needed 
 alpha_list_sim <- round(rnorm(n = n_sites_sim, mean = mean_alpha_sim, sd = sd_sim))
 alpha_list_sim[alpha_list_sim < 1] <- 1 # only positive species numbers allowed 
 print(alpha_list_sim) # check
@@ -19,12 +19,115 @@ hist(alpha_list_sim) # visual check of richness per site
 
 # create simulated target
 target_matrix_sim <- spectre:::generate_data_simple(total_gamma = total_gamma_sim, n_sites = n_sites_sim, alpha_list = alpha_list_sim)
+fixed_species <- matrix()
+
+
+
+true_solution <- matrix(data = 0, 
+                        nrow = total_gamma_sim, 
+                        ncol = n_sites_sim)
+
+for (n in seq_len(n_sites_sim)) {
+  
+  change_locations <- spectre::rcpp_sample(x = seq_len(total_gamma_sim),
+                                           size = alpha_list_sim[n])
+  
+  true_solution[change_locations, n] <- 1
+}
+
+target_matrix_sim <- spectre:::calculate_solution_commonness_rcpp(true_solution)
+
+fixed_species <- matrix(data = c(c(0,1,1,1,0,0), rep(0, 54)), nrow = 6, ncol = 10)
+fixed_species <- true_solution
+
 
 # solve / optimize 
-res_sim2 <- spectre:::optimizer_min_conf(alpha_list_sim, total_gamma_sim, target_matrix_sim, 20000, 0.0)
+energy <- 0
+energy0 <- 0
+energy1 <- 0
+energy2 <- 0
+for (i in 1:10) {
+  res_sim <- spectre:::optimizer_min_conf(alpha_list_sim, 
+                                          total_gamma_sim, 
+                                          target_matrix_sim, 5000, 0.0)
+  energy <- energy + min(res_sim$energy$energy)
+  
+  res_sim0 <- spectre:::optimizer_min_conf0(alpha_list = alpha_list_sim, 
+                                            total_gamma = total_gamma_sim, 
+                                            target = target_matrix_sim,
+                                            fixed_species = fixed_species,
+                                            tabu = 0,
+                                            fixed_partial_solution = TRUE,
+                                            max_iterations = 5000, 
+                                            energy_threshold = 0.0)
+  energy0 <- energy0 + min(res_sim0$energy$energy)
+  
+  res_sim1 <- spectre:::optimizer_min_conf1(alpha_list = alpha_list_sim, 
+                                            total_gamma = total_gamma_sim, 
+                                            target = target_matrix_sim,
+                                            fixed_species = fixed_species,
+                                            tabu = 0,
+                                            fixed_partial_solution = TRUE,
+                                            max_iterations = 5000, 
+                                            energy_threshold = 0.0)
+  energy1 <- energy1 + min(res_sim1$energy$energy)
+  
+  res_sim2 <- spectre:::optimizer_min_conf2(alpha_list = alpha_list_sim, 
+                                            total_gamma = total_gamma_sim, 
+                                            target = target_matrix_sim,
+                                            fixed_species = fixed_species,
+                                            tabu = 0,
+                                            fixed_partial_solution = TRUE,
+                                            max_iterations = 5000, 
+                                            energy_threshold = 0.0)
+  energy2 <- energy2 + min(res_sim2$energy$energy)
+}
+
+energy0 <- 0
+energy1 <- 0
+for (i in 1:10) {
+  res_sim0 <- spectre:::optimizer_min_conf0(alpha_list = alpha_list_sim, 
+                                            total_gamma = total_gamma_sim, 
+                                            target = target_matrix_sim,
+                                            fixed_species = fixed_species,
+                                            tabu = 0,
+                                            fixed_partial_solution = TRUE,
+                                            max_iterations = 25000, 
+                                            energy_threshold = 0.0)
+  energy0 <- energy0 + min(res_sim0$energy$energy) / 10
+  
+  res_sim1 <- spectre:::optimizer_min_conf1(alpha_list = alpha_list_sim, 
+                                            total_gamma = total_gamma_sim, 
+                                            target = target_matrix_sim,
+                                            fixed_species = fixed_species,
+                                            tabu = 0,
+                                            fixed_partial_solution = TRUE,
+                                            max_iterations = 25000, 
+                                            energy_threshold = 0.0)
+  energy1 <- energy1 + min(res_sim1$energy$energy) / 10
+}
+
+saveRDS(res_sim1, file = "./res1.RDS")
+
+res_sim2$optimized_grid
+
 spectre::plot_energy(res_sim)
+spectre::plot_energy(res_sim0)
+spectre::plot_energy(res_sim01)
 spectre::plot_energy(res_sim2)
-spectre::plot_commonness(res_sim, target_matrix_sim)
+
+spectre::plot_commonness(res_sim0, target_matrix_sim)
+spectre::plot_commonness(res_sim01, target_matrix_sim)
+spectre::plot_commonness(res_sim2, target_matrix_sim)
+spectre::plot_commonness(res_sim3, target_matrix_sim)
+
+alpha_list_res1 <- alpha_list_sim
+alpha_list_res2 <- alpha_list_sim
+for (site in 1:n_sites_sim) {
+  alpha_list_res1[site] <-  sum(res_sim1$optimized_grid[,site])
+  alpha_list_res2[site] <-  sum(res_sim2$optimized_grid[,site])
+}
+res_sim2$optimized_grid[,1]
 
 # end of simulated data section 
 # =============================
@@ -64,8 +167,8 @@ for (SPECIES in 20:139) {
     alpha_15[i] <- sum(current_solution_15[,i])
   }
   target_fake <- spectre:::calculate_solution_commonness_rcpp(current_solution_15)
- # saveRDS(alpha_15, file = "data/alpha100x20.rds")
- #  saveRDS(target_fake, file = "data/target100x20.rds")
+  # saveRDS(alpha_15, file = "data/alpha100x20.rds")
+  #  saveRDS(target_fake, file = "data/target100x20.rds")
   #res_15 <- spectre:::optimizer(alpha_15, SPECIES, target_fake, 0) # Optimization finished after 1633000180 steps w 35 species
   res_spec <- c(res_spec, spectre:::optimizer(alpha_15, SPECIES, target_fake, 1000000000)) # successful with 80 species
 }

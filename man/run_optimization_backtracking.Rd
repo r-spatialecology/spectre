@@ -10,7 +10,6 @@ run_optimization_backtracking(
   target,
   max_runs,
   energy_threshold,
-  seed = 0,
   verbose = TRUE
 )
 }
@@ -25,9 +24,9 @@ run_optimization_backtracking(
 
 \item{energy_threshold}{Optimization stops if energy threshold is reached. This is set as a value between 0 and 1 determining the proportion of error accepted}
 
-\item{seed}{Seed for random number generator. seed = 0 means that a time stamp is used as seed.}
-
 \item{verbose}{It TRUE, progress report is printed}
+
+\item{seed}{Seed for random number generator. seed = 0 means that a time stamp is used as seed.}
 }
 \value{
 Best matrix of common species between each site.

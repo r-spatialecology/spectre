@@ -23,19 +23,19 @@
 
 #' @export
 run_optimization_rnd_switch <- function(alpha_list, 
-                             total_gamma, 
-                             target, 
-                             max_runs,
-                             annealing = 0.1,
-                             energy_threshold, 
-                             patience, 
-                             verbose = TRUE) {
+                                        total_gamma, 
+                                        target, 
+                                        max_runs,
+                                        annealing = 0.1,
+                                        energy_threshold, 
+                                        patience, 
+                                        verbose = TRUE) {
   
   # get dimensions of matrix
   n_species <- total_gamma
   n_sites <- length(alpha_list)
   
-
+  
   # generate initial solution; loop changes the alpha number of species in each site to present (i.e. 1)
   current_solution <- matrix(data = 0, 
                              nrow = n_species, 
@@ -159,7 +159,7 @@ run_optimization_rnd_switch <- function(alpha_list,
                     "improved by = ", round(max(energy_df$energy, na.rm = TRUE) - min(energy_df$energy), 5)))
     }
   }
- 
+  
   result <- list(current_solution, 
                  energy_df)
   

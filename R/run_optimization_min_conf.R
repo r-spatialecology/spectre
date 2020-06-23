@@ -5,7 +5,7 @@
 #' @param alpha_list Matrix of predicted alpha diversity in each cell.
 #' @param total_gamma Total (estimated) species in the system.
 #' @param target Pairwise matrix of species in common.
-#' @param max_runs Max number of loops before stopping.
+#' @param max_iterations Max number of loops before stopping.
 #' @param energy_threshold Optimization stops if energy threshold is reached. This is set as a value between 0 and 1 determining the proportion of error accepted
 #' @param seed Seed for random number generator. seed = 0 means that a time stamp is used as seed. 
 #' @param verbose It TRUE, progress report is printed
@@ -20,7 +20,7 @@
 run_optimization_min_conf <- function(alpha_list, 
                              total_gamma, 
                              target, 
-                             max_runs,
+                             max_iterations,
                              energy_threshold,
                              seed = 0,
                              verbose = TRUE) {
@@ -28,7 +28,7 @@ run_optimization_min_conf <- function(alpha_list,
   result = optimizer_min_conf(alpha_list = alpha_list, 
                               total_gamma = total_gamma, 
                               target = target, 
-                              max_iterations = max_runs,
+                              max_iterations = max_iterations,
                               energy_threshold = energy_threshold,
                               seed = seed, 
                               verbose = verbose)

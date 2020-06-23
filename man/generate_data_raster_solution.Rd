@@ -26,7 +26,7 @@ The selection of rows to be present, is chosen completely at random.
 Such a solution matrix can be used to calculate an optimization target matrix using the calculate_solution_commonness_rcpp() function (see extended examples).
 }
 \examples{
-
+\dontrun{
 # 1. Generate random landscape with NLMR:
 landscape <- NLMR::nlm_random(ncol=50, nrow=50) 
 # 2. Rescale to derive species richness values:
@@ -69,5 +69,5 @@ alpha <- generate_data_raster_rescale(landscape, gamma, alpha.min, alpha.max)
 landscapetools::show_landscape(alpha)
 solution <- generate_data_raster_solution(alpha, gamma)
 target <- calculate_solution_commonness_rcpp(solution)
-
+}
 }

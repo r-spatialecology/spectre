@@ -30,7 +30,7 @@
 #' 
 #' @return rasterstack
 #' @examples 
-#' 
+#' \dontrun{
 #' ncol <- 50
 #' nrow <- 50
 #' gamma <- 100
@@ -44,7 +44,7 @@
 #' raster::plot(spp)
 #' ## Calculate species richness:
 #' alpha <- sum(spp)
-#' 
+#' }
 #' @export
 
 generate_data_virtualspecies <- function(ncol,

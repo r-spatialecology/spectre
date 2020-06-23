@@ -23,8 +23,8 @@ Algorithm:
 4. Undo 3. if solution is worse (some annealing noise may interfere)
 5. goto 2. until max_runs or solution <= energy_threshold
 
-```{r setup}
-# library(spectre)
+```{r eval=FALSE}
+library(spectre)
  species_grid <- run_optimization_rnd_switch(alpha_list = alpha_list,
                                   total_gamma = estimated_gamma,
                                   target = target_matrix,
@@ -47,8 +47,8 @@ Algorithm:
 5. Set a random species from the min-conflict list as present.
 6. goto 2. until max_runs or solution <= energy_threshold 
 
-```{r setup_2}
-# library(spectre)
+```{r eval=FALSE}
+library(spectre)
  species_grid <- run_optimization_min_conf(alpha_list = alpha_list,
                                   total_gamma = estimated_gamma,
                                   target = target_matrix,
@@ -71,8 +71,8 @@ Algorithm:
 5. if there is no next species combination of the site: reset site; site = site - 1; go to 4b (i.e. Backtrack)
 6. stop if max_steps reached or solution found in 4a
 
-```{r setup_3}
-# library(spectre)
+```{r eval=FALSE}
+library(spectre)
  species_grid <- run_optimization_min_conf(alpha_list = alpha_list,
                                   total_gamma = estimated_gamma,
                                   target = target_matrix,

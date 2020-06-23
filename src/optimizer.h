@@ -11,15 +11,40 @@ List optimizer_min_conf(IntegerVector alpha_list,
                         const unsigned total_gamma,
                         IntegerMatrix target,
                         const unsigned max_iterations = 2000,
-                        const double energy_theshold = 0.1,
+                        const double energy_threshold = 0.0,
                         unsigned long seed = 0, bool verbose = true);
 
 // [[Rcpp::export]]
+List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
+                         IntegerMatrix target, IntegerMatrix fixed_species,
+                         IntegerMatrix partial_solution,
+                         const unsigned max_iterations,
+                         const double energy_threshold = 0.0,
+                         unsigned long seed = 0, bool verbose = true);
+
+// [[Rcpp::export]]
+List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
+                         IntegerMatrix target, IntegerMatrix fixed_species,
+                         IntegerMatrix partial_solution,
+                         const unsigned max_iterations,
+                         const double energy_threshold = 0.0,
+                         unsigned long seed = 0, bool verbose = true);
+
+
+// [[Rcpp::export]]
+List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
+                         IntegerMatrix target, IntegerMatrix fixed_species,
+                         IntegerMatrix partial_solution,
+                         const unsigned max_iterations,
+                         const double energy_threshold = 0.0,
+                         unsigned long seed = 0, bool verbose = true);
+
+// [[Rcpp::export]]
 List optimizer_backtracking(IntegerVector alpha_list,
-               const unsigned total_gamma,
-               IntegerMatrix target,
-               const unsigned max_iterations = 2000,
-               unsigned long seed = 0, bool verbose = true);
+                            const unsigned total_gamma,
+                            IntegerMatrix target,
+                            const unsigned max_iterations = 2000,
+                            bool verbose = true);
 
 // [[Rcpp::export]]
 double calc_energy(const IntegerMatrix solution_commonness,

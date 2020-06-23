@@ -15,14 +15,14 @@
 #' 
 #' @return Rescaled raster landscape
 #' @examples 
-#' 
+#' \dontrun{
 #' # 1. Generate random landscape with NLMR:
 #' landscape <- NLMR::nlm_random(ncol=50, nrow=50) 
 #' # 2. Rescale to derive species richness values:
 #' gamma <- 500
 #' alpha <- generate_data_raster_rescale(landscape, gamma, 0.1, 0.4)
 #' landscapetools::show_landscape(alpha)
-#' 
+#' }
 #' @export
 
 generate_data_raster_rescale <- function(landscape, 

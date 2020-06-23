@@ -17,12 +17,24 @@ update_solution_commonness_site_rcpp <- function(solution_matrix, solution_commo
     invisible(.Call('_spectre_update_solution_commonness_site_rcpp', PACKAGE = 'spectre', solution_matrix, solution_commonness, site))
 }
 
-optimizer_min_conf <- function(alpha_list, total_gamma, target, max_iterations = 2000L, energy_theshold = 0.1, seed = 0L, verbose = TRUE) {
-    .Call('_spectre_optimizer_min_conf', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, energy_theshold, seed, verbose)
+optimizer_min_conf <- function(alpha_list, total_gamma, target, max_iterations = 2000L, energy_threshold = 0.0, seed = 0L, verbose = TRUE) {
+    .Call('_spectre_optimizer_min_conf', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, energy_threshold, seed, verbose)
 }
 
-optimizer_backtracking <- function(alpha_list, total_gamma, target, max_iterations = 2000L, seed = 0L, verbose = TRUE) {
-    .Call('_spectre_optimizer_backtracking', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, seed, verbose)
+optimizer_min_conf0 <- function(alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold = 0.0, seed = 0L, verbose = TRUE) {
+    .Call('_spectre_optimizer_min_conf0', PACKAGE = 'spectre', alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold, seed, verbose)
+}
+
+optimizer_min_conf1 <- function(alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold = 0.0, seed = 0L, verbose = TRUE) {
+    .Call('_spectre_optimizer_min_conf1', PACKAGE = 'spectre', alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold, seed, verbose)
+}
+
+optimizer_min_conf2 <- function(alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold = 0.0, seed = 0L, verbose = TRUE) {
+    .Call('_spectre_optimizer_min_conf2', PACKAGE = 'spectre', alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold, seed, verbose)
+}
+
+optimizer_backtracking <- function(alpha_list, total_gamma, target, max_iterations = 2000L, verbose = TRUE) {
+    .Call('_spectre_optimizer_backtracking', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, verbose)
 }
 
 calc_energy <- function(solution_commonness, solution_commonness_target) {
