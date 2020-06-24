@@ -6,7 +6,7 @@ total_gamma <- c(30, 60, 90) # evaluated gamma diversities  c(30, 60, 90)
 richness_vector <- c(0.1, 0.2, 0.4) # evaluated fractions of gamma diversity (mean richness) c(0.2, 0.4, 0.6) 
 richness_sd <- 0 
 max_runs <- 15000
-energy_threshold <- 0.0001
+energy_threshold <- 0.0
 n_sample_points <- 50 
 tabu_percent <- c(0) # percent! 
 
