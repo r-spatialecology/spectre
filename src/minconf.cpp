@@ -550,7 +550,7 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site,
         solution[site][species] = 1; // assign species (will be un-done later)
         const auto commoness_new = calculate_commonness();
 
-        double energy_ = calc_energy(commoness_new, target);
+        double energy_ = calc_energy(commoness_new, target, true); // may use a different matrix norm
 
         if (energy_ < energy) {
             min_conflict_species.clear(); // found better fitting species delete other
@@ -580,7 +580,7 @@ std::vector<unsigned> MinConf::calc_max_conflict_species(const unsigned site,
         solution[site][species] = 0; // assign species (will be un-done later)
         const auto commoness_new = calculate_commonness();
 
-        double energy_ = calc_energy(commoness_new, target);
+        double energy_ = calc_energy(commoness_new, target, true); // may use a different matrix norm
 
         if (energy_ < energy) {
             max_conflict_species.clear(); // found better fitting species delete other
@@ -596,32 +596,32 @@ std::vector<unsigned> MinConf::calc_max_conflict_species(const unsigned site,
 }
 
 
-// worst site
-std::vector<unsigned> MinConf::worst_sites(const std::vector<std::vector<int> > &commonness,
-                                           const std::vector<std::vector<int> > &target) {
-    std::vector<unsigned> worst_site(n_sites);
-    std::vector<std::pair<double, unsigned> > energy_site(n_sites);
+//// worst site
+//std::vector<unsigned> MinConf::worst_sites(const std::vector<std::vector<int> > &commonness,
+//                                           const std::vector<std::vector<int> > &target) {
+//    std::vector<unsigned> worst_site(n_sites);
+//    std::vector<std::pair<double, unsigned> > energy_site(n_sites);
 
-    for (unsigned site = 0; site < n_sites; site++) {
-        //        if (tabu_sites_list.size()) { // omit this site if on the tabu_sites_list
-        //            std::vector<unsigned>::iterator it = std::find(tabu_sites_list.begin(),
-        //                                                           tabu_sites_list.end(),
-        //                                                           site);
-        //            if (it != tabu_sites_list.end()) {
-        //                continue;
-        //            }
-        //        }
-        // calculate energy w/o the current site
-        const double energy = calc_energy(commonness, target, site);
-        energy_site[site] = std::make_pair(energy, site);
-    }
-    std::sort(energy_site.begin(), energy_site.end());
-    for (unsigned site = 0; site < n_sites; site++) {
-        worst_site[site] = energy_site[site].second;
-    }
+//    for (unsigned site = 0; site < n_sites; site++) {
+//        //        if (tabu_sites_list.size()) { // omit this site if on the tabu_sites_list
+//        //            std::vector<unsigned>::iterator it = std::find(tabu_sites_list.begin(),
+//        //                                                           tabu_sites_list.end(),
+//        //                                                           site);
+//        //            if (it != tabu_sites_list.end()) {
+//        //                continue;
+//        //            }
+//        //        }
+//        // calculate energy w/o the current site
+//        const double energy = calc_energy(commonness, target, true, site); // may use a different matrix norm
+//        energy_site[site] = std::make_pair(energy, site);
+//    }
+//    std::sort(energy_site.begin(), energy_site.end());
+//    for (unsigned site = 0; site < n_sites; site++) {
+//        worst_site[site] = energy_site[site].second;
+//    }
 
-    return worst_site;
-}
+//    return worst_site;
+//}
 
 int MinConf::next_site(const std::vector<unsigned> &missing_species)
 {

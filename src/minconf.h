@@ -38,8 +38,8 @@ protected:
     std::vector<unsigned> calc_max_conflict_species(const unsigned site,
                                                     const std::vector<unsigned> pesent_species,
                                                     const std::vector<std::vector<int> > &target);
-    std::vector<unsigned> worst_sites(const std::vector<std::vector<int> > &commonness,
-                                      const std::vector<std::vector<int> > &target);
+//    std::vector<unsigned> worst_sites(const std::vector<std::vector<int> > &commonness,
+//                                      const std::vector<std::vector<int> > &target);
     int next_site(const std::vector<unsigned> &missing_species);
     bool add_missing_species(std::vector<unsigned> &missing_species);
 };

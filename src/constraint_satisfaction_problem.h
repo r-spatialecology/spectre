@@ -27,6 +27,7 @@ protected:
     const std::string norm;
     double calc_energy(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target,
+                       const bool use_custom_norm = false,
                        int omit_site = -1);
     double calc_energy_sum(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target,

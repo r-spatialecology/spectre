@@ -83,13 +83,16 @@ std::vector<std::vector<int> > Constraint_satisfaction_problem::calculate_common
 
 double Constraint_satisfaction_problem::calc_energy(const std::vector<std::vector<int> > &commonness,
                                                     const std::vector<std::vector<int> > &target,
+                                                    const bool use_custom_norm,
                                                     int omit_site)
 {
     double retval = 0;
-    if (norm == "euclid") {
-        retval = calc_energy_euclid(commonness, target, omit_site);
-    } else if (norm == "max") {
-        retval = calc_energy_max(commonness, target, omit_site);
+    if (use_custom_norm && norm != "sum") {
+        if (norm == "euclid") {
+            retval = calc_energy_euclid(commonness, target, omit_site);
+        } else if (norm == "max") {
+            retval = calc_energy_max(commonness, target, omit_site);
+        }
     } else {
         retval = calc_energy_sum(commonness, target, omit_site);
     }
