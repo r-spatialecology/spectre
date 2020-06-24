@@ -170,7 +170,7 @@ List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
         }
     }
 
-    const auto energy_normalizer = mc.calc_energy_random_solution(10);
+    const auto energy_normalizer = mc.calc_energy_random_solution(1000);
     for (unsigned i = 0; i < mc.energy_vector.size(); i++) {
         mc.energy_vector[i] /= energy_normalizer;
     }
@@ -215,7 +215,7 @@ List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
         }
     }
 
-    const auto energy_normalizer = mc.calc_energy_random_solution(10);
+    const auto energy_normalizer = mc.calc_energy_random_solution(1000);
     for (unsigned i = 0; i < mc.energy_vector.size(); i++) {
         mc.energy_vector[i] /= energy_normalizer;
     }
