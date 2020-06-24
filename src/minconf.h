@@ -13,31 +13,31 @@ public:
     int optimize2(long max_steps_ = 5000, double max_energy = 0.0, long long seed = 0);
     std::vector<int> iteration_count;
     std::vector<double> energy_vector;
-    bool solution_has_best_enery = true;
+    bool solution_has_best_energy = true;
+    double calc_energy_random_solution(const unsigned n = 10);
+
+    long long getSeed() const;
+    void setSeed(long long value);
 
 protected:
     std::mt19937 rng;
+    long long seed;
     const double epsilon = 0.00001;
     const std::vector<long long> factorials {1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880, 3628800, 39916800, 479001600};
-//    std::vector<unsigned> tabu_species_list;
-//    std::vector<unsigned> tabu_sites_list;
 
-    void gen_init_solution();
+    std::vector<std::vector<int> > gen_random_solution();
     void set_fixed_species();
     void set_fixed_species(unsigned site);
     void add_species_min_conf(unsigned site,
-                              const std::vector<std::vector<int> > &target,
-                              const std::string severity = "none");
+                              const std::vector<std::vector<int> > &target);
     bool remove_species_max_conf(unsigned site,
                                  const std::vector<std::vector<int> > &target);
     std::vector<unsigned> calc_min_conflict_species(const unsigned site,
                                                     const std::vector<unsigned> free_species,
-                                                    const std::vector<std::vector<int> > &target,
-                                                    const std::string severity = "none");
+                                                    const std::vector<std::vector<int> > &target);
     std::vector<unsigned> calc_max_conflict_species(const unsigned site,
                                                     const std::vector<unsigned> pesent_species,
-                                                    const std::vector<std::vector<int> > &target,
-                                                    const std::string severity = "none");
+                                                    const std::vector<std::vector<int> > &target);
     std::vector<unsigned> worst_sites(const std::vector<std::vector<int> > &commonness,
                                       const std::vector<std::vector<int> > &target);
     int next_site(const std::vector<unsigned> &missing_species);

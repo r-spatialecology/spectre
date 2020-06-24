@@ -21,6 +21,67 @@ hist(alpha_list_sim) # visual check of richness per site
 target_matrix_sim <- spectre:::generate_data_simple(total_gamma = total_gamma_sim, n_sites = n_sites_sim, alpha_list = alpha_list_sim)
 fixed_species <- matrix()
 
+measure <- tibble::tibble(
+  measure = vector(length = 400),
+  n =  as.factor(c(rep(1, 100), rep(10, 100), rep(100, 100), rep(1000, 100))))
+for (i in 1:100) {
+  measure$measure[i] <- spectre:::calc_random_energy(1, alpha_list_sim, total_gamma_sim, target_matrix_sim, i, "max")
+  measure$measure[i + 100] <- spectre:::calc_random_energy(10, alpha_list_sim, total_gamma_sim, target_matrix_sim, i, "max")
+  measure$measure[i + 200] <- spectre:::calc_random_energy(100, alpha_list_sim, total_gamma_sim, target_matrix_sim, i, "max")
+  measure$measure[i + 300] <- spectre:::calc_random_energy(1000, alpha_list_sim, total_gamma_sim, target_matrix_sim, i, "max")
+}
+
+library(ggplot2)
+
+p <- ggplot(measure, aes(x = n, y = measure))
+p + geom_boxplot() + 
+  labs(title = "Averaged measure for a random solution (max norm)", x = "# repetitions")
+ggsave("random_max.png")
+
+
+res_sim0_sum <- run_optimization_min_conf_0(alpha_list = alpha_list_sim,
+                                            total_gamma = total_gamma_sim,
+                                            target = target_matrix_sim,
+                                            fixed_species = NULL,
+                                            partial_solution = NULL,
+                                            max_iterations = 15000,
+                                            energy_threshold = 0.0,
+                                            seed = 1,
+                                            verbose = TRUE,
+                                            norm = "sum")
+
+res_sim0_euclid <- run_optimization_min_conf_0(alpha_list = alpha_list_sim,
+                                               total_gamma = total_gamma_sim,
+                                               target = target_matrix_sim,
+                                               fixed_species = NULL,
+                                               partial_solution = NULL,
+                                               max_iterations = 15000,
+                                               energy_threshold = 0.0,
+                                               seed = 1,
+                                               verbose = TRUE,
+                                               norm = "euclid")
+
+res_sim0_max <- run_optimization_min_conf_0(alpha_list = alpha_list_sim,
+                                            total_gamma = total_gamma_sim,
+                                            target = target_matrix_sim,
+                                            fixed_species = NULL,
+                                            partial_solution = NULL,
+                                            max_iterations = 15000,
+                                            energy_threshold = 0.0,
+                                            seed = 1,
+                                            verbose = TRUE,
+                                            norm = "max")
+plot_energy(res_sim0_sum)
+spectre:::calc_energy(spectre:::calculate_solution_commonness_rcpp(res_sim0_sum$optimized_grid), target_matrix_sim)
+plot_commonness(res_sim0_sum, target_matrix_sim)
+plot_energy(res_sim0_euclid)
+spectre:::calc_energy(spectre:::calculate_solution_commonness_rcpp(res_sim0_euclid$optimized_grid), target_matrix_sim)
+plot_commonness(res_sim0_euclid, target_matrix_sim)
+plot_energy(res_sim0_max)
+spectre:::calc_energy(spectre:::calculate_solution_commonness_rcpp(res_sim0_max$optimized_grid), target_matrix_sim)
+plot_commonness(res_sim0_max, target_matrix_sim)
+
+
 
 
 true_solution <- matrix(data = 0, 
@@ -56,11 +117,11 @@ for (i in 1:10) {
                                             total_gamma = total_gamma_sim, 
                                             target = target_matrix_sim,
                                             fixed_species = fixed_species,
-                                            tabu = 0,
-                                            fixed_partial_solution = TRUE,
                                             max_iterations = 5000, 
                                             energy_threshold = 0.0)
   energy0 <- energy0 + min(res_sim0$energy$energy)
+  
+  
   
   res_sim1 <- spectre:::optimizer_min_conf1(alpha_list = alpha_list_sim, 
                                             total_gamma = total_gamma_sim, 
