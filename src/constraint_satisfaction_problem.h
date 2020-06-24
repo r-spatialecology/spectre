@@ -14,9 +14,11 @@ public:
                                     const std::string norm = "sum");
 
     std::vector<std::vector<int> > solution;
+    unsigned p = 1;
 
 protected:
     long max_steps = 0;
+
     std::vector<std::vector<int> > fixed_species;
     std::vector<std::vector<int> > fixed_species_idx;
     std::vector<std::vector<int> > target;
@@ -35,6 +37,9 @@ protected:
     double calc_energy_euclid(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target,
                        int omit_site = -1);
+    double calc_energy_p(const std::vector<std::vector<int> > &commonness,
+                       const std::vector<std::vector<int> > &target,
+                       const int omit_site = -1);
     double calc_energy_max(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target,
                        int omit_site = -1);

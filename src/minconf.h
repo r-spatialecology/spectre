@@ -9,6 +9,7 @@ class MinConf : public Constraint_satisfaction_problem
 public:
     using Constraint_satisfaction_problem::Constraint_satisfaction_problem;
     int optimize0(long max_steps_ = 5000, double max_energy = 0.0, long long seed = 0);
+    int optimize0p(long max_steps_ = 5000, double max_energy = 0.0, long long seed = 0);
     int optimize1(long max_steps_ = 5000, double max_energy = 0.0, long long seed = 0);
     int optimize2(long max_steps_ = 5000, double max_energy = 0.0, long long seed = 0);
     std::vector<int> iteration_count;

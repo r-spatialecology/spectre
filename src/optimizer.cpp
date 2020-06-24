@@ -147,6 +147,58 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
     return(results);
 }
 
+List optimizer_min_conf0p(IntegerVector alpha_list, const unsigned total_gamma,
+                         IntegerMatrix target, IntegerMatrix fixed_species,
+                         IntegerMatrix partial_solution,
+                         const unsigned max_iterations,
+                         const unsigned p,
+                         const double energy_threshold,
+                         unsigned long seed, bool verbose, std::string norm)
+{
+    MinConf mc(as<std::vector<unsigned> >(alpha_list),
+               total_gamma,
+               as<std::vector<int> >(target),
+               as<std::vector<int> >(fixed_species),
+               as<std::vector<int> >(partial_solution),
+               norm);
+    mc.p = p;
+    long iter = max_iterations - mc.optimize0p(max_iterations, energy_threshold, seed);
+    const unsigned n_sites = alpha_list.size();
+    IntegerMatrix solution(total_gamma, n_sites);
+
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned species = 0; species < total_gamma; species++) {
+            solution(species, site) = mc.solution[site][species];
+        }
+    }
+
+    const auto energy_normalizer = mc.calc_energy_random_solution(1000);
+    for (unsigned i = 0; i < mc.energy_vector.size(); i++) {
+        mc.energy_vector[i] /= energy_normalizer;
+    }
+
+    // generate dataframe for i and energy
+    DataFrame measures_df = DataFrame::create(_["i"] = mc.iteration_count,
+            _["energy"] = mc.energy_vector);
+
+    List results = List::create(Rcpp::Named("optimized_grid") = solution,
+                                Rcpp::Named("energy") = measures_df);
+    if (verbose) {
+        double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
+              << " (highest energy was: " << worst_energy << " %, improved by: "
+              << worst_energy - best_energy << " %)";
+    }
+
+    if (!mc.solution_has_best_energy) {
+        Rcout << "\n Warning: this solution does not neccessarily correnpond to the lowest energy. \n";
+    }
+
+    return(results);
+}
+
+
 List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,
                          IntegerMatrix partial_solution,
