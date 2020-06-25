@@ -14,24 +14,24 @@ target_matrix_test <- testdata %>% as.matrix() %>% spectre:::calculate_solution_
 res_sim0 <- run_optimization_min_conf_0(alpha_list = alpha_list_test, 
                                         total_gamma = total_gamma_test, 
                                         target = target_matrix_test, 
-                                        max_iterations = 200, 
+                                        max_iterations = 2000, 
                                         energy_threshold = 0.0,
                                         verbose = FALSE,
-                                        norm = "euclid")
+                                        norm = "max")
 res_sim1 <- run_optimization_min_conf_1(alpha_list = alpha_list_test, 
                                         total_gamma = total_gamma_test, 
                                         target = target_matrix_test,
-                                        max_iterations = 200, 
+                                        max_iterations = 2000, 
                                         energy_threshold = 0.0,
                                         verbose = FALSE,
-                                        norm = "euclid")
+                                        norm = "max")
 res_sim2 <- run_optimization_min_conf_2(alpha_list = alpha_list_test, 
                                         total_gamma = total_gamma_test, 
                                         target = target_matrix_test, 
-                                        max_iterations = 200, 
+                                        max_iterations = 2000, 
                                         energy_threshold = 0.0,
                                         verbose = FALSE,
-                                        norm = "euclid")
+                                        norm = "max")
 
 suppressWarnings(
   resultdata0 <- res_sim0$optimized_grid %>% as_tibble()
