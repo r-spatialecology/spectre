@@ -83,13 +83,18 @@ std::vector<std::vector<int> > Constraint_satisfaction_problem::calculate_common
 
 double Constraint_satisfaction_problem::calc_energy(const std::vector<std::vector<int> > &commonness,
                                                     const std::vector<std::vector<int> > &target,
+                                                    const bool use_custom_norm,
                                                     int omit_site)
 {
     double retval = 0;
-    if (norm == "euclid") {
-        retval = calc_energy_euclid(commonness, target, omit_site);
-    } else if (norm == "max") {
-        retval = calc_energy_max(commonness, target, omit_site);
+    if (use_custom_norm && norm != "sum") {
+        if (norm == "euclid") {
+            retval = calc_energy_euclid(commonness, target, omit_site);
+        } else if (norm == "max") {
+            retval = calc_energy_max(commonness, target, omit_site);
+        } else if (norm == "p") {
+            retval = calc_energy_p(commonness, target, omit_site);
+        }
     } else {
         retval = calc_energy_sum(commonness, target, omit_site);
     }
@@ -134,6 +139,26 @@ double Constraint_satisfaction_problem::calc_energy_euclid(const std::vector<std
     }
 
     return static_cast<double>(std::sqrt(sum_diff));
+}
+
+double Constraint_satisfaction_problem::calc_energy_p(const std::vector<std::vector<int> > &commonness,
+                                                      const std::vector<std::vector<int> > &target,
+                                                      const int omit_site)
+{
+    long long sum_diff = 0;
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (target[site][other_site] < 0
+                    || static_cast<int>(site) == omit_site
+                    || static_cast<int>(other_site) == omit_site) {// i.e. NA
+                continue;
+            }
+            const auto diff = std::abs(commonness[site][other_site] - target[site][other_site]);
+            sum_diff += std::pow(diff, p);
+        }
+    }
+
+    return static_cast<double>(std::pow(sum_diff, 1.0 / p));
 }
 
 double Constraint_satisfaction_problem::calc_energy_max(const std::vector<std::vector<int> > &commonness,
