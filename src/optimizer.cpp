@@ -102,6 +102,7 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,
                          IntegerMatrix partial_solution,
                          const unsigned max_iterations,
+                         const unsigned patience,
                          const double energy_threshold,
                          unsigned long seed, bool verbose, std::string norm,
                          const unsigned p)
@@ -113,7 +114,7 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
                as<std::vector<int> >(partial_solution),
                norm);
     mc.p = p;
-    long iter = max_iterations - mc.optimize0(max_iterations, energy_threshold, seed);
+    long iter = max_iterations - mc.optimize0(max_iterations, energy_threshold, seed, patience);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
 
@@ -148,7 +149,6 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
 
     return(results);
 }
-
 
 List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,

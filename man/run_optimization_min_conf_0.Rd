@@ -11,6 +11,7 @@ run_optimization_min_conf_0(
   fixed_species = NULL,
   partial_solution = NULL,
   max_iterations,
+  patience = 2000,
   energy_threshold,
   seed = 0,
   verbose = TRUE,

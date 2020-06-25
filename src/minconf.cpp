@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iostream>
 
-int MinConf::optimize0(long max_steps_, double max_energy, long long seed)
+int MinConf::optimize0(const long max_steps_, const double max_energy, long long seed, const unsigned patience)
 {
     // Random number generator
     if (seed == 0) {
@@ -38,7 +38,7 @@ int MinConf::optimize0(long max_steps_, double max_energy, long long seed)
             break;
         }
 
-        if (patience_counter >= 2000) {
+        if (patience_counter >= patience) {
             if (min_energy <= energy_vector.back()) {
                 n_resets++;
                 if (n_resets > n_sites) {
@@ -58,7 +58,7 @@ int MinConf::optimize0(long max_steps_, double max_energy, long long seed)
                 }
                 missing_species[site] = alpha_list[site] - present_species_index(site, false).size();
             }
-            patience_counter = -1000;
+            patience_counter = 0;
         }
 
         const auto site = site_dist(rng);
@@ -93,20 +93,24 @@ int MinConf::optimize0(long max_steps_, double max_energy, long long seed)
         energy_vector.push_back(energy);
     }
 
-    if(add_missing_species(missing_species)) {
-        solution_has_best_energy = false;
-    }
-
+    // add species if there are some still missing
+    add_missing_species(missing_species);
     energy = calc_energy(calculate_commonness(solution), target);
+    iteration_count.push_back(iteration_count.back() + 1);
+    energy_vector.push_back(energy);
 
     if (calc_energy(calculate_commonness(current_best_solution), target) <
             energy) {
         solution = current_best_solution;
     }
 
-    if (iteration_count.back() < (max_steps_ - iter)) {
-        iteration_count.push_back(max_steps_ - iter);
-        energy_vector.push_back(energy_vector.back());
+    missing_species = alpha_list;
+    for (unsigned site = 0; site < n_sites; site++) {
+        missing_species[site] -= present_species_index(site, false).size();
+        if (missing_species[site]) {
+            solution_has_best_energy = false;
+            break;
+        }
     }
 
     return iter;
@@ -158,7 +162,7 @@ int MinConf::optimize1(long max_steps_, double max_energy, long long seed)
     return iter;
 }
 
-int MinConf::optimize2(long max_steps_, double max_energy, long long seed)
+int MinConf::optimize2(const long max_steps_, const double max_energy, long long seed, const unsigned patience)
 {
     // Random number generator
     if (seed == 0) {
@@ -253,7 +257,7 @@ int MinConf::optimize2(long max_steps_, double max_energy, long long seed)
         }
     }
 
-    return optimize0(iter, max_energy, seed);;
+    return optimize0(iter, max_energy, seed, patience);
 }
 
 double MinConf::calc_energy_random_solution(const unsigned n)
