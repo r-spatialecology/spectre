@@ -135,7 +135,7 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
     if (verbose) {
         double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
         double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
-        Rcout << "\n > Optimization finished with lowest energy = " << best_energy 
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy
               << " (highest energy was: " << worst_energy << " , improved by: "
               << worst_energy - best_energy << " )";
     }
@@ -162,7 +162,7 @@ List optimizer_min_conf0p(IntegerVector alpha_list, const unsigned total_gamma,
                as<std::vector<int> >(partial_solution),
                norm);
     mc.p = p;
-    long iter = max_iterations - mc.optimize0p(max_iterations, energy_threshold, seed);
+    long iter = max_iterations - mc.optimize0(max_iterations, energy_threshold, seed);
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
 
@@ -236,7 +236,7 @@ List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
     if (verbose) {
         double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
         double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
-        Rcout << "\n > Optimization finished with lowest energy = " << best_energy 
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy
               << " (highest energy was: " << worst_energy << " , improved by: "
               << worst_energy - best_energy << " )";
     }
