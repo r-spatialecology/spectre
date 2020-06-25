@@ -73,8 +73,8 @@ BEGIN_RCPP
 END_RCPP
 }
 // optimizer_min_conf0
-List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma, IntegerMatrix target, IntegerMatrix fixed_species, IntegerMatrix partial_solution, const unsigned max_iterations, const double energy_threshold, unsigned long seed, bool verbose, std::string norm);
-RcppExport SEXP _spectre_optimizer_min_conf0(SEXP alpha_listSEXP, SEXP total_gammaSEXP, SEXP targetSEXP, SEXP fixed_speciesSEXP, SEXP partial_solutionSEXP, SEXP max_iterationsSEXP, SEXP energy_thresholdSEXP, SEXP seedSEXP, SEXP verboseSEXP, SEXP normSEXP) {
+List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma, IntegerMatrix target, IntegerMatrix fixed_species, IntegerMatrix partial_solution, const unsigned max_iterations, const double energy_threshold, unsigned long seed, bool verbose, std::string norm, const unsigned p);
+RcppExport SEXP _spectre_optimizer_min_conf0(SEXP alpha_listSEXP, SEXP total_gammaSEXP, SEXP targetSEXP, SEXP fixed_speciesSEXP, SEXP partial_solutionSEXP, SEXP max_iterationsSEXP, SEXP energy_thresholdSEXP, SEXP seedSEXP, SEXP verboseSEXP, SEXP normSEXP, SEXP pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -88,7 +88,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< unsigned long >::type seed(seedSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< std::string >::type norm(normSEXP);
-    rcpp_result_gen = Rcpp::wrap(optimizer_min_conf0(alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold, seed, verbose, norm));
+    Rcpp::traits::input_parameter< const unsigned >::type p(pSEXP);
+    rcpp_result_gen = Rcpp::wrap(optimizer_min_conf0(alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold, seed, verbose, norm, p));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -256,7 +257,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_spectre_calculate_solution_commonness_species_site_rcpp", (DL_FUNC) &_spectre_calculate_solution_commonness_species_site_rcpp, 4},
     {"_spectre_update_solution_commonness_site_rcpp", (DL_FUNC) &_spectre_update_solution_commonness_site_rcpp, 3},
     {"_spectre_optimizer_min_conf", (DL_FUNC) &_spectre_optimizer_min_conf, 7},
-    {"_spectre_optimizer_min_conf0", (DL_FUNC) &_spectre_optimizer_min_conf0, 10},
+    {"_spectre_optimizer_min_conf0", (DL_FUNC) &_spectre_optimizer_min_conf0, 11},
     {"_spectre_optimizer_min_conf1", (DL_FUNC) &_spectre_optimizer_min_conf1, 10},
     {"_spectre_optimizer_min_conf2", (DL_FUNC) &_spectre_optimizer_min_conf2, 10},
     {"_spectre_optimizer_backtracking", (DL_FUNC) &_spectre_optimizer_backtracking, 6},

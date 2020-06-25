@@ -28,7 +28,8 @@ run_optimization_min_conf_0 <- function(alpha_list,
                                         energy_threshold,
                                         seed = 0,
                                         verbose = TRUE,
-                                        norm = "sum") {
+                                        norm = "sum",
+                                        p = 1) {
   
   if(is.null(fixed_species)) {
     fixed_species <- matrix()
@@ -46,7 +47,8 @@ run_optimization_min_conf_0 <- function(alpha_list,
                                energy_threshold = energy_threshold,
                                seed = seed, 
                                verbose = verbose,
-                               norm = norm)
+                               norm = norm,
+                               p = p)
   
   return(result)
 }

@@ -20,16 +20,8 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix partial_solution,
                          const unsigned max_iterations,
                          const double energy_threshold = 0.0,
-                         unsigned long seed = 0, bool verbose = true, std::string norm = "sum");
-
-// [[Rcpp::export]]
-List optimizer_min_conf0p(IntegerVector alpha_list, const unsigned total_gamma,
-                         IntegerMatrix target, IntegerMatrix fixed_species,
-                         IntegerMatrix partial_solution,
-                         const unsigned max_iterations,
-                         const unsigned p,
-                         const double energy_threshold = 0.0,
-                         unsigned long seed = 0, bool verbose = true, std::string norm = "sum");
+                         unsigned long seed = 0, bool verbose = true, std::string norm = "sum",
+                         const unsigned p = 1);
 
 // [[Rcpp::export]]
 List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
@@ -61,10 +53,10 @@ double calc_energy(const IntegerMatrix solution_commonness,
 
 // [[Rcpp::export]]
 double calc_random_energy(unsigned n,
-                        IntegerVector alpha_list,
-                        const unsigned total_gamma,
-                         IntegerMatrix target,
-                         unsigned long seed = 0, std::string norm = "sum");
+                          IntegerVector alpha_list,
+                          const unsigned total_gamma,
+                          IntegerMatrix target,
+                          unsigned long seed = 0, std::string norm = "sum");
 
 // Helper functions
 // [[Rcpp::export]]

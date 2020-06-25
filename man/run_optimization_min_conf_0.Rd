@@ -14,7 +14,8 @@ run_optimization_min_conf_0(
   energy_threshold,
   seed = 0,
   verbose = TRUE,
-  norm = "sum"
+  norm = "sum",
+  p = 1
 )
 }
 \arguments{
