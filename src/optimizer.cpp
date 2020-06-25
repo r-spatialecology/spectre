@@ -135,9 +135,9 @@ List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
     if (verbose) {
         double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
         double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
-        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
-              << " (highest energy was: " << worst_energy << " %, improved by: "
-              << worst_energy - best_energy << " %)";
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy 
+              << " (highest energy was: " << worst_energy << " , improved by: "
+              << worst_energy - best_energy << " )";
     }
 
     if (!mc.solution_has_best_energy) {
@@ -184,9 +184,9 @@ List optimizer_min_conf1(IntegerVector alpha_list, const unsigned total_gamma,
     if (verbose) {
         double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
         double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
-        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
-              << " (highest energy was: " << worst_energy << " %, improved by: "
-              << worst_energy - best_energy << " %)";
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy 
+              << " (highest energy was: " << worst_energy << " , improved by: "
+              << worst_energy - best_energy << " )";
     }
 
     return(results);

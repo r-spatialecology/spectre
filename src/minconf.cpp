@@ -389,7 +389,7 @@ double MinConf::calc_energy_random_solution(const unsigned n)
     for (unsigned i = 0; i < n; i++) {
         const auto random_solution = gen_random_solution();
         const auto commonness = calculate_commonness(random_solution);
-        avg_energy += calc_energy(random_solution, target);
+        avg_energy += calc_energy(commonness, target); // MSP 
     }
 
     return avg_energy / n;
