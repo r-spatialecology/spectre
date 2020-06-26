@@ -46,6 +46,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly s
                                                      total_gamma = total_gamma, 
                                                      target = target_matrix_sim, 
                                                      max_iterations = max_runs,
+                                                     patience = 2500, 
                                                      energy_threshold = energy_threshold,
                                                      # tabu = tabu,
                                                      verbose = verbose) # 
