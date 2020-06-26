@@ -21,8 +21,8 @@ optimizer_min_conf <- function(alpha_list, total_gamma, target, max_iterations =
     .Call('_spectre_optimizer_min_conf', PACKAGE = 'spectre', alpha_list, total_gamma, target, max_iterations, energy_threshold, seed, verbose)
 }
 
-optimizer_min_conf0 <- function(alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold = 0.0, seed = 0L, verbose = TRUE, norm = "sum", p = 1L) {
-    .Call('_spectre_optimizer_min_conf0', PACKAGE = 'spectre', alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold, seed, verbose, norm, p)
+optimizer_min_conf0 <- function(alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, patience = 2000L, energy_threshold = 0.0, seed = 0L, verbose = TRUE, norm = "sum", p = 1L) {
+    .Call('_spectre_optimizer_min_conf0', PACKAGE = 'spectre', alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, patience, energy_threshold, seed, verbose, norm, p)
 }
 
 optimizer_min_conf1 <- function(alpha_list, total_gamma, target, fixed_species, partial_solution, max_iterations, energy_threshold = 0.0, seed = 0L, verbose = TRUE, norm = "sum") {
