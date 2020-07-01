@@ -27,7 +27,8 @@ run_optimization_min_conf_2 <- function(alpha_list,
                                         max_iterations,
                                         energy_threshold,
                                         seed = 0,
-                                        verbose = TRUE) {
+                                        verbose = TRUE,
+                                        norm = "sum") {
   
   if(is.null(fixed_species)) {
     fixed_species <- matrix()
@@ -37,14 +38,15 @@ run_optimization_min_conf_2 <- function(alpha_list,
   }
   
   result = optimizer_min_conf2(alpha_list = alpha_list, 
-                              total_gamma = total_gamma, 
-                              target = target,
-                              fixed_species,
-                              partial_solution = partial_solution,
-                              max_iterations = max_iterations,
-                              energy_threshold = energy_threshold,
-                              seed = seed, 
-                              verbose = verbose)
+                               total_gamma = total_gamma, 
+                               target = target,
+                               fixed_species,
+                               partial_solution = partial_solution,
+                               max_iterations = max_iterations,
+                               energy_threshold = energy_threshold,
+                               seed = seed, 
+                               verbose = verbose,
+                               norm = norm)
   
   return(result)
 }

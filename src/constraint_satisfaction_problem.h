@@ -10,12 +10,15 @@ public:
                                     const unsigned gamma_div,
                                     const std::vector<int> &target,
                                     const std::vector<int> &fixed_species_ = std::vector<int>(),
-                                    const std::vector<int> &partial_solution = std::vector<int>());
+                                    const std::vector<int> &partial_solution = std::vector<int>(),
+                                    const std::string norm = "sum");
 
     std::vector<std::vector<int> > solution;
+    unsigned p = 1;
 
 protected:
     long max_steps = 0;
+
     std::vector<std::vector<int> > fixed_species;
     std::vector<std::vector<int> > fixed_species_idx;
     std::vector<std::vector<int> > target;
@@ -23,10 +26,24 @@ protected:
     std::vector<unsigned> tabu_list;
     const unsigned gamma_div;
     const unsigned n_sites;
+    const std::string norm;
     double calc_energy(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target,
-                       const std::string severity = "none",
+                       const bool use_custom_norm = false,
                        int omit_site = -1);
+    double calc_energy_sum(const std::vector<std::vector<int> > &commonness,
+                       const std::vector<std::vector<int> > &target,
+                       int omit_site = -1);
+    double calc_energy_euclid(const std::vector<std::vector<int> > &commonness,
+                       const std::vector<std::vector<int> > &target,
+                       int omit_site = -1);
+    double calc_energy_p(const std::vector<std::vector<int> > &commonness,
+                       const std::vector<std::vector<int> > &target,
+                       const int omit_site = -1);
+    double calc_energy_max(const std::vector<std::vector<int> > &commonness,
+                       const std::vector<std::vector<int> > &target,
+                       int omit_site = -1);
+
     std::vector<unsigned> present_species_index(unsigned site, bool omit_fixed_species = true);
     std::vector<unsigned> present_species_index(unsigned site,
                                                 const std::vector<std::vector<int> > fixed_species);

@@ -42,10 +42,11 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly s
   # Executing original algorithm:
   
   start_time <- Sys.time()
-  res_min_conf <- spectre::run_optimization_min_conf_1(alpha_list = alpha_list, 
+  res_min_conf <- spectre::run_optimization_min_conf_0(alpha_list = alpha_list, 
                                                      total_gamma = total_gamma, 
                                                      target = target_matrix_sim, 
-                                                     max_runs = max_runs,
+                                                     max_iterations = max_runs,
+                                                     patience = 2500, 
                                                      energy_threshold = energy_threshold,
                                                      # tabu = tabu,
                                                      verbose = verbose) # 

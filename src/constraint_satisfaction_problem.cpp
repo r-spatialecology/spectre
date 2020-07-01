@@ -1,13 +1,14 @@
 #include "constraint_satisfaction_problem.h"
 #include <iostream>
 #include <algorithm>
+#include <math.h>
 
 Constraint_satisfaction_problem::Constraint_satisfaction_problem(const std::vector<unsigned> &alpha_list,
                                                                  const unsigned gamma_div,
                                                                  const std::vector<int> &target_,
                                                                  const std::vector<int> &fixed_species_,
-                                                                 const std::vector<int> &partial_solution)
-    : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size())
+                                                                 const std::vector<int> &partial_solution, const std::string norm)
+    : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size()), norm(norm)
 {
     solution.resize(n_sites);
     target.resize(n_sites);
@@ -82,10 +83,28 @@ std::vector<std::vector<int> > Constraint_satisfaction_problem::calculate_common
 
 double Constraint_satisfaction_problem::calc_energy(const std::vector<std::vector<int> > &commonness,
                                                     const std::vector<std::vector<int> > &target,
-                                                    const std::string severity,
+                                                    const bool use_custom_norm,
                                                     int omit_site)
 {
-    long long sum_target = 0;
+    double retval = 0;
+    if (use_custom_norm && norm != "sum") {
+        if (norm == "euclid") {
+            retval = calc_energy_euclid(commonness, target, omit_site);
+        } else if (norm == "max") {
+            retval = calc_energy_max(commonness, target, omit_site);
+        } else if (norm == "p") {
+            retval = calc_energy_p(commonness, target, omit_site);
+        }
+    } else {
+        retval = calc_energy_sum(commonness, target, omit_site);
+    }
+    return retval;
+}
+
+double Constraint_satisfaction_problem::calc_energy_sum(const std::vector<std::vector<int> > &commonness,
+                                                        const std::vector<std::vector<int> > &target,
+                                                        int omit_site)
+{
     long long sum_diff = 0;
     for (unsigned site = 0; site < n_sites; site++) {
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
@@ -94,24 +113,75 @@ double Constraint_satisfaction_problem::calc_energy(const std::vector<std::vecto
                     || static_cast<int>(other_site) == omit_site) {// i.e. NA
                 continue;
             }
-            if (severity == "commonness") {
-                // be strict: there can't be more species in common than allowed in the target matrix
-                // (less is ok)
-                const long long diff = commonness[site][other_site] -
-                        target[site][other_site];
-                if (diff > 0) {
-                    return std::numeric_limits<double>::max();
-                }
-                sum_diff += std::abs(diff);
-            }
             sum_diff += std::abs(commonness[site][other_site] -
                                  target[site][other_site]);
-            sum_target += target[site][other_site];
         }
     }
 
-    return static_cast<double>(sum_diff) / static_cast<double>(sum_target);
+    return static_cast<double>(sum_diff);
 }
+
+double Constraint_satisfaction_problem::calc_energy_euclid(const std::vector<std::vector<int> > &commonness,
+                                                           const std::vector<std::vector<int> > &target,
+                                                           int omit_site)
+{
+    long long sum_diff = 0;
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (target[site][other_site] < 0
+                    || static_cast<int>(site) == omit_site
+                    || static_cast<int>(other_site) == omit_site) {// i.e. NA
+                continue;
+            }
+            const auto diff = commonness[site][other_site] - target[site][other_site];
+            sum_diff += diff * diff;
+        }
+    }
+
+    return static_cast<double>(std::sqrt(sum_diff));
+}
+
+double Constraint_satisfaction_problem::calc_energy_p(const std::vector<std::vector<int> > &commonness,
+                                                      const std::vector<std::vector<int> > &target,
+                                                      const int omit_site)
+{
+    long long sum_diff = 0;
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (target[site][other_site] < 0
+                    || static_cast<int>(site) == omit_site
+                    || static_cast<int>(other_site) == omit_site) {// i.e. NA
+                continue;
+            }
+            const auto diff = std::abs(commonness[site][other_site] - target[site][other_site]);
+            sum_diff += std::pow(diff, p);
+        }
+    }
+
+    return static_cast<double>(std::pow(sum_diff, 1.0 / p));
+}
+
+double Constraint_satisfaction_problem::calc_energy_max(const std::vector<std::vector<int> > &commonness,
+                                                        const std::vector<std::vector<int> > &target,
+                                                        int omit_site)
+{
+    long long max = 0;
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (target[site][other_site] < 0
+                    || static_cast<int>(site) == omit_site
+                    || static_cast<int>(other_site) == omit_site) {// i.e. NA
+                continue;
+            }
+            const auto diff = std::abs(commonness[site][other_site] - target[site][other_site]);
+            if (diff > max) {
+                max = diff;
+            }
+        }
+    }
+    return static_cast<double>(max);
+}
+
 
 std::vector<unsigned> Constraint_satisfaction_problem::present_species_index(unsigned site, bool omit_fixed_species)
 {

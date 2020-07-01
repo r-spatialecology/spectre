@@ -62,9 +62,9 @@ TEST_CASE("Tests for the MinConf class") {
 
         CHECK(mc.test_calc_energy(commonness, target) == Approx(0.0));
         target[2][1] = 2;
-        CHECK(mc.test_calc_energy(commonness, target) == Approx(1.0/13));
+        CHECK(mc.test_calc_energy(commonness, target) == Approx(1.0));
         commonness[0][1] = 5;
-        CHECK(mc.test_calc_energy(commonness, target) == Approx(4.0/13));
+        CHECK(mc.test_calc_energy(commonness, target) == Approx(4.0));
     }
 
     SECTION("calculate_commonness()") {

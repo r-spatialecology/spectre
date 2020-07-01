@@ -20,20 +20,21 @@ if (tabu_activated){
   table(df$tabu)
 }
 
-ggplot(data = df, aes(x = iteration, y = energy_scaled, color = species))+
-  geom_point(size = .3, alpha = 0.4)+
-  #geom_smooth(method="loess", se=FALSE,span=0.3)+
-  facet_grid(scales="fixed", vars(gamma),vars(sites),labeller = label_both)+
-  labs(title = "min-conf_1, tabu = 0%")+
-  scale_x_continuous(name ="iterations") +
-  scale_y_continuous(name ="energy", breaks = seq(0, 1, 0.2), limits = c(0, 1) ) +
-  theme_bw()
+# ggplot(data = df, aes(x = iteration, y = energy_scaled, color = species))+
+#   geom_point(size = .3, alpha = 0.4)+
+#   #geom_smooth(method="loess", se=FALSE,span=0.3)+
+#   facet_grid(scales="fixed", vars(gamma),vars(sites),labeller = label_both)+
+#   labs(title = "min-conf_1, tabu = 0%")+
+#   scale_x_continuous(name ="iterations") +
+#   scale_y_continuous(name ="energy", breaks = seq(0, 1, 0.2), limits = c(0, 1) ) +
+#   theme_bw()
 
 ggplot(data = df, aes(x = iteration, y = energy_before, color = species))+
   geom_point(size = .3, alpha = 0.4)+
   #geom_smooth(method="loess", se=FALSE,span=0.3)+
   facet_grid(scales="fixed", vars(gamma),vars(sites),labeller = label_both)+
-  labs(title = "min-conf, tabu = 20%")+
+  labs(title = "min-conf_x, energy_normalized(1000)")+
   scale_x_continuous(name ="iterations") +
-  scale_y_continuous(name ="energy") +
+ # scale_y_continuous(name ="energy") +
+  scale_y_continuous(name ="energy", breaks = seq(0, 1, 0.1), limits = c(0, .5) ) +
   theme_bw()

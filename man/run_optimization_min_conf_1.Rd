@@ -13,7 +13,8 @@ run_optimization_min_conf_1(
   max_iterations,
   energy_threshold,
   seed = 0,
-  verbose = TRUE
+  verbose = TRUE,
+  norm = "sum"
 )
 }
 \arguments{

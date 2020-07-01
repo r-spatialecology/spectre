@@ -25,11 +25,12 @@ run_optimization_min_conf_0 <- function(alpha_list,
                                         fixed_species = NULL,
                                         partial_solution = NULL,
                                         max_iterations,
+                                        patience = 2000,
                                         energy_threshold,
                                         seed = 0,
-                                        verbose = TRUE) {
-is.numeric(1)
-is.integer(0.5)
+                                        verbose = TRUE,
+                                        norm = "sum",
+                                        p = 1) {
   
   if(is.null(fixed_species)) {
     fixed_species <- matrix()
@@ -37,15 +38,19 @@ is.integer(0.5)
   if (is.null(partial_solution)) {
     partial_solution <- matrix()
   }
+  
   result = optimizer_min_conf0(alpha_list = alpha_list, 
                                total_gamma = total_gamma, 
                                target = target, 
                                fixed_species,
                                partial_solution = partial_solution,
                                max_iterations = max_iterations,
+                               patience = patience,
                                energy_threshold = energy_threshold,
                                seed = seed, 
-                               verbose = verbose)
+                               verbose = verbose,
+                               norm = norm,
+                               p = p)
   
   return(result)
 }
