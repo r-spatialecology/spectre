@@ -13,7 +13,7 @@ int MinConf::optimize0(const long max_steps_, const double max_energy, long long
     rng = std::mt19937(seed);
     std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
     auto iter = max_steps_;
-    //gen_init_solution();
+
     if (fixed_species.size()) {
         set_fixed_species();
     }
@@ -66,6 +66,9 @@ int MinConf::optimize0(const long max_steps_, const double max_energy, long long
         if (!missing_species[site]) {
             // remove a random species at this site
             std::vector<unsigned> species_idx = present_species_index(site, true);
+            if (species_idx.size() == 0) {
+                continue; // all species fixed, nothing to remove
+            }
             std::shuffle(species_idx.begin(), species_idx.end(), rng);
             const unsigned species = species_idx.back();
             solution[site][species] = 0;
