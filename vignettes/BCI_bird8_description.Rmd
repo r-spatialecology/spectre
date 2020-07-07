@@ -22,14 +22,15 @@ data[1:10, 1:10]
 
 
 ```{r, include = TRUE, echo=FALSE}
+dim(data)
 # richness per site
-alpha_list <- rowSums(data)
+alpha_list <- colSums(data)
 # gamma diversity
-total_gamma <- sum(colSums(data) > 0)
+total_gamma <- sum(rowSums(data) > 0)
 
 
 ```
-The dataset includes occurences of tree species across `r dim(data)[1]` plots, each plot is 20 x 20m. Tree species in columns, plots rowwise. (*spectre* expects input data the other way around, thus data has to be transposed later... ). 
+The dataset includes occurences of tree species across `r dim(data)[1]` plots, each plot is 20 x 20m. Tree species in rows, sites in columns. 
 
 Gamma diversity is `r total_gamma`, mean richness per site is `r round(mean(alpha_list),1) `, 1 SD = `r round(sd(alpha_list),1)`. The average richness is `r round(mean(alpha_list) / total_gamma * 100, 1)` % of gamma diversity.
 
@@ -37,7 +38,7 @@ Gamma diversity is `r total_gamma`, mean richness per site is `r round(mean(alph
 
 data[1:5, 1:8]
 
-plot( 1:length(alpha_list), alpha_list, ylim = c(0, total_gamma + 1),
+plot(  1:length(alpha_list) , alpha_list, ylim = c(0, total_gamma + 1),
       xlab = "Site", ylab = "Richness", main = "Blue = gamma-diversity, red = mean(richness)")
 abline(h = total_gamma, lty = "dotted", lwd = 2, col = "blue")
 abline(h = mean(alpha_list), col = "red", lty = 2)
@@ -47,7 +48,7 @@ abline(h = mean(alpha_list), col = "red", lty = 2)
 
 ```{r, include = TRUE, echo=FALSE}
 library(viridis)
-library(viridisLite)
+
 viridis_colours <- viridis(3)[3:1]
 plot_commonness_explore <- function(commonness_explore) {
   
