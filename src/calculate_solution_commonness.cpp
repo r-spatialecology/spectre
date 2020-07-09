@@ -1,5 +1,4 @@
 #include "calculate_solution_commonness.h"
-//#include <omp.h>
 // [[Rcpp::plugins(openmp)]]
 // [[Rcpp::plugins(cpp11)]]
 

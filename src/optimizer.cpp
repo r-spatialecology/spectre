@@ -2,7 +2,7 @@
 #include <random>
 #include <chrono>
 #include <limits>
-#include <math.h>
+#include <cmath>
 #include "calculate_solution_commonness.h"
 #include "backtracking.h"
 #include "minconf.h"

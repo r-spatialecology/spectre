@@ -1,7 +1,7 @@
 #include "constraint_satisfaction_problem.h"
 #include <iostream>
 #include <algorithm>
-#include <math.h>
+#include <cmath>
 
 Constraint_satisfaction_problem::Constraint_satisfaction_problem(const std::vector<unsigned> &alpha_list,
                                                                  const unsigned gamma_div,
