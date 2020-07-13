@@ -1,36 +1,37 @@
 ---
 title: "Error quantification"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
+  html_notebook: default
+  pdf_document: default
 ---
+
 Depending on the available input data, we evaluated the spectre algorithm using different measures. 
 
 ## Discrepancy between target and solution
 Given a known target $T$, derived for example from an empirical data set, we quantified the discrepancy $D$ between a target $T$ and a solution $S$ as:
-$$D = {(\lvert T - S \rvert )  \over {\sum_{n=1}^{1000}(\lvert T - S_{rand} \rvert) / 1000}) }, $$
+$$D = { \frac{(\lvert T - S \rvert )} {\sum_{n=1}^{1000}(\lvert T - S_{rand} \rvert) / 1000}) }, $$
 
-where $S_{rand}$ is derived from a landscape constrained to match the species richness of all sites, but species are assigned randomly to each site. Since the absolute value of $(\lvert T - S \rvert )$ is determined not only by the correctness of the solution, but depends also on landscape size and species composition (see Appendix), standardizing by the average absolute discrepancy of 1000 solutions makes $D$ a convenient measure to quantify and compare errors across landscapes of different size and species compositions. For a perfect solution, discrepancy $D$ is 0, and for a randomly assigned solution, given the constraints explained above, $D$ is approximately 1. We evaluated the performance of the spectre algorithm as the discrepancy $D_{com}$ between the commonness matrices of the target $T_{com}$ and the solution $S_{com}$. 
+where $S_{rand}$ is derived from a landscape constrained to match the species richness of all sites, but species are assigned randomly to each site. Since the absolute value of $(\lvert T - S \rvert )$ is determined not only by the correctness of the solution, but depends also on landscape size and species composition (see Appendix), standardizing by the average absolute discrepancy of 1000 random initial solutions makes $D$ a convenient measure to quantify and compare errors across landscapes of different size and species compositions. For a perfect solution, discrepancy $D$ is 0, and for a randomly assigned initial solution, given the constraints explained above, $D$ is approximately 1. We evaluated the performance of the spectre algorithm as the discrepancy $D_{com}$ between the commonness matrices of the target $T_{com}$ and the solution $S_{com}$. 
 
 ## Proportion of correctly predicted site x site commonness
 Currently used as a second measure for error quantification by us. This measure is NOT identical to the "proportion of occurrences correctly predicted", as used by Makony et al. (2011), sorry. I misunderstood Makony's measure in the beginning. Our measure (proportion of correctly predicted site x site commonness) might be correllated to $D$, but anyway I would suggest to keep it for a while. Maybe we drop it later if we know if it adds valuable extra information or not. The proportion of correctly predicted site x site commonness $P_{correct}$is obtained from the difference between $T_{com}$ and $S_{com}$ as follows: 
 
-$$P_{correct} = { C_{correct} \over{m}  }$$,
+$$P_{correct} = { \frac{C_{correct}}{m}  }$$,
 where $C_{correct}$ is the number of cases/sites where $T_{com}$ - $S_{com}$ == 0, and m is the number of site x site pairs for a given landscape.   
-
-
-
-defined as: the number of all site x site pairs with a commonness difference 
 
 ## Proportion of occurrences correctly predicted 
 This measure is on the level of species lists, and thus requires species labelling. Without either a kind of weighing of species occurrence probabilities at initialization, or without inclusion of species lists from a few sites as "known data", probabilities to obtain meaningful scores are low. This measure was taken from Makony et al. (2011), and has to be implemented yet. The proportion of occurrences correctly predicted $O_{correct}$ is the per site proportion of the correctly predicted species $S_{correct}$ divided by per site richness $R$, averaged across all sites:
 
-$$ O_{correct} = \sum_{site = 1}^{site = n} { {S_{correct}} \over { {R \cdot n}} }$$.  
+$$ O_{correct} = \sum_{site = 1}^{site = n} { \frac{S_{correct}} { {R \cdot n}} }$$.  
 
 # Testing the spectre algorithm with artificial and empirical data
 
 We tested the spectre algorithm both with empirical, as well with artificial data. 
 
 ## Using the BCI data set to evaluate performance: 
-The Barro Colorado Island (BCI) study area is divided into a 20x20 m grid. All trees within the grids are sampled regularly since 1985 (Condit et al. 2019). Using the last recent "tree.table8", we considered each grid cell in the data as one site, and generated a presence/absence list for all observed 328 tree species from 1251 cells. Mean tree richness per site was 74.6 (SD = 10.8) (see additional description of the data in Appendix). 
+The Barro Colorado Island (BCI) study area is divided into a 20x20 m grid. All trees within the grids are sampled regularly since 1985 (Condit et al. 2019). Using the last recent "tree.table8", we considered each grid cell in the data as one site, and generated a presence/absence list for all observed 328 tree species from 1251 sites. Mean tree richness per site was 74.6 (SD = 10.8) (see additional description of the data in Appendix). 
 
 For testing, we subsampled a desired number of randomly selected sites and species from the complete BCI presence/absence list. By chance not all sampled species were present within the sampled size, thus realized gamma diversity in our samples could be smaller than the desired number of species. If not stated otherwise, we used realized gamma diversity for our evaluations (see Chapter "Influence of gamma diversity" on spectre performance TODO).   
 
@@ -43,9 +44,15 @@ For testing, we subsampled a desired number of randomly selected sites and speci
 For testing, in the simplest case, we generated speciesXsite list and filled them with the desired number of random species. The resulting lists, while being biologically unrealistic, allowed us to perform evaluations for a range of situations (average richness high-low, ... )
 
 ## Evaluation results / discussion
-Present updated results here
 
-When test data was sampled from the BCI and BBS data, the algorithm was able to solve small- to medium-sized sized landscapes with a discrepancy in commonness $D_{com}$ < 0.1 and a proportion of > 0.8 correctly solved siteXsite pairs ($P_{correct}$). We thus believe that spectre is a valuable tool to generate (artificial) species compositions that match the constrains of $\alpha$- and $\beta$-diversity predictions. 
+### BCI results
+
+
+```{r refBCI60k, echo=FALSE, fig.cap="Fig. X Left: Discrepancy $D$ between target, and solutions generated by the spectre algorithm, for different landscape sizes and species numbers. Right: Proportion of correctly solved siteXsite pair commonness $P_{cor}$", out.width = '50%', fig.show="hold"}
+knitr::include_graphics(c("BCI60kDisc.png","BCI60kPcor.png") )
+```
+
+When test data was sampled from the BCI and BBS data, the algorithm was able to solve small- to medium-sized sized landscapes with a discrepancy in commonness $D_{com}$ < 0.15 and a proportion of > 0.8 correctly solved siteXsite pairs ($P_{correct}$). We thus believe that spectre is a valuable tool to generate (artificial) species compositions that match the constrains of $\alpha$- and $\beta$-diversity predictions. 
 
 ## Adding "known species" 
 Including species lists from a number of known sites improved (1) discrepancy $D_{com}$, $P_{correct}$ and $O_{correct}$. Adding species list for more than 40 sites furthermore reduced the chances that the algorithm was stuck in a local minimum, und thus $D_{com}$ was largely improved in landscapes with 100 sites and 100 species.   

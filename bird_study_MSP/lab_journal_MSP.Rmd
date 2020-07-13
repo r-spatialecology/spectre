@@ -6,6 +6,9 @@ output: html_notebook
 This will serve as my spectre lab journal. Feel free to read and give comments. 
 
 2020-07-10
+# BCI 60k iteration run fail
+run failed after line 22 in parameters -> Fails were not reproducible, same scripts were successful in a second run. Thus I expect an instability on side of "glumanda". 
+
 # spectre paper outline - evaluation section
 We could probably show results similar than these posted in the slack channel already. Like final discrepancy $D$ ~ landscape size and species composition, both for artificial, as well as for empirical data.  
 
@@ -15,9 +18,7 @@ Results from the first serious "known sites" run are back. It looks like we have
 dynamicFOAM, given a richness of 30 and 100 sites, needs 22 sites as fixed, to find a perfect solution. Without fixed sites, they predict 50% of species correctly. This indicates, that in their artificial data set, total gamma was 60. I wrote a script to check that... Given our results using the BCI data (100 sites, 100 species), we would expect only to be ~ of species correctly predicted (assuming total_gamma of 90, and 30 species). 
 
 Running spectre with 30 species, 100 sites, and a total gamma of 60, yielded these insights:
-we need more sites, overall energy is higher than with empirical data 
-
-
+we need more "known" sites than Mokany et al. (2011), overall energy is higher than with empirical data. 
 
 2020-07-09
 
