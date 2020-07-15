@@ -1,4 +1,4 @@
-# Test min_conf_algorithms with bird breeding survey data
+# Test min_conf_algorithms with bird breeding survey (BBS) data
 
 setwd("~/spectre/bird_study_MSP/BBS_60k")
 
@@ -14,13 +14,14 @@ data <- bbs1980
 
 dim(data)
 data <- t(data) # spectre expects species in rows, sites in columns 
+print(paste0(dim(data)[1], " species, ",  dim(data)[2], " sites"))
 
 sim_fun <- function(siminputrow, parameters, writeRDS)  # Code mostly stolen from Jan Salecker... 
 {
   # Read and set parameters 
   p <- parameters[siminputrow, ]
   if(!( dim(p)[1] == 1)) {
-    p <- p[1, ]
+    p <- p[2, ]
   }
   (n_sites <- p$n_sites)
   (n_species <- p$n_species) 
@@ -65,11 +66,13 @@ sim_fun <- function(siminputrow, parameters, writeRDS)  # Code mostly stolen fro
     length(alpha_list) == n_sites
     (total_gamma <- sum(rowSums(species_list) > 0))
     
-    print(paste0("Realized gamma is: ",total_gamma, " n species is: ", n_species ) )
+    
     
     if (total_gamma < n_species) {
-      dropped_species <- which(colSums(species_list) == 0)
+      dropped_species <- which(rowSums(species_list) == 0)
       species_list <- species_list[- dropped_species, ]
+      print(paste0("Realized gamma is: ",total_gamma, " n species is: ", n_species ) )
+      print(paste0("Dimensions of species list: ", dim(species_list)[1]))
     }
     
     
@@ -79,6 +82,8 @@ sim_fun <- function(siminputrow, parameters, writeRDS)  # Code mostly stolen fro
     sum_commonness <- sum(target_commonness, na.rm = TRUE)
     print(paste0("Sum commonness is = ", sum_commonness))
   }
+  
+  print(paste0("How many species sampled? A:", dim(species_list)[1]))
   
   #print("start")
   # Executing original algorithm:

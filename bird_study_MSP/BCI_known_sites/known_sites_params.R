@@ -4,8 +4,8 @@
 setwd("~/spectre/bird_study_MSP/BCI_known_sites")
 
 replicate <- 1:5 # replicates per parameter combination
-n_sites <- c(100) # number of sites  c(20, 40, 60)
-known_sites <- c(1, 10, 20, 30, 40)
+n_sites <- c(100) # 100 
+known_sites <- c(1, 20, 30, 35, 40)
 n_species <- c(100) # 25, 50, 100, 150 50, 100, 150
 total_gamma <- c(15) # evaluated gamma diversities  c(30, 60, 90) 
 richness_vector <- c(0.1) # evaluated fractions of gamma diversity (mean richness) c(0.2, 0.4, 0.6) 

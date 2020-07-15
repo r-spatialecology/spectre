@@ -1,5 +1,4 @@
 # Test min_conf_algorithms with BCI data
-# Here, relatively small datasets (120 sites & 150 species sampled max) are sampled from the large BCI data set
 
 setwd("~/spectre/bird_study_MSP/BCI_60k")
 
@@ -12,16 +11,17 @@ p
 
 data <- readRDS("~/spectre/data/BCI_tree8_MSP.rds") 
 
-dim(data)
+dim(data) 
+print(paste0(dim(data)[1], " species, ",  dim(data)[2], " sites"))
 
 sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly stolen from Jan Salecker... 
 {
   # Read and set parameters 
   p <- parameters[siminputrow, ]
   if(!( dim(p)[1] == 1)) {
-    p <- p[23, ]
+    p <- p[1, ]
   }
-  n_sites <- p$n_sites
+  (n_sites <- p$n_sites)
   (n_species <- p$n_species) 
   mean_alpha <- p$mean_alpha 
   richness_vector <- p$richness_vector
@@ -31,32 +31,40 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly s
   n_sample_points <- p$n_sample_points
   energy_threshold <- p$energy_threshold 
   tabu <- round(p$tabu_percent * p$n_sites / 100)
+  seed <- p$siminputrow
   
   # Set seed
-  set.seed(replicate)
+  set.seed(seed)
   
   ### subsample data
-  sum_commonness <- 0 # needed to check wheter subsample has sites with common species at all... 
+  sum_commonness <- 0 
   while(sum_commonness < 1){
-    if(n_sites > dim(data)[2]) {
-      n_sites <- dim(data)[2] 
-      print("Could not sample all requested sites: you reached maximum number of sites... ")
-    }
-    sampled_sites <-  sample(dim(data)[2], n_sites, replace = FALSE) 
-    if (n_species > dim(data)[1]) {
+    
+    if (n_species > dim(data)[1]) { # species in rows
       n_species <- dim(data)[1]
       print("Could not sample all requested species: You reached maximum number of species ... ")
     }
     sampled_species <-  sample(dim(data)[1], n_species, replace = FALSE) 
     
+    if(n_sites > dim(data)[2]) { # sites in columns 
+      n_sites <- dim(data)[2] 
+      print("Could not sample all requested sites: you reached maximum number of sites... ")
+    }
+    sampled_sites <-  sample(dim(data)[2], n_sites, replace = FALSE) 
+    
     # target species x site list 
-    species_list <- data[sampled_species, sampled_sites ]
+    species_list <- data[sampled_species, sampled_sites]
     dim(species_list)
     (alpha_list <- colSums(species_list))
+    length(alpha_list) == n_sites
     (total_gamma <- sum(rowSums(species_list) > 0))
-    # total_gamma <- as.numeric(total_gamma)
     
-    # species_list <- t(species_list) # neccessary for bird data, but NOT for BCI data 
+    if (total_gamma < n_species) {
+      dropped_species <- which(rowSums(species_list) == 0)
+      species_list <- species_list[- dropped_species, ]
+      print(paste0("Realized gamma is: ",total_gamma, " n species is: ", n_species ) )
+      print(paste0("Dimensions of species list: ", dim(species_list)[1]))
+    }
     
     (target_commonness <- spectre:::calculate_solution_commonness_rcpp( species_list ) )# transpose !!!
     target_commonness[upper.tri(target_commonness, diag=TRUE)] <- NA
@@ -65,8 +73,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly s
     print(paste0("Sum commonness is = ", sum_commonness))
   }
   
-  #print("start")
-  # Executing original algorithm:
+  print(paste0("How many species sampled? A:", dim(species_list)[1]))
   
   start_time <- Sys.time()
   res_min_conf <- spectre::run_optimization_min_conf_0(alpha_list = alpha_list, 
@@ -76,7 +83,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly s
                                                        patience = 2500, 
                                                        energy_threshold = energy_threshold,
                                                        verbose = verbose,
-                                                       seed = replicate) # 
+                                                       seed = seed) # 
   
   solution_commonness <- spectre:::calculate_solution_commonness_rcpp(res_min_conf$optimized_grid)
   
@@ -89,8 +96,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly s
   
   # only keep a fraction of results (first, sample_points in between , last)
   successful_iterations <- sum(!is.na(res_min_conf$energy[2]))
-  # print(paste0("Successful iterations: ", successful_iterations))
-  
+ 
   if(successful_iterations >= n_sample_points){
     sample_points <- spectre:::get_sample_points(successful_iterations, n_sample_points)
   } else {
@@ -136,7 +142,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly s
 
 
 
-foreach(REPLICATE = 23:dim(p)[1], .export = c("p"), .packages = c("spectre")) %do% {
+foreach(REPLICATE = 1:dim(p)[1], .export = c("p"), .packages = c("spectre")) %do% {
   print(paste0("Replicate: ", REPLICATE))
   
   sim_fun(REPLICATE,

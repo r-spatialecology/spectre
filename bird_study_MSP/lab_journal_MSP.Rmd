@@ -5,6 +5,33 @@ output: html_notebook
 
 This will serve as my spectre lab journal. Feel free to read and give comments. 
 
+2020-07-15
+# update/correct BCI scripts and re-run analyses
+BCI known species is now correct
+
+# Sampled vs realized species dilemma
+If I sample only a block of species and sites, not all species might occur at the selected sites. To avoid unwanted reduction in discrepancy, caused by an overestimated total_gamma, (as Sebastian found out), in BBS I already corrected total_gamma after the sampling process. Another option would be to keep samling species until realized total_gamma equals the estimated gamma (TODO).
+
+# Idea: offer Mokany et al. a co-authorship? 
+A lot of bashing could be avoided, if we would offer this. Just a thought... 
+
+# Sampling of "spatially" sampling blocks from BCI data
+BCI data has information about adjacent cells (in other words, rownumbers and colnumbers are available for each cell/site). We could check how correllated species within blocks are. And even compare weighted initialization of species against the spectre algorithm. 
+
+2020-07-14
+# BCI data set implemented in error quantification Rmd
+BCI data now illustrates the ability of spectre to solve landscapes / species compositions, and also the feature to include known sites. 
+
+2020-07-13
+# BCI data runs were successful
+Runs were successful, and first plots are implemented in the energy chapter draft. The Rmd  seems to dislike .pdf plots, thus I switched to .png format. 
+
+# BCI known species example update
+I corrected the bug that the number of species in the sampled sites was NOT n_species, and thus energy measures underestimated Discrepancy $D$ in the results obtained before. New analyses will be started in the evening. 
+
+# Asked Craig about the "rare species" feature
+I composed an email for Craig asking him about his plans for the rare species feature. This should be relatively easy to implement, but had to define... 
+
 2020-07-10
 # BCI 60k iteration run fail
 run failed after line 22 in parameters -> Fails were not reproducible, same scripts were successful in a second run. Thus I expect an instability on side of "glumanda". 

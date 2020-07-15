@@ -8,10 +8,10 @@ library("betapart")
 
 
 load("p_BCI.rda")
-p$siminputrow
 
 data <- readRDS("~/spectre/data/BCI_tree8_MSP.rds")
 dim(data)
+print(paste0(dim(data)[1], " species, ",  dim(data)[2], " sites"))
 
 
 
@@ -23,7 +23,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly s
   if(!( dim(p)[1] == 1)) { # only for easy testing, may be deleted later... 
     p <- p[1, ]
   }
-  p
+  # p
   n_sites <- p$n_sites
   known_sites <- p$known_sites
   n_species <- p$n_species 
@@ -39,44 +39,45 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly s
   
   # Set random seed
   set.seed(seed)
-  # subsample data, create species list, derive alpha diversity per site and 
-  # gamma diversity from species list
   
-  sum_commonness <- 0
+  ### subsample data
+  sum_commonness <- 0 
   while(sum_commonness < 1){
     
-    if(n_sites > dim(data)[2]) {
-      n_sites <- dim(data)[2] 
-      print("Could not sample all requested sites: you reached maximum number of sites... ")
-    }
-    sampled_sites <-  sample(dim(data)[2], n_sites, replace = FALSE) 
-    
-    if (n_species > dim(data)[1]) {
+    if (n_species > dim(data)[1]) { # species in rows
       n_species <- dim(data)[1]
       print("Could not sample all requested species: You reached maximum number of species ... ")
     }
     sampled_species <-  sample(dim(data)[1], n_species, replace = FALSE) 
     
+    if(n_sites > dim(data)[2]) { # sites in columns 
+      n_sites <- dim(data)[2] 
+      print("Could not sample all requested sites: you reached maximum number of sites... ")
+    }
+    sampled_sites <-  sample(dim(data)[2], n_sites, replace = FALSE) 
+    
+    # target species x site list 
     species_list <- data[sampled_species, sampled_sites]
     dim(species_list)
     (alpha_list <- colSums(species_list))
+    length(alpha_list) == n_sites
     (total_gamma <- sum(rowSums(species_list) > 0))
     
-    # drop all species that do not occur in the sampled sites
     if (total_gamma < n_species) {
-    dropped_species <- which(rowSums(species_list) == 0)
-    species_list <- species_list[- dropped_species, ]
+      dropped_species <- which(rowSums(species_list) == 0)
+      species_list <- species_list[- dropped_species, ]
+      print(paste0("Realized gamma is: ",total_gamma, " n species is: ", n_species ) )
+      print(paste0("Dimensions of species list: ", dim(species_list)[1]))
     }
-    # total_gamma <- n_species # MSP: changed this line for the known species approach. 
-    
-    # total_gamma <- as.numeric(total_gamma)
     
     (target_commonness <- spectre:::calculate_solution_commonness_rcpp( species_list ) )# transpose !!!
     target_commonness[upper.tri(target_commonness, diag=TRUE)] <- NA
-    class(target_commonness)
+    # class(target_commonness)
     sum_commonness <- sum(target_commonness, na.rm = TRUE)
     print(paste0("Sum commonness is = ", sum_commonness))
   }
+  
+  print(paste0("How many species sampled? A:", dim(species_list)[1]))
   
   # chose fixed species
   fixed_species <- matrix(data = 0, nrow = total_gamma, ncol = n_sites)

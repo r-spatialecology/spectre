@@ -33,4 +33,4 @@ p$siminputrow <- 1:dim(p)[1]
 
 save(p, file = "p_BCI.rda")
 print(paste0(dim(p)[1], " parameter combinations will be tested"))
-p[23, ]
+
