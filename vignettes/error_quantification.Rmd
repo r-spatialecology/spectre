@@ -16,10 +16,11 @@ $$D = { \frac{(\lvert T - S \rvert )} {\sum_{n=1}^{1000}(\lvert T - S_{rand} \rv
 where $S_{rand}$ is derived from a landscape constrained to match the species richness of all sites, but species are assigned randomly to each site. Since the absolute value of $(\lvert T - S \rvert )$ is determined not only by the correctness of the solution, but depends also on landscape size and species composition (see Appendix), standardizing by the average absolute discrepancy of 1000 random initial solutions makes $D$ a convenient measure to quantify and compare errors across landscapes of different size and species compositions. For a perfect solution, discrepancy $D$ is 0, and for a randomly assigned initial solution, given the constraints explained above, $D$ is approximately 1. We evaluated the performance of the spectre algorithm as the discrepancy $D_{com}$ between the commonness matrices of the target $T_{com}$ and the solution $S_{com}$. 
 
 ## Proportion of correctly predicted site x site commonness
-Currently used as a second measure for error quantification by us. This measure is NOT identical to the "proportion of occurrences correctly predicted", as used by Makony et al. (2011), sorry. I misunderstood Makony's measure in the beginning. Our measure (proportion of correctly predicted site x site commonness) might be correllated to $D$, but anyway I would suggest to keep it for a while. Maybe we drop it later if we know if it adds valuable extra information or not. The proportion of correctly predicted site x site commonness $P_{correct}$is obtained from the difference between $T_{com}$ and $S_{com}$ as follows: 
+This measure is NOT identical to the "proportion of occurrences correctly predicted", as used by Makony et al. (2011), please see below (I misunderstood Makony's measure in the beginning). 
 
+Our measure, the proportion of correctly predicted site x site commonness, $P_{correct}$, is obtained from the difference between $T_{com}$ and $S_{com}$ as follows: 
 $$P_{correct} = { \frac{C_{correct}}{m}  }$$,
-where $C_{correct}$ is the number of cases/sites where $T_{com} - S_{com} == 0$, and m is the number of site x site pairs for a given landscape. Please note that we could even relax the assumption to $\lvert T_{com} - S_{com} \rvert < 3$, like Mokany do. This is kind of arbitrarily, but possible.     
+where $C_{correct}$ is the number of cases/sites where $T_{com} - S_{com} == 0$, and m is the number of site x site pairs for a given landscape. The condition $T_{com} - S_{com} == 0$ is quite strict, and thus a conservative measure. Mokany et al. report, that with 6.7 million sites, their absolute mean error in pair-wise $\beta$-dissimilarity translates to $T_{com} - S_{com} < 3$. That means, with an average richness of 38 per site, given 19 species in common between two sites, their solution would have between 16 and 22 species in common. But again, they solve blocks of 2500 sites, and 6.7 million sites in total. 
 
 ## Proportion of occurrences correctly predicted 
 This measure is on the level of species lists, and thus requires species labelling. Without either a kind of weighing of species occurrence probabilities at initialization, or without inclusion of species lists from a few sites as "known data", probabilities to obtain meaningful scores are low. This measure was taken from Makony et al. (2011). The proportion of occurrences correctly predicted $O_{correct}$ is the per site proportion of the correctly predicted species $S_{correct}$ divided by per site richness $R$, averaged across all sites:
@@ -75,7 +76,7 @@ knitr::include_graphics(c("BBS60kRealizedSpec.png") )
 ```
 
 
-# BBS results 
+### BBS results 
 
 The spectre algorithm was able to solve small- to medium-sized sized landscapes ( < 50 sites, < 200 species) with a discrepancy in commonness $D_{com}$ < 0.05 and a proportion of > 0.75 correctly solved siteXsite pairs ($P_{correct}$). We thus believe that spectre is a valuable tool to generate (artificial) species compositions that match the constrains of $\alpha$- and $\beta$-diversity predictions. I admit that the plots are kind of ugly, and would like to switch to a presentation of "minimal Discrepancy" per replicate later, but I think for now they are good enough TODO. 
 
@@ -89,8 +90,6 @@ knitr::include_graphics(c("BBS60kDisc.png","BBS60kPcor.png") )
 For testing, in the simplest case, we generated speciesXsite list and filled them with the desired number of random species. The resulting lists, while being biologically unrealistic, allowed us to perform evaluations for a range of situations (average richness high-low, ... )
 
 ## Evaluation results / discussion
-
-
 
 
 (Condit R., Perez, R., Aguilar, S., Lao, S., Foster, R., Hubbell, S.P. 2019. Complete data from the Barro Colorado 50-ha plot: 423617 trees, 35 years, 2019 version.   https://doi.org/10.15146/5xcp-0d46)
