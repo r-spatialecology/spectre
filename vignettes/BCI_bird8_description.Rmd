@@ -23,6 +23,8 @@ data[1:10, 1:10]
 
 ```{r, include = TRUE, echo=FALSE}
 dim(data)
+n_species <- dim(data)[1]
+n_sites <- dim(data)[2]
 # richness per site
 alpha_list <- colSums(data)
 # gamma diversity
@@ -30,7 +32,7 @@ total_gamma <- sum(rowSums(data) > 0)
 
 
 ```
-The dataset includes occurences of tree species across `r dim(data)[1]` plots, each plot is 20 x 20m. Tree species in rows, sites in columns. 
+The dataset includes occurences of `r n_species` tree species across `r n_sites` sites, each site is 20 x 20m. Tree species in rows, sites in columns. 
 
 Gamma diversity is `r total_gamma`, mean richness per site is `r round(mean(alpha_list),1) `, 1 SD = `r round(sd(alpha_list),1)`. The average richness is `r round(mean(alpha_list) / total_gamma * 100, 1)` % of gamma diversity.
 
@@ -44,10 +46,23 @@ abline(h = total_gamma, lty = "dotted", lwd = 2, col = "blue")
 abline(h = mean(alpha_list), col = "red", lty = 2)
 ```
 
-## Commonness matrix
+## Rare vs. common species
+Roughly 60 out of `r n_species` tree species (`r round(60/n_species * 100, 2)  ` %) occur at > 50% of all sites. 
 
 ```{r, include = TRUE, echo=FALSE}
-library(viridis)
+# produce abundance per species plot, in ranked order (high to low)
+sites_per_species <- rowSums(data)
+plot (sort(sites_per_species,  decreasing = TRUE), xlab = "species, sorted by occupied number of sites", ylab = "occurance at n sites")
+abline(h = n_sites / 2, lty = 2, col = "blue")
+abline(v = 60, col = "blue", lty = 2)
+```
+
+
+## Commonness matrix
+
+
+```{r, include = TRUE, echo=FALSE}
+library(viridisLite)
 
 viridis_colours <- viridis(3)[3:1]
 plot_commonness_explore <- function(commonness_explore) {
