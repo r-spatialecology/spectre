@@ -3,7 +3,25 @@ title: "R Notebook"
 output: html_notebook
 ---
 
-This will serve as my spectre lab journal. Feel free to read and give comments. 
+This will serve as my spectre lab journal. Feel free to read and give comments.
+
+2020-07-19
+# BCI common vs rare species
+updated data description, ~ 60 species are present at > 50% of all sites. 
+
+# use all BBS data 
+started analysis with all species and all sites in folder BBS_full
+16 mins for 5 iterations -> 3 mins per iteration -> 20 iterations per hour 
+
+# known sites with total_gamma = 60
+Run "known sites" BCI data with a total gamma of 60 on my laptop on last Friday (~ like in Mokany, and now spectre needs less than 30 sites to perform well, as opposed tpo gamma = 100, when spectre needed ~40 sites out of 100.)
+
+2020-07-16
+# update/correct BCI scripts and re-run analyses
+BCI_60k is now correct & and results implemented into the error_quantification.Rmd. Energy is < 0.15 for most cases... 
+
+# png caused an build-error on ubuntu machines
+I updated the .png, let's see how that works... 
 
 2020-07-15
 # update/correct BCI scripts and re-run analyses

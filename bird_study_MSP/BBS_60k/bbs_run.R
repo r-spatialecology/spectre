@@ -131,7 +131,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS)  # Code mostly stolen fro
   result <- tibble::tibble(sites = n_sites,
                            species = n_species,
                            total_gamma = total_gamma, 
-                           mean_alpha = mean_alpha,
+                           # mean_alpha = mean_alpha,
                            # species = richness_vector,
                            richness_sd = richness_sd,
                            max_runs = max_runs,
@@ -140,7 +140,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS)  # Code mostly stolen fro
                            iteration = iteration_tmp,
                            energy_before = energy_before,
                            min_conf_t = time_min_conf,
-                           best_energy, 
+                           # best_energy, 
                            correct_pairs = correctly_predicted_site_pairs, 
                            replicate = replicate)
   
