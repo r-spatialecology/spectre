@@ -13,10 +13,10 @@ Constraint_satisfaction_problem::Constraint_satisfaction_problem(const std::vect
     solution.resize(n_sites);
     target.resize(n_sites);
     //  tabu_list.resize(tabu, std::numeric_limits<unsigned>::max()); // species list should be smaller than that...
-
+    
     for (unsigned site = 0; site < n_sites; site++) {
         solution[site].resize(gamma_div);
-
+        
         // convert target matrix to a more convenient format
         target[site].resize(n_sites);
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
@@ -29,7 +29,7 @@ Constraint_satisfaction_problem::Constraint_satisfaction_problem(const std::vect
             }
         }
     }
-
+    
     if (partial_solution.size() > 1) {
         if(partial_solution.size() != n_sites * gamma_div) {
             std::cerr << "The size of the partial_solution vector does not match n_sites * gamma_div. "
@@ -45,7 +45,7 @@ Constraint_satisfaction_problem::Constraint_satisfaction_problem(const std::vect
             }
         }
     }
-
+    
     if (fixed_species_.size() > 1) {
         if(fixed_species_.size() != n_sites * gamma_div) {
             std::cerr << "The size of the fixed_species vector does not match n_sites * gamma_div. "
@@ -65,6 +65,35 @@ Constraint_satisfaction_problem::Constraint_satisfaction_problem(const std::vect
     }
 }
 
+// MSP start
+std::vector<std::vector<double> > Constraint_satisfaction_problem::calculate_sorensen()
+{
+    return calculate_sorensen(solution);
+}
+
+std::vector<std::vector<double> > Constraint_satisfaction_problem::calculate_sorensen(const std::vector<std::vector<int> > &solution) {
+    
+    // create commonness matrix 
+    std::vector<std::vector<int> > commonness_result(n_sites, std::vector<int>(n_sites));
+    
+#pragma omp parallel for
+    for (unsigned site = 0; site < n_sites; site++) {
+        update_solution_commonness_site(solution, commonness_result, n_sites, gamma_div, site);
+    }
+    
+    
+    // create sorensen matrix
+    std::vector<std::vector<double> > sorensen_result(n_sites, std::vector<double>(n_sites));
+    
+#pragma omp parallel for
+    for (unsigned site = 0; site < n_sites; site++) {
+        update_solution_sorensen_site(solution, commonness_result, sorensen_result, n_sites, gamma_div, site);
+    }
+    
+    return sorensen_result;
+}
+// MSP end 
+
 std::vector<std::vector<int> > Constraint_satisfaction_problem::calculate_commonness()
 {
     return calculate_commonness(solution);
@@ -72,12 +101,12 @@ std::vector<std::vector<int> > Constraint_satisfaction_problem::calculate_common
 
 std::vector<std::vector<int> > Constraint_satisfaction_problem::calculate_commonness(const std::vector<std::vector<int> > &solution) {
     std::vector<std::vector<int> > result(n_sites, std::vector<int>(n_sites));
-
+    
 #pragma omp parallel for
     for (unsigned site = 0; site < n_sites; site++) {
         update_solution_commonness_site(solution, result, n_sites, gamma_div, site);
     }
-
+    
     return result;
 }
 
@@ -111,13 +140,13 @@ double Constraint_satisfaction_problem::calc_energy_sum(const std::vector<std::v
             if (target[site][other_site] < 0
                     || static_cast<int>(site) == omit_site
                     || static_cast<int>(other_site) == omit_site) {// i.e. NA
-                continue;
+                    continue;
             }
             sum_diff += std::abs(commonness[site][other_site] -
-                                 target[site][other_site]);
+                target[site][other_site]);
         }
     }
-
+    
     return static_cast<double>(sum_diff);
 }
 
@@ -131,13 +160,13 @@ double Constraint_satisfaction_problem::calc_energy_euclid(const std::vector<std
             if (target[site][other_site] < 0
                     || static_cast<int>(site) == omit_site
                     || static_cast<int>(other_site) == omit_site) {// i.e. NA
-                continue;
+                    continue;
             }
             const auto diff = commonness[site][other_site] - target[site][other_site];
             sum_diff += diff * diff;
         }
     }
-
+    
     return static_cast<double>(std::sqrt(sum_diff));
 }
 
@@ -151,13 +180,13 @@ double Constraint_satisfaction_problem::calc_energy_p(const std::vector<std::vec
             if (target[site][other_site] < 0
                     || static_cast<int>(site) == omit_site
                     || static_cast<int>(other_site) == omit_site) {// i.e. NA
-                continue;
+                    continue;
             }
             const auto diff = std::abs(commonness[site][other_site] - target[site][other_site]);
             sum_diff += std::pow(diff, p);
         }
     }
-
+    
     return static_cast<double>(std::pow(sum_diff, 1.0 / p));
 }
 
@@ -171,7 +200,7 @@ double Constraint_satisfaction_problem::calc_energy_max(const std::vector<std::v
             if (target[site][other_site] < 0
                     || static_cast<int>(site) == omit_site
                     || static_cast<int>(other_site) == omit_site) {// i.e. NA
-                continue;
+                    continue;
             }
             const auto diff = std::abs(commonness[site][other_site] - target[site][other_site]);
             if (diff > max) {
@@ -181,6 +210,111 @@ double Constraint_satisfaction_problem::calc_energy_max(const std::vector<std::v
     }
     return static_cast<double>(max);
 }
+
+// MSP start :  calc energy for sorensen, too 
+
+double Constraint_satisfaction_problem::calc_energy_sorensen(const std::vector<std::vector<double> > &sorensen,
+                                                             const std::vector<std::vector<double> > &target_sorensen,
+                                                             const bool use_custom_norm,
+                                                             int omit_site)
+{
+    double retval = 0;
+    if (use_custom_norm && norm != "sum") {
+        if (norm == "euclid") {
+            retval = calc_energy_euclid_sorensen(sorensen, target_sorensen, omit_site);
+        } else if (norm == "max") {
+            retval = calc_energy_max_sorensen(sorensen, target_sorensen, omit_site);
+        } else if (norm == "p") {
+            retval = calc_energy_p_sorensen(sorensen, target_sorensen, omit_site);
+        }
+    } else {
+        retval = calc_energy_sum_sorensen(sorensen, target_sorensen, omit_site);
+    }
+    return retval;
+}
+
+double Constraint_satisfaction_problem::calc_energy_sum_sorensen(const std::vector<std::vector<double> > &sorensen,
+                                                                 const std::vector<std::vector<double> > &target_sorensen,
+                                                                 int omit_site)
+{
+    double sum_diff = 0.0; // MSP: long double better here??? 
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (target_sorensen[site][other_site] < 0
+                    || static_cast<int>(site) == omit_site
+                    || static_cast<int>(other_site) == omit_site) {// i.e. NA
+                    continue;
+            }
+            sum_diff += std::abs(sorensen[site][other_site] -
+                target_sorensen[site][other_site]);
+        }
+    }
+    
+    return sum_diff;
+}
+
+double Constraint_satisfaction_problem::calc_energy_euclid_sorensen(const std::vector<std::vector<double> > &sorensen,
+                                                                    const std::vector<std::vector<double> > &target_sorensen,
+                                                                    int omit_site)
+{
+    double sum_diff = 0.0;
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (target_sorensen[site][other_site] < 0
+                    || static_cast<int>(site) == omit_site
+                    || static_cast<int>(other_site) == omit_site) {// i.e. NA
+                    continue;
+            }
+            const auto diff = sorensen[site][other_site] - target_sorensen[site][other_site];
+            sum_diff += diff * diff;
+        }
+    }
+    
+    return std::sqrt(sum_diff);
+}
+
+double Constraint_satisfaction_problem::calc_energy_p_sorensen(const std::vector<std::vector<double> > &sorensen,
+                                                               const std::vector<std::vector<double> > &target_sorensen,
+                                                               const int omit_site)
+{
+    double sum_diff = 0;
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (target_sorensen[site][other_site] < 0
+                    || static_cast<int>(site) == omit_site
+                    || static_cast<int>(other_site) == omit_site) {// i.e. NA
+                    continue;
+            }
+            const auto diff = std::abs(sorensen[site][other_site] - target_sorensen[site][other_site]);
+            sum_diff += std::pow(diff, p);
+        }
+    }
+    
+    return std::pow(sum_diff, 1.0 / p);
+}
+
+double Constraint_satisfaction_problem::calc_energy_max_sorensen(const std::vector<std::vector<double> > &sorensen,
+                                                                 const std::vector<std::vector<double> > &target_sorensen,
+                                                                 int omit_site)
+{
+    long max = 0.0;
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (target_sorensen[site][other_site] < 0
+                    || static_cast<int>(site) == omit_site
+                    || static_cast<int>(other_site) == omit_site) {// i.e. NA
+                    continue;
+            }
+            const auto diff = std::abs(sorensen[site][other_site] - target_sorensen[site][other_site]);
+            if (diff > max) {
+                max = diff;
+            }
+        }
+    }
+    return max;
+}
+
+// MSP end 
 
 
 std::vector<unsigned> Constraint_satisfaction_problem::present_species_index(unsigned site, bool omit_fixed_species)
@@ -196,7 +330,7 @@ std::vector<unsigned> Constraint_satisfaction_problem::present_species_index(uns
             species_idx.push_back(species);
         }
     }
-
+    
     return  species_idx;
 }
 
@@ -209,7 +343,7 @@ std::vector<unsigned> Constraint_satisfaction_problem::present_species_index(uns
             species_idx.push_back(species);
         }
     }
-
+    
     return  species_idx;
 }
 
@@ -224,11 +358,12 @@ std::vector<unsigned> Constraint_satisfaction_problem::absent_species_index(unsi
     return absent_species_idx;
 }
 
-void Constraint_satisfaction_problem::Constraint_satisfaction_problem::update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix,
-                                                                                                       std::vector<std::vector<int> > &solution_commonness,
-                                                                                                       const unsigned n_sites,
-                                                                                                       const unsigned n_species,
-                                                                                                       const unsigned site)
+
+void Constraint_satisfaction_problem::update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix,
+                                                                      std::vector<std::vector<int> > &solution_commonness,
+                                                                      const unsigned n_sites,
+                                                                      const unsigned n_species,
+                                                                      const unsigned site)
 {
     for (unsigned other_site = 0; other_site < n_sites; other_site++) {
         if (site == other_site) {
@@ -248,8 +383,37 @@ void Constraint_satisfaction_problem::Constraint_satisfaction_problem::update_so
     }
 }
 
+// MSP 
+void Constraint_satisfaction_problem::update_solution_sorensen_site(const std::vector<std::vector<int> > &solution_matrix,
+                                                                    std::vector<std::vector<int> > &commonness_result,
+                                                                    std::vector<std::vector<double> > &sorensen_result,
+                                                                    const unsigned n_sites,
+                                                                    const unsigned n_species,
+                                                                    const unsigned site)
+{
+    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+        if (site == other_site) {
+            sorensen_result[site][other_site] = -1; // i.e. NA
+            continue;
+        } else {
+            // sorensen richness variables for site a and site b
+            int site_a = 0;
+            int site_b = 0;
+            for (unsigned species = 0; species < n_species; species++) {
+                if (solution_matrix[site][species] ) { // present species at current site
+                    site_a ++;
+                }
+                if (solution_matrix[other_site][species]) { // present species at other site
+                    site_b ++;
+                } 
+            }
+            // sorensen commonness variable 
+            int c_temp = commonness_result[site][other_site]; // tricky! 
+            sorensen_result[site][other_site] = 1 - 2.0 * c_temp / (site_a + site_b);
+        }
+    }
+}
 
 
-
-
+// MSP end
 

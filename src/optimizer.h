@@ -15,6 +15,16 @@ List optimizer_min_conf(IntegerVector alpha_list,
                         unsigned long seed = 0, bool verbose = true);
 
 // [[Rcpp::export]]
+List optimizer_min_conf0_sorensen(IntegerVector alpha_list, const unsigned total_gamma,
+                                  IntegerMatrix target, IntegerMatrix fixed_species,
+                                  IntegerMatrix partial_solution,
+                                  const unsigned max_iterations,
+                                  const unsigned patience = 2000,
+                                  const double energy_threshold = 0.0,
+                                  unsigned long seed = 0, bool verbose = true, std::string norm = "sum",
+                                  const unsigned p = 1);
+
+// [[Rcpp::export]]
 List optimizer_min_conf0(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,
                          IntegerMatrix partial_solution,
