@@ -9,6 +9,11 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 IntegerMatrix calculate_solution_commonness_rcpp(IntegerMatrix solution_matrix);
 
+// MSP start
+// [[Rcpp::export]]
+NumericMatrix calculate_solution_sorensen_rcpp(IntegerMatrix solution_matrix);
+// MSP end
+
 std::vector<int> calculate_solution_commonness(const std::vector<int> &solution_matrix,
                                                const unsigned n_sites,
                                                const unsigned n_species);
@@ -22,6 +27,7 @@ std::vector<double> calculate_solution_sorensen(const std::vector<int> &solution
 IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix,
                                                       const IntegerMatrix solution_commonness,
                                                       const int site);
+
 std::vector<int> calculate_solution_commonness_site(const std::vector<int> &solution_matrix,
                                                     const std::vector<int> &solution_commonness,
                                                     const unsigned n_sites,

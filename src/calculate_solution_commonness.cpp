@@ -22,6 +22,58 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
   return commonness_mat ;
   
 }
+
+// MSP 
+NumericMatrix calculate_solution_sorensen_rcpp(const IntegerMatrix solution_matrix) { 
+  
+  // create result commonness matrix, filled with NAs
+  int nsites = solution_matrix.ncol();
+  IntegerMatrix commonness_mat(nsites, nsites);
+  std::fill(commonness_mat.begin(), commonness_mat.end(), NumericVector::get_na() ) ;
+  
+  // iterate over the lower triangular matrix without diagonal
+  // and calculate # of common species between sites
+#pragma omp parallel for schedule(dynamic)
+  for (unsigned col = 0; col < nsites - 1; col++) {
+    for (unsigned row = col + 1; row < nsites; row++) {
+      commonness_mat(row, col) = sum(solution_matrix(_, row) *
+        solution_matrix(_, col));
+    }
+  }
+  
+  int nspecies = solution_matrix.nrow();
+  
+  // create results sorensen matrix, filled with NAs
+  NumericMatrix sorensen_mat(nsites, nsites);
+  std::fill(sorensen_mat.begin(), sorensen_mat.end(), NumericVector::get_na() ) ;
+  
+  for (unsigned other_site = 0; other_site < nsites; other_site++) {
+    for (unsigned site = other_site + 1; site < nsites; site++) {
+      if (site == other_site) {
+        sorensen_mat(site, other_site) = NA_INTEGER;
+        continue;
+      } else {
+        // sorensen richness variables for site a and site b
+        int site_a = 0;
+        int site_b = 0;
+        for (unsigned species = 0; species < nspecies; species++) { // richness per site 
+          if (solution_matrix(site, species)) { // present species at current site
+            site_a ++;
+          }
+          if (solution_matrix(other_site, species)) { // present species at other site
+            site_b ++;
+          } 
+        }
+        // sorensen commonness variable 
+        int c_temp = commonness_mat(site, other_site);
+        sorensen_mat(site, other_site) = 1 - 2.0 * c_temp / (site_a + site_b);
+      }
+    }
+  }
+  return sorensen_mat ;
+}
+// MSP end
+
 // ========
 std::vector<int> calculate_solution_commonness(const std::vector<int> &solution_matrix, // MSP comment: currently under use
                                                const unsigned n_sites,
@@ -176,11 +228,11 @@ void update_solution_commonness_site(const std::vector<int> &solution_matrix, //
 
 // MSP start [copy to constraint_satisfaction_problem.cpp? ]
 void update_solution_sorensen_site(const std::vector<int> &solution_matrix, 
-                        std::vector<int> &commonness_vector,
-                        std::vector<double> &sorensen_vector,
-                        const unsigned n_sites,
-                        const unsigned n_species,
-                        const unsigned site) {
+                                   std::vector<int> &commonness_vector,
+                                   std::vector<double> &sorensen_vector,
+                                   const unsigned n_sites,
+                                   const unsigned n_species,
+                                   const unsigned site) {
   for (unsigned other_site = 0; other_site < n_sites; other_site++) {
     if (site == other_site) {
       sorensen_vector[site * n_sites + other_site] = NA_INTEGER;
