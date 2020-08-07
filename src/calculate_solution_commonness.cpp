@@ -57,10 +57,10 @@ NumericMatrix calculate_solution_sorensen_rcpp(const IntegerMatrix solution_matr
         int site_a = 0;
         int site_b = 0;
         for (unsigned species = 0; species < nspecies; species++) { // richness per site 
-          if (solution_matrix(site, species)) { // present species at current site
+          if (solution_matrix(species, site)) { // present species at current site
             site_a ++;
           }
-          if (solution_matrix(other_site, species)) { // present species at other site
+          if (solution_matrix(species, other_site)) { // present species at other site
             site_b ++;
           } 
         }
