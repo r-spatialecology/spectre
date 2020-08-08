@@ -135,8 +135,8 @@ std::vector<int> calculate_solution_commonness_site(const std::vector<int> &solu
 
 
 
-IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix, // MSP: obsolete? 
-                                                      const IntegerMatrix solution_commonness,
+IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix, // after swich-try 
+                                                      const IntegerMatrix solution_commonness, // commonness matrix before switch 
                                                       const int site) {
   
   const int nrows = solution_commonness.nrow();
@@ -158,6 +158,34 @@ IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix soluti
 }
 return new_solution_commonness;
 }
+
+// MSP BUG: needs to spit out sorensen instead of a simple sum!!! 
+NumericMatrix calculate_solution_sorensen_site_rcpp(const IntegerMatrix solution_matrix, 
+                                                      const NumericMatrix solution_commonness,
+                                                      const int site) {
+  
+  const int nrows = solution_commonness.nrow();
+  const int site_ = site - 1; // because C++ starts indexing at zero
+  NumericMatrix new_solution_sorensen = solution_commonness;
+#pragma omp parallel
+{
+#pragma omp for nowait schedule(static)
+  for (int j = 0; j < site_; j++) {
+    new_solution_sorensen(site_, j) = sum(solution_matrix(_, j) *
+      solution_matrix(_, site_));
+  }
+  
+#pragma omp for schedule(static)
+  for (int j = site_ + 1; j < nrows; j++) {
+    new_solution_sorensen(j, site_) = sum(solution_matrix(_, j) *
+      solution_matrix(_, site_));
+  }
+}
+return new_solution_sorensen;
+}
+
+// MSP end
+
 
 IntegerMatrix calculate_solution_commonness_species_site_rcpp(const IntegerMatrix solution_matrix,
                                                               const IntegerMatrix solution_commonness,
