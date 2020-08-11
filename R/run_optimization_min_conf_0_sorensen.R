@@ -21,7 +21,7 @@
 #' @export
 run_optimization_min_conf_0_sorensen <- function(alpha_list, 
                                                  total_gamma, 
-                                                 target_sorensen, # MSP
+                                                 target, # MSP
                                                  fixed_species = NULL,
                                                  partial_solution = NULL,
                                                  max_iterations,
@@ -41,7 +41,7 @@ run_optimization_min_conf_0_sorensen <- function(alpha_list,
   
   result = optimizer_min_conf0_sorensen(alpha_list = alpha_list, 
                                         total_gamma = total_gamma, 
-                                        target_sorensen = target_sorensen,# MSP
+                                        target = target,# MSP
                                         fixed_species = fixed_species,
                                         partial_solution = partial_solution,
                                         max_iterations = max_iterations,

@@ -81,8 +81,11 @@ std::vector<unsigned> calc_min_conflict_species_sorensen(const unsigned site,
             continue;
         }
         solution(species, site) = 1;
+        
         const NumericMatrix sorensen_new =
-            calculate_solution_sorensen_rcpp(solution); // _rcpp functions start indexing at 1 // replace this with another function??? 
+            calculate_solution_sorensen_site_rcpp(solution, sorensen, site + 1); // _rcpp functions start indexing at 1 //
+            // MSP before... calculate_solution_sorensen_rcpp(solution); 
+        // MSP my approach here differs from Sebastian work. Please double-check! 
         
         double energy_ = calc_energy_sorensen(sorensen_new, target);
         
@@ -113,7 +116,7 @@ double calc_random_energy_sorensen(unsigned n, IntegerVector alpha_list, const u
 }
  */ 
 
-double calc_energy_sorensen(const NumericMatrix solution_commonness, // still needed... 
+double calc_energy_sorensen(const NumericMatrix solution_commonness, 
                    const NumericMatrix solution_commonness_target)
 {
     // calculate the difference between target and current solution
@@ -121,7 +124,7 @@ double calc_energy_sorensen(const NumericMatrix solution_commonness, // still ne
            (double)sum(na_omit(solution_commonness_target)));
 }
 
-/*
+/* // This function is not used by min_conf_0, ... 
 IntegerMatrix gen_init_solution(const IntegerVector alpha_list,
                                 const unsigned gamma_diversity)
 {

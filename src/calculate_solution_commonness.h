@@ -28,8 +28,21 @@ IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix soluti
                                                       const IntegerMatrix solution_commonness,
                                                       const int site);
 
+// [[Rcpp::export]]
+NumericMatrix calculate_solution_sorensen_site_rcpp(const IntegerMatrix solution_matrix,
+                                                      const NumericMatrix solution_sorensen,
+                                                      const int site);
+
+
 std::vector<int> calculate_solution_commonness_site(const std::vector<int> &solution_matrix,
                                                     const std::vector<int> &solution_commonness,
+                                                    const unsigned n_sites,
+                                                    const unsigned n_species,
+                                                    const unsigned site);
+
+std::vector<double> calculate_solution_sorensen_site(const std::vector<int> &solution_matrix,
+                                                     const std::vector<int> &solution_commonness,
+                                                    const std::vector<double> &solution_sorensen,
                                                     const unsigned n_sites,
                                                     const unsigned n_species,
                                                     const unsigned site);

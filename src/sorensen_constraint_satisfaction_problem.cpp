@@ -4,10 +4,10 @@
 #include <cmath>
 
 Sorensen_constraint_satisfaction_problem::Sorensen_constraint_satisfaction_problem(const std::vector<unsigned> &alpha_list,
-                                                                 const unsigned gamma_div,
-                                                                 const std::vector<double> &target_,
-                                                                 const std::vector<int> &fixed_species_,
-                                                                 const std::vector<int> &partial_solution, const std::string norm)
+                                                                                   const unsigned gamma_div,
+                                                                                   const std::vector<double> &target_,
+                                                                                   const std::vector<int> &fixed_species_,
+                                                                                   const std::vector<int> &partial_solution, const std::string norm)
     : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size()), norm(norm)
 {
     solution.resize(n_sites);
@@ -18,14 +18,17 @@ Sorensen_constraint_satisfaction_problem::Sorensen_constraint_satisfaction_probl
         solution[site].resize(gamma_div);
         
         // convert target matrix to a more convenient format
+        
         target[site].resize(n_sites);
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
             if (site == other_site) {
                 target[site][other_site] = -1; // i.e. NA
             } else if (target_[other_site * n_sites + site] < 0) { // i.e. NA
                 target[site][other_site] = target_[site * n_sites + other_site];
+                // target[site][other_site] = 0.1; // MSP 
             } else {
-                target[site][other_site] = target_[other_site * n_sites + site];
+                //target[site][other_site] = target_[other_site * n_sites + site]; // this line writes nan to target... 
+                target[site][other_site] = 0.1; // MSP 
             }
         }
     }
@@ -97,9 +100,9 @@ std::vector<std::vector<double> > Sorensen_constraint_satisfaction_problem::calc
 // MSP start :  calc energy for sorensen, too 
 
 double Sorensen_constraint_satisfaction_problem::calc_energy_sorensen(const std::vector<std::vector<double> > &sorensen,
-                                                             const std::vector<std::vector<double> > &target_sorensen,
-                                                             const bool use_custom_norm,
-                                                             int omit_site)
+                                                                      const std::vector<std::vector<double> > &target_sorensen,
+                                                                      const bool use_custom_norm,
+                                                                      int omit_site)
 {
     double retval = 0;
     if (use_custom_norm && norm != "sum") {
@@ -117,19 +120,33 @@ double Sorensen_constraint_satisfaction_problem::calc_energy_sorensen(const std:
 }
 
 double Sorensen_constraint_satisfaction_problem::calc_energy_sum_sorensen(const std::vector<std::vector<double> > &sorensen,
-                                                                 const std::vector<std::vector<double> > &target_sorensen,
-                                                                 int omit_site)
+                                                                          const std::vector<std::vector<double> > &target_sorensen,
+                                                                          int omit_site)
 {
     double sum_diff = 0.0; // MSP: long double better here??? 
     for (unsigned site = 0; site < n_sites; site++) {
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
             if (target_sorensen[site][other_site] < 0
                     || static_cast<int>(site) == omit_site
-                    || static_cast<int>(other_site) == omit_site) {// i.e. NA
+                    || static_cast<int>(other_site) == omit_site){  // // i.e. NA
+                    
                     continue;
             }
+            double temp_diff = 0.0;
+            double temp_sorensen = 0.0;
+            double temp_target_sorensen = 0.0;
+            temp_sorensen = std::abs(sorensen[site][other_site]);
+            temp_target_sorensen = std::abs(target_sorensen[site][other_site]);
+            temp_diff = std::abs(sorensen[site][other_site] -
+                target_sorensen[site][other_site]);
+            
             sum_diff += std::abs(sorensen[site][other_site] -
                 target_sorensen[site][other_site]);
+            // MSP
+            //std::cout << "Temp sorensen = "<< temp_sorensen << std::endl;
+            //std::cout << "Temp target_sorensen = "<< temp_target_sorensen << std::endl;
+            //std::cout << "Temp difference = "<< temp_diff << std::endl;
+            // MSP end 
         }
     }
     
@@ -137,8 +154,8 @@ double Sorensen_constraint_satisfaction_problem::calc_energy_sum_sorensen(const 
 }
 
 double Sorensen_constraint_satisfaction_problem::calc_energy_euclid_sorensen(const std::vector<std::vector<double> > &sorensen,
-                                                                    const std::vector<std::vector<double> > &target_sorensen,
-                                                                    int omit_site)
+                                                                             const std::vector<std::vector<double> > &target_sorensen,
+                                                                             int omit_site)
 {
     double sum_diff = 0.0;
     for (unsigned site = 0; site < n_sites; site++) {
@@ -157,8 +174,8 @@ double Sorensen_constraint_satisfaction_problem::calc_energy_euclid_sorensen(con
 }
 
 double Sorensen_constraint_satisfaction_problem::calc_energy_p_sorensen(const std::vector<std::vector<double> > &sorensen,
-                                                               const std::vector<std::vector<double> > &target_sorensen,
-                                                               const int omit_site)
+                                                                        const std::vector<std::vector<double> > &target_sorensen,
+                                                                        const int omit_site)
 {
     double sum_diff = 0;
     for (unsigned site = 0; site < n_sites; site++) {
@@ -177,8 +194,8 @@ double Sorensen_constraint_satisfaction_problem::calc_energy_p_sorensen(const st
 }
 
 double Sorensen_constraint_satisfaction_problem::calc_energy_max_sorensen(const std::vector<std::vector<double> > &sorensen,
-                                                                 const std::vector<std::vector<double> > &target_sorensen,
-                                                                 int omit_site)
+                                                                          const std::vector<std::vector<double> > &target_sorensen,
+                                                                          int omit_site)
 {
     long max = 0.0;
     for (unsigned site = 0; site < n_sites; site++) {
@@ -218,7 +235,7 @@ std::vector<unsigned> Sorensen_constraint_satisfaction_problem::present_species_
 }
 
 std::vector<unsigned> Sorensen_constraint_satisfaction_problem::present_species_index(unsigned site,
-                                                                             const std::vector<std::vector<int> > partial_solution)
+                                                                                      const std::vector<std::vector<int> > partial_solution)
 {
     std::vector<unsigned> species_idx;
     for (unsigned species = 0; species < gamma_div; species++) {
@@ -243,10 +260,10 @@ std::vector<unsigned> Sorensen_constraint_satisfaction_problem::absent_species_i
 
 
 void Sorensen_constraint_satisfaction_problem::update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix,
-                                                                      std::vector<std::vector<int> > &solution_commonness,
-                                                                      const unsigned n_sites,
-                                                                      const unsigned n_species,
-                                                                      const unsigned site)
+                                                                               std::vector<std::vector<int> > &solution_commonness,
+                                                                               const unsigned n_sites,
+                                                                               const unsigned n_species,
+                                                                               const unsigned site)
 {
     for (unsigned other_site = 0; other_site < n_sites; other_site++) {
         if (site == other_site) {
@@ -267,12 +284,12 @@ void Sorensen_constraint_satisfaction_problem::update_solution_commonness_site(c
 }
 
 // MSP 
-void Sorensen_constraint_satisfaction_problem::update_solution_sorensen_site(const std::vector<std::vector<int> > &solution_matrix,
-                                                                    std::vector<std::vector<int> > &commonness_result,
-                                                                    std::vector<std::vector<double> > &sorensen_result,
-                                                                    const unsigned n_sites,
-                                                                    const unsigned n_species,
-                                                                    const unsigned site)
+void Sorensen_constraint_satisfaction_problem::update_solution_sorensen_site(const std::vector<std::vector<int> > &solution_matrix, // ### 
+                                                                             std::vector<std::vector<int> > &commonness_result,
+                                                                             std::vector<std::vector<double> > &sorensen_result,
+                                                                             const unsigned n_sites,
+                                                                             const unsigned n_species,
+                                                                             const unsigned site)
 {
     for (unsigned other_site = 0; other_site < n_sites; other_site++) {
         if (site == other_site) {
@@ -285,14 +302,34 @@ void Sorensen_constraint_satisfaction_problem::update_solution_sorensen_site(con
             for (unsigned species = 0; species < n_species; species++) {
                 if (solution_matrix[site][species] ) { // present species at current site
                     site_a ++;
+                    
                 }
                 if (solution_matrix[other_site][species]) { // present species at other site
                     site_b ++;
                 } 
             }
             // sorensen commonness variable 
+            
             int c_temp = commonness_result[site][other_site]; // tricky! 
-            sorensen_result[site][other_site] = 1 - 2.0 * c_temp / (site_a + site_b);
+            
+            if( (site_a + site_b + c_temp) == 0){
+                sorensen_result[site][other_site] = 0; // needed bc in the beginning both sites may be empty 
+            } else {
+                sorensen_result[site][other_site] = 1 - 2.0 * c_temp / (site_a + site_b);
+            }
+            
+            
+            if (site == 0){
+                //   std::cout << "New line = " << std::endl;
+                //    std::cout << "site_a == " << site_a << ", really " << std::endl;
+                //    std::cout << "site_b == " << site_b << ", yes " << std::endl;
+                //    std::cout << "c_temp == " << c_temp << ", boah " << std::endl;
+                //   std::cout << "Sorensen is: " << sorensen_result[site][other_site] << ", oh yeah... " << std::endl;
+                
+                
+            }
+            
+            
         }
     }
 }

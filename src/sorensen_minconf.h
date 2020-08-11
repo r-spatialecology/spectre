@@ -2,6 +2,7 @@
 #define SORENSEN_MINCONF_H
 #include "sorensen_constraint_satisfaction_problem.h"
 #include <random>
+#include <cmath>
 
 
 class Sorensen_MinConf : public Sorensen_constraint_satisfaction_problem

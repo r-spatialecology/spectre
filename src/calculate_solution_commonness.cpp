@@ -94,7 +94,7 @@ std::vector<int> calculate_solution_commonness(const std::vector<int> &solution_
 
 // MSP start
 // ==========
-std::vector<double> calculate_solution_sorensen(const std::vector<int> &solution_matrix, // seems OK
+std::vector<double> calculate_solution_sorensen(const std::vector<int> &solution_matrix,
                                                 const unsigned n_sites,
                                                 const unsigned n_species) {
   
@@ -105,20 +105,22 @@ std::vector<double> calculate_solution_sorensen(const std::vector<int> &solution
   // and calculate # of common species between sites
 #pragma omp parallel for
   for (unsigned site = 0; site < n_sites; site++) {
-    update_solution_commonness_site(solution_matrix, commonness_vector, n_sites, n_species, site); // TODO 2020-08-06
+    update_solution_commonness_site(solution_matrix, commonness_vector, n_sites, n_species, site); 
   }
   // calculate sorensen matrix from commonness_vector vector 
   // create sorensen vector
   std::vector<double> sorensen_vector(n_sites * n_sites, 0);
   
   for (unsigned site = 0; site < n_sites; site++) {
-    update_solution_sorensen_site(solution_matrix, commonness_vector, sorensen_vector, n_sites, n_species, site); // TODO 2020-08-06
+    update_solution_sorensen_site(solution_matrix, commonness_vector, sorensen_vector, n_sites, n_species, site); 
   }
   
   return sorensen_vector;
 }
 
 // MSP end 
+
+
 
 std::vector<int> calculate_solution_commonness_site(const std::vector<int> &solution_matrix,
                                                     const std::vector<int> &solution_commonness,
@@ -132,7 +134,24 @@ std::vector<int> calculate_solution_commonness_site(const std::vector<int> &solu
   return result ;
 }
 
+// MSP 2020-08-10 changes 
+std::vector<double> calculate_solution_sorensen_site(const std::vector<int> &solution_matrix, // 
+                                                     const std::vector<int> &solution_commonness,
+                                                     const std::vector<double> &solution_sorensen,
+                                                     const unsigned n_sites,
+                                                     const unsigned n_species,
+                                                     const unsigned site) {
+  std::vector<int> result_commonness = solution_commonness;
+  update_solution_commonness_site(solution_matrix, result_commonness, n_sites, n_species, site);
+  
+  // create results vector
+  std::vector<double> result_sorensen = solution_sorensen;
+  update_solution_sorensen_site(solution_matrix, result_commonness, result_sorensen, n_sites, n_species, site);
+  
+  return result_sorensen ;
+}
 
+// MSP end 
 
 
 IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix solution_matrix, // after swich-try 
@@ -161,12 +180,12 @@ return new_solution_commonness;
 
 // MSP BUG: needs to spit out sorensen instead of a simple sum!!! 
 NumericMatrix calculate_solution_sorensen_site_rcpp(const IntegerMatrix solution_matrix, 
-                                                      const NumericMatrix solution_commonness,
+                                                      const NumericMatrix solution_sorensen,
                                                       const int site) {
   
-  const int nrows = solution_commonness.nrow();
+  const int nrows = solution_sorensen.nrow();
   const int site_ = site - 1; // because C++ starts indexing at zero
-  NumericMatrix new_solution_sorensen = solution_commonness;
+  NumericMatrix new_solution_sorensen = solution_sorensen;
 #pragma omp parallel
 {
 #pragma omp for nowait schedule(static)
@@ -263,7 +282,7 @@ void update_solution_sorensen_site(const std::vector<int> &solution_matrix,
                                    const unsigned site) {
   for (unsigned other_site = 0; other_site < n_sites; other_site++) {
     if (site == other_site) {
-      sorensen_vector[site * n_sites + other_site] = NA_INTEGER;
+      sorensen_vector[site * n_sites + other_site] = NA_REAL; // MSP latest change... 
       continue;
     } else {
       // sorensen richness variables for site a and site b

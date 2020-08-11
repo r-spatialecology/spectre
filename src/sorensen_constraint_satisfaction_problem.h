@@ -14,9 +14,7 @@ public:
                                     const std::string norm = "sum");
     
     std::vector<std::vector<int> > solution;
-    // MSP
-    std::vector<std::vector<double> > solution_sorensen;
-    // MSP
+
     unsigned p = 1;
     
 protected:
