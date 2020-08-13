@@ -6,6 +6,9 @@ output: html_notebook
 This will serve as my spectre lab journal. Feel free to read and give comments.
 
 2020-08-13
+## BUGFIXES in sorensen parts 
+After fixing both! NA_REAL issues, and additionally putting std::isnan() into sorensen_constraint_satisfaction_problem.cpp, spectre seems to perform with sorensen target as good as with commonness target. Yay! 
+
 ## Tidy spectre branch sorensen_2
 Tidy and update / push spectre branch. After that, start "serious simulations" on glumanda, and optimize spectre locally. 
 
@@ -24,7 +27,7 @@ using euclid_distance did not improve fit, now I try a change in sorensen_optimi
  
 2020-08-11
 ## Troubleshooting "nan" in target_sorensen:
-Solution: "NA_REAL" instead of "NA_INTEGER" in the sorensen part... 
+Solution: "NA_REAL" instead of "NA_INTEGER" in the sorensen part (file: calculate_solution_commonness.cpp). 
 Issues: target_sorensen has "nan", and thus the programm crashes. 
 I will now go through all files and see if I replaced only in case of "target" IntegerMatrix with NumericMatrix. If not, maybe I will see where I went wrong... 
 

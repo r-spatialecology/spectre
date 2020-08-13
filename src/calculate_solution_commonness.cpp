@@ -50,7 +50,7 @@ NumericMatrix calculate_solution_sorensen_rcpp(const IntegerMatrix solution_matr
   for (unsigned other_site = 0; other_site < nsites; other_site++) {
     for (unsigned site = other_site + 1; site < nsites; site++) {
       if (site == other_site) {
-        sorensen_mat(site, other_site) = NA_INTEGER;
+        sorensen_mat(site, other_site) = NA_REAL;
         continue;
       } else {
         // sorensen richness variables for site a and site b

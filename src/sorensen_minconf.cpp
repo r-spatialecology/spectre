@@ -213,9 +213,7 @@ void Sorensen_MinConf::add_species_min_conf_sorensen(unsigned site,
                                                                    target);
     
     if (min_conflict_species.size() < 1) {
-        std::cerr << "no species found to add at add_species_min_conf_sorensen, site: "
-                  << site
-                  << std::endl; // something odd happened
+        std::cerr << "No species found to add, error. Sorensen_MinConf::add_species_min_conf_sorensen() " << std::endl; // something odd happened
     } else {
         std::shuffle(min_conflict_species.begin(), min_conflict_species.end(), rng);
         const auto species = min_conflict_species[0];

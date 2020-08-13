@@ -325,8 +325,7 @@ std::vector<unsigned> calc_min_conflict_species(const unsigned site,
                                                 const IntegerMatrix current_solution,
                                                 const IntegerMatrix target)
 {
-    // const double epsilon = 0.00001;
-    const double epsilon = 0.1;
+    const double epsilon = 0.00001;
     const auto gamma_div = current_solution.nrow();
     const IntegerMatrix commoness = calculate_solution_commonness_rcpp(current_solution);
     auto solution = current_solution;

@@ -18,17 +18,17 @@ Sorensen_constraint_satisfaction_problem::Sorensen_constraint_satisfaction_probl
         solution[site].resize(gamma_div);
         
         // convert target matrix to a more convenient format
-        
         target[site].resize(n_sites);
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
             if (site == other_site) {
                 target[site][other_site] = -1; // i.e. NA
-            } else if (target_[other_site * n_sites + site] < 0) { // i.e. NA
+            } else if (std::isnan(target_[other_site * n_sites + site])) { // i.e. NA MSP updated for NA_REAL 
                 target[site][other_site] = target_[site * n_sites + other_site];
-                // target[site][other_site] = 0.1; // MSP 
+                // std::cout << "target_ was < 0" << std::endl;
             } else {
                 target[site][other_site] = target_[other_site * n_sites + site]; // this line wrote "nan" to target before replacement of "NA_REAL"... 
-                // target[site][other_site] = 0.1; // MSP 
+               //  target[site][other_site] = 0.1; // MSP 
+               // std::cout << "target_ was > 0" << std::endl;
             }
         }
     }
