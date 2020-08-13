@@ -7,6 +7,7 @@
 #include "backtracking.h"
 #include "minconf.h"
 #include "rcpp_sample.h"
+#include <iostream>
 //omp_set_nested(1);
 
 List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
@@ -234,9 +235,9 @@ List optimizer_min_conf2(IntegerVector alpha_list, const unsigned total_gamma,
     if (verbose) {
         double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
         double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
-        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
-              << " (highest energy was: " << worst_energy << " %, improved by: "
-              << worst_energy - best_energy << " %)";
+        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " "
+              << " (highest energy was: " << worst_energy << " , improved by: "
+              << worst_energy - best_energy << " )";
     }
     
     if (!mc.solution_has_best_energy) {
@@ -324,7 +325,8 @@ std::vector<unsigned> calc_min_conflict_species(const unsigned site,
                                                 const IntegerMatrix current_solution,
                                                 const IntegerMatrix target)
 {
-    const double epsilon = 0.00001;
+    // const double epsilon = 0.00001;
+    const double epsilon = 0.1;
     const auto gamma_div = current_solution.nrow();
     const IntegerMatrix commoness = calculate_solution_commonness_rcpp(current_solution);
     auto solution = current_solution;
@@ -338,7 +340,7 @@ std::vector<unsigned> calc_min_conflict_species(const unsigned site,
         }
         solution(species, site) = 1;
         const IntegerMatrix commoness_new =
-            calculate_solution_commonness_site_rcpp(solution, commoness, site + 1); // _rcpp functions start indexing at 1
+            calculate_solution_commonness_rcpp(solution); // simplified by MSP
         
         double energy_ = calc_energy(commoness_new, target);
         
@@ -348,6 +350,7 @@ std::vector<unsigned> calc_min_conflict_species(const unsigned site,
             energy = energy_;
         } else if (fabs(energy_ - energy) <= epsilon) {
             min_conflict_species.push_back(species); // as good as others, add this species
+            
         }
         solution(species, site) = 0;
     }

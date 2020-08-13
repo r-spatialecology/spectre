@@ -83,9 +83,8 @@ std::vector<unsigned> calc_min_conflict_species_sorensen(const unsigned site,
         solution(species, site) = 1;
         
         const NumericMatrix sorensen_new =
-            calculate_solution_sorensen_site_rcpp(solution, sorensen, site + 1); // _rcpp functions start indexing at 1 //
-            // MSP before... calculate_solution_sorensen_rcpp(solution); 
-        // MSP my approach here differs from Sebastian work. Please double-check! 
+            calculate_solution_sorensen_rcpp(solution); // just a try!!! 
+        // calculate_solution_sorensen_site_rcpp(solution, sorensen, site + 1); // _rcpp functions start indexing at 1 //
         
         double energy_ = calc_energy_sorensen(sorensen_new, target);
         
@@ -103,46 +102,47 @@ std::vector<unsigned> calc_min_conflict_species_sorensen(const unsigned site,
 }
 
 /*
-double calc_random_energy_sorensen(unsigned n, IntegerVector alpha_list, const unsigned total_gamma, NumericMatrix target, unsigned long seed, std::string norm)
-{
-    Sorensen_MinConf mc(as<std::vector<unsigned> >(alpha_list),
-               total_gamma,
-               as<std::vector<double> >(target),
-               std::vector<int> (),
-               std::vector<int> (),
-               norm);
-    mc.setSeed(seed);
-    return mc.calc_energy_random_solution_sorensen(n);
-}
+ double calc_random_energy_sorensen(unsigned n, IntegerVector alpha_list, const unsigned total_gamma, NumericMatrix target, unsigned long seed, std::string norm)
+ {
+ Sorensen_MinConf mc(as<std::vector<unsigned> >(alpha_list),
+ total_gamma,
+ as<std::vector<double> >(target),
+ std::vector<int> (),
+ std::vector<int> (),
+ norm);
+ mc.setSeed(seed);
+ return mc.calc_energy_random_solution_sorensen(n);
+ }
  */ 
 
 double calc_energy_sorensen(const NumericMatrix solution_commonness, 
-                   const NumericMatrix solution_commonness_target)
+                            const NumericMatrix solution_commonness_target)
 {
     // calculate the difference between target and current solution
     return(sum(abs(na_omit(solution_commonness - solution_commonness_target))) /
            (double)sum(na_omit(solution_commonness_target)));
+    
+    
 }
 
 /* // This function is not used by min_conf_0, ... 
-IntegerMatrix gen_init_solution(const IntegerVector alpha_list,
-                                const unsigned gamma_diversity)
-{
-    const auto n_sites = alpha_list.size(); // number of cols
-    
-    IntegerMatrix current_solution(gamma_diversity, n_sites);
-    
-    for (int site = 0; site < n_sites; site++) {
-        const unsigned alpha = static_cast<unsigned>(alpha_list[site]);
-        IntegerVector alpha_div(gamma_diversity);
-        for (unsigned i = 0; i < alpha; i++) {
-            alpha_div[i] = 1;
-        }
-        std::random_shuffle(alpha_div.begin(), alpha_div.end()); ///BUG: seed is ignored, here
-        current_solution(_, site) = alpha_div;
-    }
-    
-    return current_solution;
-}
+ IntegerMatrix gen_init_solution(const IntegerVector alpha_list,
+ const unsigned gamma_diversity)
+ {
+ const auto n_sites = alpha_list.size(); // number of cols
+ 
+ IntegerMatrix current_solution(gamma_diversity, n_sites);
+ 
+ for (int site = 0; site < n_sites; site++) {
+ const unsigned alpha = static_cast<unsigned>(alpha_list[site]);
+ IntegerVector alpha_div(gamma_diversity);
+ for (unsigned i = 0; i < alpha; i++) {
+ alpha_div[i] = 1;
+ }
+ std::random_shuffle(alpha_div.begin(), alpha_div.end()); ///BUG: seed is ignored, here
+ current_solution(_, site) = alpha_div;
+ }
+ 
+ return current_solution;
+ }
  */ 
-    

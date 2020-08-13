@@ -74,8 +74,7 @@ NumericMatrix calculate_solution_sorensen_rcpp(const IntegerMatrix solution_matr
 }
 // MSP end
 
-// ========
-std::vector<int> calculate_solution_commonness(const std::vector<int> &solution_matrix, // MSP comment: currently under use
+std::vector<int> calculate_solution_commonness(const std::vector<int> &solution_matrix, 
                                                const unsigned n_sites,
                                                const unsigned n_species) {
   
@@ -93,7 +92,6 @@ std::vector<int> calculate_solution_commonness(const std::vector<int> &solution_
 }
 
 // MSP start
-// ==========
 std::vector<double> calculate_solution_sorensen(const std::vector<int> &solution_matrix,
                                                 const unsigned n_sites,
                                                 const unsigned n_species) {
@@ -117,7 +115,6 @@ std::vector<double> calculate_solution_sorensen(const std::vector<int> &solution
   
   return sorensen_vector;
 }
-
 // MSP end 
 
 
@@ -134,7 +131,7 @@ std::vector<int> calculate_solution_commonness_site(const std::vector<int> &solu
   return result ;
 }
 
-// MSP 2020-08-10 changes 
+// MSP
 std::vector<double> calculate_solution_sorensen_site(const std::vector<int> &solution_matrix, // 
                                                      const std::vector<int> &solution_commonness,
                                                      const std::vector<double> &solution_sorensen,
@@ -150,7 +147,6 @@ std::vector<double> calculate_solution_sorensen_site(const std::vector<int> &sol
   
   return result_sorensen ;
 }
-
 // MSP end 
 
 
@@ -178,10 +174,10 @@ IntegerMatrix calculate_solution_commonness_site_rcpp(const IntegerMatrix soluti
 return new_solution_commonness;
 }
 
-// MSP BUG: needs to spit out sorensen instead of a simple sum!!! 
+// MSP: BUG! ,but not used at the moment 
 NumericMatrix calculate_solution_sorensen_site_rcpp(const IntegerMatrix solution_matrix, 
-                                                      const NumericMatrix solution_sorensen,
-                                                      const int site) {
+                                                    const NumericMatrix solution_sorensen,
+                                                    const int site) {
   
   const int nrows = solution_sorensen.nrow();
   const int site_ = site - 1; // because C++ starts indexing at zero
@@ -273,7 +269,7 @@ void update_solution_commonness_site(const std::vector<int> &solution_matrix, //
   }
 }
 
-// MSP start [copy to constraint_satisfaction_problem.cpp? ]
+// MSP start 
 void update_solution_sorensen_site(const std::vector<int> &solution_matrix, 
                                    std::vector<int> &commonness_vector,
                                    std::vector<double> &sorensen_vector,

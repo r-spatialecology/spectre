@@ -29,7 +29,7 @@ int Sorensen_MinConf::optimize0_sorensen(const long max_steps_, const double max
     
     const auto sorensen = calculate_sorensen();
     auto current_best_solution = solution;
-    auto energy = calc_energy_sorensen(sorensen, target, false);
+    auto energy = calc_energy_sorensen(sorensen, target);
     double min_energy = energy;
     unsigned n_resets = 1;
     iteration_count.push_back(0);
@@ -81,7 +81,7 @@ int Sorensen_MinConf::optimize0_sorensen(const long max_steps_, const double max
         // add min conf species
         add_species_min_conf_sorensen(site, target);
         const auto sorensen = calculate_sorensen();
-        energy = calc_energy_sorensen(sorensen, target, false);
+        energy = calc_energy_sorensen(sorensen, target);
         
         if (min_energy > energy) {
             current_best_solution = solution;
@@ -100,11 +100,11 @@ int Sorensen_MinConf::optimize0_sorensen(const long max_steps_, const double max
     
     // add species if there are some still missing
     add_missing_species_sorensen(missing_species);
-    energy = calc_energy_sorensen(calculate_sorensen(solution), target, false);
+    energy = calc_energy_sorensen(calculate_sorensen(solution), target);
     iteration_count.push_back(iteration_count.back() + 1);
     energy_vector.push_back(energy);
     
-    if (calc_energy_sorensen(calculate_sorensen(current_best_solution), target, false) <
+    if (calc_energy_sorensen(calculate_sorensen(current_best_solution), target) <
         energy) {
         solution = current_best_solution;
     }
@@ -134,7 +134,7 @@ double Sorensen_MinConf::calc_energy_random_solution_sorensen(const unsigned n)
     for (unsigned i = 0; i < n; i++) {
         const auto random_solution = gen_random_solution_sorensen();
         const auto sorensen = calculate_sorensen(random_solution);
-        avg_energy += calc_energy_sorensen(sorensen, target, false); // MSP
+        avg_energy += calc_energy_sorensen(sorensen, target); // MSP
     }
     
     return avg_energy / n;
@@ -159,27 +159,12 @@ std::vector<unsigned> Sorensen_MinConf::calc_min_conflict_species_sorensen(const
         const unsigned species = free_species[species_idx];
         solution[site][species] = 1; // assign species (will be un-done later)
         
-        // MSP: check solution
-        std::cout << "Solution check in sorensen_minconf.cpp: " << solution[1][1] << ", "<< solution[2][1] << std::endl;  // solution seems to be OK
-        // MSP end
+       
         const auto sorensen_new = calculate_sorensen(solution);
         
-        // MSP: check sorensen_new
+        double energy_ = calc_energy_sorensen(sorensen_new, target, true); // may use a different matrix norm
         
-            std::cerr << "Check calculate_sorensen(): " << sorensen_new[1][2] <<", " << sorensen_new[2][1]<< std::endl; // nan in sorensen matrix 
-        
-        
-        // MSP end
-        
-        double energy_ = calc_energy_sorensen(sorensen_new, target, false); // may use a different matrix norm
-        
-        std::cerr <<  "Energy from calc_energy_sorensen: "<< energy_ << std::endl; 
-        
-        // MSP 
-        if (energy_ > 0){
-            std::cerr << "Energy seems to work " << std::endl; 
-        }
-        // MSP end
+       
         
         if (energy_ < energy) {
             min_conflict_species.clear(); // found better fitting species delete other
@@ -221,14 +206,6 @@ void Sorensen_MinConf::add_species_min_conf_sorensen(unsigned site,
 {
     // Get index of all non-present species of this site
     std::vector<unsigned> absent_species_idx = absent_species_index(site);
-    
-    // MSP 
-    if (absent_species_idx.size() > 1) {
-        std::cerr << "Absent species were found at site: "
-                  << site
-                  << std::endl; 
-    }
-    // MSP end
     
     // calculate the best-fitting species for this site
     auto min_conflict_species = calc_min_conflict_species_sorensen(site,

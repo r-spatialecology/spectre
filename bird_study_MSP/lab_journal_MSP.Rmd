@@ -5,6 +5,51 @@ output: html_notebook
 
 This will serve as my spectre lab journal. Feel free to read and give comments.
 
+2020-08-13
+## Tidy spectre branch sorensen_2
+Tidy and update / push spectre branch. After that, start "serious simulations" on glumanda, and optimize spectre locally. 
+
+## Optimize optimizer TODO 
+To find the global, rather than a local minimum, accept solutions with a certain probability. In detail: begin with a prob of 0.25, and then reduce this prob step-wise until the last iterations. Acceptance rate is optimized as a hyperparameter. The difference between the commonness-spectre and the sorensen-spectre could be a nice option to test this approach.
+
+## Calculate commonness from sorensen matrix
+Take Gabriels predictions, and generate a target commonness matrix to use with spectre... 
+
+2020-08-12
+## Sorensen produces worse results than commonness
+Even with "perfect information", spectre performs worse than using the commonness matrix as target. For example, only 5% of siteXsite pairs are solved correctly. I will try another distance measure today... 
+
+(using calculate_solution_commonness_rcpp did not change a thing in the results, if I used the commonness target. Thus I will try another energy measure with the sorensen stuff now... )
+using euclid_distance did not improve fit, now I try a change in sorensen_optimizer.cpp calc_energy_sorensen()
+ 
+2020-08-11
+## Troubleshooting "nan" in target_sorensen:
+Solution: "NA_REAL" instead of "NA_INTEGER" in the sorensen part... 
+Issues: target_sorensen has "nan", and thus the programm crashes. 
+I will now go through all files and see if I replaced only in case of "target" IntegerMatrix with NumericMatrix. If not, maybe I will see where I went wrong... 
+
+File 1: optimizer / sorensen_optimizer.cpp: added line: "calculate_solution_sorensen_site_rcpp(solution, sorensen, site + 1);" to the file... TODO: check if this function returns what is needed... 
+
+File 2: calculate_solution_sorensen_site_rcpp() in calculate_solution_commonness.cpp: 
+
+## Issue: given a "sorensen target", spectre performs way worse than using a "richness target" (Sim2 folder)
+To do some tests, I will adapt all files to the original "calculate_commonness" parameters, as used by Sebastian, and run this simulation in folder "Sim2". 
+
+## Issue: is calculate_solution_sorensen_site_rcpp needed at all??? 
+I replaced the function, but optimization still works fine... 
+
+
+2020-08-08
+
+## Todo replace function with sorensen function... 
+
+# Sorensen class(es) (int vs double)
+TODO: create a new class for the sorensen stuff. In detail, sorensen objects need a double matric rather than an integer matrix. See you on Monday... 
+
+*create sorensen_constraint_satisfaction_problem*
+*remove sorensen stuff from constraint_satisfaction_problem class*
+
+
 2020-07-19
 # BCI common vs rare species
 updated data description, ~ 60 species are present at > 50% of all sites. 

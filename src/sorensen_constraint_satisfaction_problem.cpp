@@ -27,8 +27,8 @@ Sorensen_constraint_satisfaction_problem::Sorensen_constraint_satisfaction_probl
                 target[site][other_site] = target_[site * n_sites + other_site];
                 // target[site][other_site] = 0.1; // MSP 
             } else {
-                //target[site][other_site] = target_[other_site * n_sites + site]; // this line writes nan to target... 
-                target[site][other_site] = 0.1; // MSP 
+                target[site][other_site] = target_[other_site * n_sites + site]; // this line wrote "nan" to target before replacement of "NA_REAL"... 
+                // target[site][other_site] = 0.1; // MSP 
             }
         }
     }
@@ -114,7 +114,7 @@ double Sorensen_constraint_satisfaction_problem::calc_energy_sorensen(const std:
             retval = calc_energy_p_sorensen(sorensen, target_sorensen, omit_site);
         }
     } else {
-        retval = calc_energy_sum_sorensen(sorensen, target_sorensen, omit_site);
+        retval = calc_energy_sum_sorensen(sorensen, target_sorensen, omit_site); 
     }
     return retval;
 }
@@ -123,7 +123,7 @@ double Sorensen_constraint_satisfaction_problem::calc_energy_sum_sorensen(const 
                                                                           const std::vector<std::vector<double> > &target_sorensen,
                                                                           int omit_site)
 {
-    double sum_diff = 0.0; // MSP: long double better here??? 
+    double sum_diff = 0.0;
     for (unsigned site = 0; site < n_sites; site++) {
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
             if (target_sorensen[site][other_site] < 0
@@ -142,11 +142,7 @@ double Sorensen_constraint_satisfaction_problem::calc_energy_sum_sorensen(const 
             
             sum_diff += std::abs(sorensen[site][other_site] -
                 target_sorensen[site][other_site]);
-            // MSP
-            //std::cout << "Temp sorensen = "<< temp_sorensen << std::endl;
-            //std::cout << "Temp target_sorensen = "<< temp_target_sorensen << std::endl;
-            //std::cout << "Temp difference = "<< temp_diff << std::endl;
-            // MSP end 
+            
         }
     }
     
@@ -317,19 +313,6 @@ void Sorensen_constraint_satisfaction_problem::update_solution_sorensen_site(con
             } else {
                 sorensen_result[site][other_site] = 1 - 2.0 * c_temp / (site_a + site_b);
             }
-            
-            
-            if (site == 0){
-                //   std::cout << "New line = " << std::endl;
-                //    std::cout << "site_a == " << site_a << ", really " << std::endl;
-                //    std::cout << "site_b == " << site_b << ", yes " << std::endl;
-                //    std::cout << "c_temp == " << c_temp << ", boah " << std::endl;
-                //   std::cout << "Sorensen is: " << sorensen_result[site][other_site] << ", oh yeah... " << std::endl;
-                
-                
-            }
-            
-            
         }
     }
 }
