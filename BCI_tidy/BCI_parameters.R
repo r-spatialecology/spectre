@@ -3,10 +3,10 @@
 
 setwd("~/spectre/BCI_tidy")
 
-replicate <- 1 # replicates per parameter combination
-n_sites <- c(20, 40, 60, 80, 100) # number of sites  c(20, 40, 60)
-n_species <- c(30, 50 , 100, 150) # 25, 50, 100, 150 50, 100, 150
-max_runs <- c(2000, 10000, 20000)
+replicate <- 1:5 # 1:5 # replicates per parameter combination
+n_sites <- c(30, 60, 90, 120, 150) # , 200, 250, 300) # c(20, 40, 60, 80, 100) # number of sites  c(20, 40, 60)
+n_species <- c(25, 50, 100, 150, 200, 250, 300) # 
+max_runs <- c(10000, 500000)
 energy_threshold <- 0.0
 n_sample_points <- 500
 verbose = TRUE
