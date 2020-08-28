@@ -1,0 +1,75 @@
+---
+title: "Prepare Barro Colorado Island (BCI) data"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Dryad source
+
+The data was downloaded from: https://datadryad.org/stash/dataset/doi:10.15146/5xcp-0d46. We arbitrarily chose tree stem data set number 8. 
+```{r 
+```
+load("data/bci.tree8.rdata")
+
+# columns to keep: treeID, 
+# sp = "species name", 
+# quadrat = "grid cell of tree, number xxyy indicates row(xx) and column(yy), 
+# or the other way around, not important here" 
+
+# generate species list per quadrat 
+data <- bci.tree8[, names(bci.tree8) %in% c("treeID", "sp", "quadrat")]
+
+
+
+
+dim(data) # 400k trees 
+# data <- data[1:10000, ]
+
+# check if tree ID's are unique
+if (sum(table(data$treeID) > 1)){
+  print("Tree ID's not unique")
+}
+
+sort(table(data$sp))
+
+### Minimum example:
+fake_data <- FALSE
+if (fake_data){
+  quadrat <- c(rep(1, 4), rep(2, 4), rep(3, 4))
+  sp <- c(1,2,3,4, 1,2,5,6,7,7,7,7)
+  plot(sp ~ quadrat)
+  data <- data.frame(quadrat, sp)
+}
+
+
+Sites <- data$quadrat
+Species <- data$sp
+
+d <- data.frame(Sites, Species)
+
+(n_sites <- length(unique(Sites))) # 1251 sites 
+(n_species <- length(unique(Species))) # 328 species 
+
+res <- matrix(nrow = n_species, ncol = n_sites, data = 0)
+res[1:5, 1:3]
+
+for (SITES in 1:n_sites){
+  print(paste0("Site number: ", SITES))
+  for (SPECIES in 1:n_species){
+    if (sum(which(Sites == unique(Sites)[SITES]) %in% which(Species == unique(Species)[SPECIES])) > 0 ){
+      res[SPECIES, SITES] <- 1
+    }
+ 
+       }
+}
+res[1:15, 1:10]
+names(res) <- unique(n_sites)
+ 
+if (fake_data){
+  saveRDS(res, file.path(paste0("data/BCI_fake_MSP.rds")))
+}
+# readRDS(file.path(paste0("data/BCI_fake_MSP.rds")))
+saveRDS(res, file.path(paste0("BCI_tree8_MSP.rds")))
