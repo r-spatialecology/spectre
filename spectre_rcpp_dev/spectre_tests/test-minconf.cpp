@@ -182,24 +182,4 @@ TEST_CASE("optimizer recognizes a fitting solution") {
     }
     R["true_solution"] = true_solution;
     IntegerMatrix target = R.parseEval("spectre:::calculate_solution_commonness_rcpp(true_solution)");
-
-
-    TestMinConf mc1(alpha_list,
-                    gamma,
-                    as<std::vector<int> >(target),
-                    as<std::vector<int> >(true_solution));
-    const auto iter1 = mc1.optimize1(5);
-    const auto energy = mc1.energy_vector;
-    CHECK(iter1 == 5);
-    CHECK(energy.back() == 0.0);
-
-    TestMinConf mc2(alpha_list,
-                    gamma,
-                    as<std::vector<int> >(target),
-                    as<std::vector<int> >(true_solution));
-
-    const auto iter2 = mc2.optimize2(5);
-    const auto energy2 = mc2.energy_vector;
-    CHECK(iter2 == 5);
-    CHECK(energy2.back() == 0.0);
 }

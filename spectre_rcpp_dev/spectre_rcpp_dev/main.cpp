@@ -16,7 +16,7 @@ int main()
     IntegerMatrix target = R["target15"];
 
     R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/random_solution.rda\")");
-    auto res = optimizer_min_conf2(alpha_list, 15, target, IntegerMatrix {}, 15000);
+//auto res = optimizer_min_conf2(alpha_list, 15, target, IntegerMatrix {}, 15000);
 //    IntegerMatrix sol = R.parseEval("current_solution");
 //    IntegerVector alpha_list = R.parseEval("alpha_list");
 //    int total_gamma = R.parseEval("estimated_gamma");

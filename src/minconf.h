@@ -9,8 +9,6 @@ class MinConf : public Constraint_satisfaction_problem
 public:
     using Constraint_satisfaction_problem::Constraint_satisfaction_problem;
     int optimize0(const long max_steps_ = 5000, const double max_energy = 0.0, long long seed = 0, const unsigned patience = 2000);
-    int optimize1(long max_steps_ = 5000, double max_energy = 0.0, long long seed = 0);
-    int optimize2(const long max_steps_ = 5000, const double max_energy = 0.0, long long seed = 0, const unsigned patience = 2000);
     std::vector<int> iteration_count;
     std::vector<double> energy_vector;
     bool solution_has_best_energy = true;
