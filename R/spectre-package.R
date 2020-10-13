@@ -5,7 +5,7 @@
 #'
 #' @name spectre
 #' @docType package
-#' @useDynLib spectre
+#' @useDynLib spectre, .registration=TRUE
 #' @importFrom Rcpp sourceCpp
 
 "_PACKAGE"

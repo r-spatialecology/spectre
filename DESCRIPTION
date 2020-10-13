@@ -19,7 +19,9 @@ Suggests:
     knitr,
     rmarkdown,
     covr
-LinkingTo: Rcpp
+LinkingTo: 
+    Rcpp,
+    testthat
 ByteCompile: true
 Encoding: UTF-8
 LazyData: true
