@@ -3,7 +3,69 @@
 #include <chrono>
 #include <iostream>
 
-int MinConf::optimize0(const long max_steps_, const double max_energy, long long seed, const unsigned patience)
+MinConf::MinConf(const std::vector<unsigned> &alpha_list,
+                 const unsigned gamma_div,
+                 const std::vector<int> &target_,
+                 const std::vector<int> &fixed_species_,
+                 const std::vector<int> &partial_solution)
+    : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size())
+{
+    solution.resize(n_sites);
+    target.resize(n_sites);
+    //  tabu_list.resize(tabu, std::numeric_limits<unsigned>::max()); // species list should be smaller than that...
+
+    for (unsigned site = 0; site < n_sites; site++) {
+        solution[site].resize(gamma_div);
+
+        // convert target matrix to a more convenient format
+        target[site].resize(n_sites);
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (site == other_site) {
+                target[site][other_site] = -1; // i.e. NA
+            } else if (target_[other_site * n_sites + site] < 0) { // i.e. NA
+                target[site][other_site] = target_[site * n_sites + other_site];
+            } else {
+                target[site][other_site] = target_[other_site * n_sites + site];
+            }
+        }
+    }
+
+    if (partial_solution.size() > 1) {
+        if(partial_solution.size() != n_sites * gamma_div) {
+            std::cerr << "The size of the partial_solution vector does not match n_sites * gamma_div. "
+                      << "partial_solution ignored."
+                      << std::endl;
+        } else {
+            for (unsigned site = 0; site < n_sites; site++) {
+                for (unsigned species = 0; species < gamma_div; species++) {
+                    if (partial_solution[site * gamma_div + species]) {
+                        solution[site][species] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    if (fixed_species_.size() > 1) {
+        if(fixed_species_.size() != n_sites * gamma_div) {
+            std::cerr << "The size of the fixed_species vector does not match n_sites * gamma_div. "
+                      << "fixed_species ignored."
+                      << std::endl;
+        } else {
+            fixed_species.resize(n_sites);
+            for (unsigned site = 0; site < n_sites; site++) {
+                fixed_species[site].resize(gamma_div);
+                for (unsigned species = 0; species < gamma_div; species++) {
+                    if(fixed_species_[site * gamma_div + species]) {
+                        fixed_species[site][species] = 1;
+                    }
+                }
+            }
+        }
+    }
+}
+
+int MinConf::optimize(const long max_steps_, const double max_energy, long long seed)
 {
     // Random number generator
     if (seed == 0) {
@@ -19,7 +81,6 @@ int MinConf::optimize0(const long max_steps_, const double max_energy, long long
     }
 
     // optimize
-    int patience_counter = 0;
     auto missing_species = alpha_list;
     for (unsigned site = 0; site < n_sites; site++) {
         missing_species[site] -= present_species_index(site, false).size();
@@ -27,9 +88,8 @@ int MinConf::optimize0(const long max_steps_, const double max_energy, long long
 
     const auto commonness = calculate_commonness();
     auto current_best_solution = solution;
-    auto energy = calc_energy(commonness, target);
-    double min_energy = energy;
-    unsigned n_resets = 1;
+    double energy = calc_energy(commonness, target);
+    double min_energy = std::numeric_limits<double>::max();
     iteration_count.push_back(0);
     energy_vector.push_back(energy);
 
@@ -38,30 +98,7 @@ int MinConf::optimize0(const long max_steps_, const double max_energy, long long
             break;
         }
 
-        if (patience_counter >= patience) {
-            if (min_energy <= energy_vector.back()) {
-                n_resets++;
-                if (n_resets > n_sites) {
-                    n_resets = n_sites;
-                }
-            } else {
-                n_resets = 1;
-            }
-
-            for (unsigned i = 0; i < n_resets; i++) {
-                const auto site = site_dist(rng);
-                for (unsigned species = 0; species < gamma_div; species++) {
-                    solution[site][species] = 0;
-                }
-                if (fixed_species.size()) {
-                    set_fixed_species(site);
-                }
-                missing_species[site] = alpha_list[site] - present_species_index(site, false).size();
-            }
-            patience_counter = 0;
-        }
-
-        const auto site = site_dist(rng);
+        const auto site = site_dist(rng); // choose random site
 
         if (!missing_species[site]) {
             // remove a random species at this site
@@ -82,39 +119,27 @@ int MinConf::optimize0(const long max_steps_, const double max_energy, long long
         energy = calc_energy(commonness, target);
 
         if (min_energy > energy) {
-            current_best_solution = solution;
-            min_energy = energy;
-        }
-
-        if (energy >= energy_vector.back()) {
-            patience_counter++;
-        } else {
-            patience_counter = 0;
+            if (correct_alpha_div(missing_species)) {
+                current_best_solution = solution;
+                min_energy = energy;
+            }
         }
 
         iteration_count.push_back(max_steps_ - iter);
         energy_vector.push_back(energy);
     }
 
-    // add species if there are some still missing
+    // add species if there are some still missing after the iterations
     add_missing_species(missing_species);
     energy = calc_energy(calculate_commonness(solution), target);
+    if (min_energy > energy) {
+        current_best_solution = solution;
+        min_energy = energy;
+    }
+
     iteration_count.push_back(iteration_count.back() + 1);
     energy_vector.push_back(energy);
-
-    if (calc_energy(calculate_commonness(current_best_solution), target) <
-            energy) {
-        solution = current_best_solution;
-    }
-
-    missing_species = alpha_list;
-    for (unsigned site = 0; site < n_sites; site++) {
-        missing_species[site] -= present_species_index(site, false).size();
-        if (missing_species[site]) {
-            solution_has_best_energy = false;
-            break;
-        }
-    }
+    solution = current_best_solution;
 
     return iter;
 }
@@ -185,6 +210,7 @@ void MinConf::set_fixed_species(unsigned site)
         std::shuffle(site_present_species.begin(),
                      site_present_species.end(), rng);
     }
+
     for (unsigned idx = 0; idx < fixed_species_idx.size(); idx++) {
         const unsigned fixed_species = fixed_species_idx[idx];
         solution[site][fixed_species] = 1;
@@ -193,6 +219,46 @@ void MinConf::set_fixed_species(unsigned site)
             site_present_species.pop_back();
         }
     }
+}
+
+std::vector<unsigned> MinConf::present_species_index(unsigned site, bool omit_fixed_species)
+{
+    std::vector<unsigned> species_idx;
+    for (unsigned species = 0; species < gamma_div; species++) {
+        if (omit_fixed_species && fixed_species.size()) {
+            if (fixed_species[site][species] == solution[site][species]) {
+                continue;
+            }
+        }
+        if (solution[site][species]) {
+            species_idx.push_back(species);
+        }
+    }
+
+    return  species_idx;
+}
+
+std::vector<unsigned> MinConf::present_species_index(unsigned site, const std::vector<std::vector<int> > partial_solution)
+{
+    std::vector<unsigned> species_idx;
+    for (unsigned species = 0; species < gamma_div; species++) {
+        if (partial_solution[site][species]) {
+            species_idx.push_back(species);
+        }
+    }
+
+    return  species_idx;
+}
+
+std::vector<unsigned> MinConf::absent_species_index(unsigned site)
+{
+    std::vector<unsigned> absent_species_idx;
+    for (unsigned species = 0; species < gamma_div; species++) {
+        if (!solution[site][species]) {
+            absent_species_idx.push_back(species);
+        }
+    }
+    return absent_species_idx;
 }
 
 void MinConf::add_species_min_conf(unsigned site,
@@ -214,62 +280,7 @@ void MinConf::add_species_min_conf(unsigned site,
         std::shuffle(min_conflict_species.begin(), min_conflict_species.end(), rng);
         const auto species = min_conflict_species[0];
         solution[site][species] = 1;
-        //        if (tabu_species_list.size()) {
-        //            tabu_species_list.erase(tabu_species_list.begin());
-        //            tabu_species_list.push_back(species);
-        //        }
     }
-}
-
-bool MinConf::remove_species_max_conf(unsigned site,
-                                      const std::vector<std::vector<int> > &target)
-{
-    // Get index of all present species of this site
-    std::vector<unsigned> site_present_species = present_species_index(site);
-    if (site_present_species.size()) {
-        if (fixed_species_idx.size()) {
-            // remove fixed_species from present_species_index
-            for (unsigned idx = 0; idx < fixed_species_idx[site].size(); idx++) {
-                const unsigned fixed_species = fixed_species_idx[site][idx];
-                std::vector<unsigned>::iterator it = std::find(site_present_species.begin(),
-                                                               site_present_species.end(),
-                                                               fixed_species);
-                if (it != site_present_species.end()) {
-                    site_present_species.erase(it);
-                }
-            }
-        }
-        //        if (tabu_species_list.size()) {
-        //            // remove tabu_species from present_species_index
-        //            for (unsigned idx = 0; idx < tabu_species_list.size(); idx++) {
-        //                const unsigned tabu_species = tabu_species_list[idx];
-        //                std::vector<unsigned>::iterator it = std::find(site_present_species.begin(),
-        //                                                               site_present_species.end(),
-        //                                                               tabu_species);
-        //                if (it != site_present_species.end()) {
-        //                    site_present_species.erase(it);
-        //                }
-        //            }
-        //        }
-
-
-        // calculate the best-fitting species for this site
-        auto max_conflict_species = calc_max_conflict_species(site,
-                                                              site_present_species,
-                                                              target);
-
-        if (max_conflict_species.size() < 1) {
-            std::cerr << "no species found to remove at remove_species_max_conf, site: "
-                      << site
-                      << std::endl; // something odd happened
-        } else {
-            std::shuffle(max_conflict_species.begin(), max_conflict_species.end(), rng);
-            const auto species = max_conflict_species[0];
-            solution[site][species] = 0;
-        }
-        return true;
-    }
-    return false;
 }
 
 std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site,
@@ -286,7 +297,7 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site,
         solution[site][species] = 1; // assign species (will be un-done later)
         const auto commoness_new = calculate_commonness();
 
-        double energy_ = calc_energy(commoness_new, target, true); // may use a different matrix norm
+        double energy_ = calc_energy(commoness_new, target);
 
         if (energy_ < energy) {
             min_conflict_species.clear(); // found better fitting species delete other
@@ -301,73 +312,6 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site,
     return min_conflict_species;
 }
 
-std::vector<unsigned> MinConf::calc_max_conflict_species(const unsigned site,
-                                                         const std::vector<unsigned> pesent_species,
-                                                         const std::vector<std::vector<int> > &target)
-{
-    const double epsilon = 0.00001;
-    double energy = std::numeric_limits<double>::max(); // makes sure that the first energy_ is smaller
-    std::vector<unsigned> max_conflict_species;
-
-    // try for each present species at this site where the energy would be minimal if it was absent
-
-    for (unsigned species_idx = 0; species_idx < pesent_species.size(); species_idx++) {
-        const unsigned species = pesent_species[species_idx];
-        solution[site][species] = 0; // assign species (will be un-done later)
-        const auto commoness_new = calculate_commonness();
-
-        double energy_ = calc_energy(commoness_new, target, true); // may use a different matrix norm
-
-        if (energy_ < energy) {
-            max_conflict_species.clear(); // found better fitting species delete other
-            max_conflict_species.push_back(species);
-            energy = energy_;
-        } else if (fabs(energy_ - energy) <= epsilon) {
-            max_conflict_species.push_back(species); // as good as others, add this species
-        }
-        solution[site][species] = 1; // undo assign species
-    }
-
-    return max_conflict_species;
-}
-
-
-int MinConf::next_site(const std::vector<unsigned> &missing_species)
-{
-    long long min_values = std::numeric_limits<long long>::max();
-    std::vector<unsigned> mrv_site;
-
-    for (unsigned site = 0; site < n_sites; site++) {
-        if (!missing_species[site]) {
-            continue;
-        }
-        const auto absent_species = absent_species_index(site).size();
-        unsigned n_minus_r = absent_species - missing_species[site];
-        long long values = std::numeric_limits<long long>::max();
-        if (n_minus_r == 0) {
-            values = 1;
-        } else if (n_minus_r == 1) {
-            values = absent_species;
-        } else if (absent_species < factorials.size()) {
-            values = factorials[absent_species] /
-                    (factorials[missing_species[site]] * factorials[n_minus_r]);
-        }
-        if (values < min_values) {
-            mrv_site.clear();
-            mrv_site.push_back(site);
-            min_values = values;
-        } else if (values == min_values) {
-            mrv_site.push_back(site);
-        }
-    }
-
-    std::shuffle(mrv_site.begin(), mrv_site.end(), rng);
-    if (mrv_site.size()) {
-        return mrv_site[0];
-    }
-    return -1;
-}
-
 bool MinConf::add_missing_species(std::vector<unsigned> &missing_species)
 {
     bool retval = false;
@@ -379,4 +323,67 @@ bool MinConf::add_missing_species(std::vector<unsigned> &missing_species)
         }
     }
     return retval;
+}
+
+std::vector<std::vector<int> > MinConf::calculate_commonness()
+{
+    return calculate_commonness(solution);
+}
+
+std::vector<std::vector<int> > MinConf::calculate_commonness(const std::vector<std::vector<int> > &solution) {
+    std::vector<std::vector<int> > result(n_sites, std::vector<int>(n_sites));
+
+    // #pragma omp parallel for
+    for (unsigned site = 0; site < n_sites; site++) {
+        update_solution_commonness_site(solution, result, n_sites, gamma_div, site);
+    }
+
+    return result;
+}
+
+void MinConf::update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix, std::vector<std::vector<int> > &solution_commonness, const unsigned n_sites, const unsigned n_species, const unsigned site)
+{
+    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+        if (site == other_site) {
+            solution_commonness[site][other_site] = -1; // i.e. NA
+            continue;
+        } else {
+            for (unsigned species = 0; species < n_species; species++) {
+                if (!solution_matrix[site][species]) { // no species at current site
+                    continue;
+                } else if (!solution_matrix[other_site][species]) { // no species at other site
+                    continue;
+                } else {
+                    solution_commonness[site][other_site]++;
+                }
+            }
+        }
+    }
+}
+
+double MinConf::calc_energy(const std::vector<std::vector<int> > &commonness,
+                            const std::vector<std::vector<int> > &target)
+{
+    long long sum_diff = 0;
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (target[site][other_site] < 0) {// i.e. NA
+                continue;
+            }
+            sum_diff += std::abs(commonness[site][other_site] -
+                                 target[site][other_site]);
+        }
+    }
+
+    return static_cast<double>(sum_diff);
+}
+
+bool MinConf::correct_alpha_div(const std::vector<unsigned> &missing_species)
+{
+    for (unsigned site = 0; site < n_sites; site++) {
+        if (missing_species[site]) {
+            return false;
+        }
+    }
+    return true;
 }
