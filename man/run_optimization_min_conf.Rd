@@ -2,12 +2,14 @@
 % Please edit documentation in R/run_optimization_min_conf.R
 \name{run_optimization_min_conf}
 \alias{run_optimization_min_conf}
-\title{run_optimization}
+\title{run_optimization_min_conf}
 \usage{
 run_optimization_min_conf(
   alpha_list,
   total_gamma,
   target,
+  fixed_species = NULL,
+  partial_solution = NULL,
   max_iterations,
   energy_threshold,
   seed = 0,
@@ -20,6 +22,10 @@ run_optimization_min_conf(
 \item{total_gamma}{Total (estimated) species in the system.}
 
 \item{target}{Pairwise matrix of species in common.}
+
+\item{fixed_species}{Fixed partial solution with species that are considered as given. Those species are not going to be changed during optimization.}
+
+\item{partial_solution}{Partial or complete initial solution as a start for the optimization.}
 
 \item{max_iterations}{Max number of loops before stopping.}
 
