@@ -11,7 +11,7 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                         IntegerMatrix partial_solution,
                         const unsigned max_iterations,
                         const double energy_threshold,
-                        unsigned long seed, bool verbose)
+                        unsigned long seed, bool verbose, bool interruptible)
 {
     MinConf mc(as<std::vector<unsigned> >(alpha_list),
                total_gamma,
@@ -19,7 +19,14 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                as<std::vector<int> >(fixed_species),
                as<std::vector<int> >(partial_solution));
 
-    long iter = max_iterations - mc.optimize(max_iterations, energy_threshold, seed);
+    long iter = max_iterations - mc.optimize(max_iterations,
+                                             energy_threshold,
+                                             seed, verbose, interruptible);
+    if (iter == max_iterations - mc.RET_ABORT) {
+        Rcout << "The processing was aborted by the user. \n";
+        return List();
+    }
+
     const unsigned n_sites = alpha_list.size();
     IntegerMatrix solution(total_gamma, n_sites);
 

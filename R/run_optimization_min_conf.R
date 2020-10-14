@@ -20,14 +20,15 @@
 
 #' @export
 run_optimization_min_conf <- function(alpha_list, 
-                                        total_gamma, 
-                                        target,
-                                        fixed_species = NULL,
-                                        partial_solution = NULL,
-                                        max_iterations,
-                                        energy_threshold,
-                                        seed = 0,
-                                        verbose = TRUE) {
+                                      total_gamma, 
+                                      target,
+                                      fixed_species = NULL,
+                                      partial_solution = NULL,
+                                      max_iterations,
+                                      energy_threshold,
+                                      seed = 0,
+                                      verbose = TRUE,
+                                      interruptible = TRUE) {
   
   if(is.null(fixed_species)) {
     fixed_species <- matrix()
@@ -37,14 +38,15 @@ run_optimization_min_conf <- function(alpha_list,
   }
   
   result = optimizer_min_conf(alpha_list = alpha_list, 
-                               total_gamma = total_gamma, 
-                               target = target, 
-                               fixed_species = fixed_species,
-                               partial_solution = partial_solution,
-                               max_iterations = max_iterations,
-                               energy_threshold = energy_threshold,
-                               seed = seed, 
-                               verbose = verbose)
+                              total_gamma = total_gamma, 
+                              target = target, 
+                              fixed_species = fixed_species,
+                              partial_solution = partial_solution,
+                              max_iterations = max_iterations,
+                              energy_threshold = energy_threshold,
+                              seed = seed, 
+                              verbose = verbose,
+                              interruptible = interruptible)
   
   return(result)
 }

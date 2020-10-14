@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <chrono>
 #include <iostream>
+// [[Rcpp::depends(RcppProgress)]]
+#include <progress.hpp>
 
 MinConf::MinConf(const std::vector<unsigned> &alpha_list,
                  const unsigned gamma_div,
@@ -12,7 +14,6 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
 {
     solution.resize(n_sites);
     target.resize(n_sites);
-    //  tabu_list.resize(tabu, std::numeric_limits<unsigned>::max()); // species list should be smaller than that...
 
     for (unsigned site = 0; site < n_sites; site++) {
         solution[site].resize(gamma_div);
@@ -65,8 +66,10 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
     }
 }
 
-int MinConf::optimize(const long max_steps_, const double max_energy, long long seed)
+int MinConf::optimize(const long max_steps_, const double max_energy, long long seed, bool verbose, bool interruptible)
 {
+    Progress p(max_steps_, verbose);
+
     // Random number generator
     if (seed == 0) {
         seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
@@ -94,6 +97,11 @@ int MinConf::optimize(const long max_steps_, const double max_energy, long long 
     energy_vector.push_back(energy);
 
     while(energy > max_energy) {
+        p.increment(); // update progress
+        if(interruptible) {
+            if (Progress::check_abort() ) { return RET_ABORT; }
+        }
+
         if(iter-- == 0) {
             break;
         }

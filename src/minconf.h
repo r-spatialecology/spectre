@@ -16,7 +16,9 @@ public:
 
     int optimize(const long max_steps_ = 5000,
                  const double max_energy = 0.0,
-                 long long seed = 0);
+                 long long seed = 0,
+                 bool verbose = true,
+                 bool interruptible = true);
     double calc_energy_random_solution(const unsigned n = 10);
     long long getSeed() const;
     void setSeed(long long value);
@@ -25,6 +27,7 @@ public:
     std::vector<int> iteration_count;
     std::vector<double> energy_vector;
     bool solution_has_best_energy = true;
+    const int RET_ABORT = -999;
     static void update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix,
                                          std::vector<std::vector<int> > &solution_commonness,
                                          const unsigned n_sites,
