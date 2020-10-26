@@ -1,0 +1,114 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This will serve as my spectre lab journal. Feel free to read and give comments.
+
+2020-07-19
+# BCI common vs rare species
+updated data description, ~ 60 species are present at > 50% of all sites. 
+
+# use all BBS data 
+started analysis with all species and all sites in folder BBS_full
+16 mins for 5 iterations -> 3 mins per iteration -> 20 iterations per hour 
+
+# known sites with total_gamma = 60
+Run "known sites" BCI data with a total gamma of 60 on my laptop on last Friday (~ like in Mokany, and now spectre needs less than 30 sites to perform well, as opposed tpo gamma = 100, when spectre needed ~40 sites out of 100.)
+
+2020-07-16
+# update/correct BCI scripts and re-run analyses
+BCI_60k is now correct & and results implemented into the error_quantification.Rmd. Energy is < 0.15 for most cases... 
+
+# png caused an build-error on ubuntu machines
+I updated the .png, let's see how that works... 
+
+2020-07-15
+# update/correct BCI scripts and re-run analyses
+BCI known species is now correct
+
+# Sampled vs realized species dilemma
+If I sample only a block of species and sites, not all species might occur at the selected sites. To avoid unwanted reduction in discrepancy, caused by an overestimated total_gamma, (as Sebastian found out), in BBS I already corrected total_gamma after the sampling process. Another option would be to keep samling species until realized total_gamma equals the estimated gamma (TODO).
+
+# Idea: offer Mokany et al. a co-authorship? 
+A lot of bashing could be avoided, if we would offer this. Just a thought... 
+
+# Sampling of "spatially" sampling blocks from BCI data
+BCI data has information about adjacent cells (in other words, rownumbers and colnumbers are available for each cell/site). We could check how correllated species within blocks are. And even compare weighted initialization of species against the spectre algorithm. 
+
+2020-07-14
+# BCI data set implemented in error quantification Rmd
+BCI data now illustrates the ability of spectre to solve landscapes / species compositions, and also the feature to include known sites. 
+
+2020-07-13
+# BCI data runs were successful
+Runs were successful, and first plots are implemented in the energy chapter draft. The Rmd  seems to dislike .pdf plots, thus I switched to .png format. 
+
+# BCI known species example update
+I corrected the bug that the number of species in the sampled sites was NOT n_species, and thus energy measures underestimated Discrepancy $D$ in the results obtained before. New analyses will be started in the evening. 
+
+# Asked Craig about the "rare species" feature
+I composed an email for Craig asking him about his plans for the rare species feature. This should be relatively easy to implement, but had to define... 
+
+2020-07-10
+# BCI 60k iteration run fail
+run failed after line 22 in parameters -> Fails were not reproducible, same scripts were successful in a second run. Thus I expect an instability on side of "glumanda". 
+
+# spectre paper outline - evaluation section
+We could probably show results similar than these posted in the slack channel already. Like final discrepancy $D$ ~ landscape size and species composition, both for artificial, as well as for empirical data.  
+
+Results from the first serious "known sites" run are back. It looks like we have to include ~ 40 sites to get to perfect solution. I wonder why. 
+
+# Ecaluate case example with known species from Mokany et al. 
+dynamicFOAM, given a richness of 30 and 100 sites, needs 22 sites as fixed, to find a perfect solution. Without fixed sites, they predict 50% of species correctly. This indicates, that in their artificial data set, total gamma was 60. I wrote a script to check that... Given our results using the BCI data (100 sites, 100 species), we would expect only to be ~ of species correctly predicted (assuming total_gamma of 90, and 30 species). 
+
+Running spectre with 30 species, 100 sites, and a total gamma of 60, yielded these insights:
+we need more "known" sites than Mokany et al. (2011), overall energy is higher than with empirical data. 
+
+2020-07-09
+
+Started BCI examples with larger subsets. Decided to keep, for each run separately, all scripts and results in one folder, sorted by date.
+
+Updated/pushed an error quantification chapter. Also understood how Mokany et al. (2011) measured performance, and that their algorithm is not very good. 
+
+Wrote a script to see how implementation/fixing species compositions of known sites improves energy. Script is running with 100 sites and 100 species, sampled from BCI data. Should be hard enough to solve within 25000 iterations.  
+
+
+
+2020-07-08
+
+# Error quantification
+
+## Discrepancy between target and solution
+General case: given a known target $T$, derived for example from empirical data sets, we quantified the discrepancy $D$ between a target $T$ and a solution $S$ as:
+$$D = {(\lvert T - S \rvert )  \over {\sum_{n=1}^{1000}(\lvert T - S_{rand} \rvert) / 1000}) }$$, 
+where $S_{rand}$ is derived from a landscape constrained to match the species richness of all sites, but species are assigned randomly to each site. Since the value of $(\lvert T - S \rvert )$ is determined not only by the correctness of the solution, but depends also on landscape size and species composition (see Appendix), standardizing $(\lvert T - S \rvert )$ by the average discepancy of 1000 solutions makes $D$ a convenient measure to quantify and compare errors across landscapes of different size and species compositions. For a perfect solution, discrepancy $D$ is 0, and for a randomly assigned solution, given the constraints explained above, $D$ is approximately 1. We evaluated the performance of the spectre algorithm as the discrepancy $D_{com}$ between the commonness matrices of the target $T_{com}$ and the solution $S_{com}$.
+
+## Proportion of correctly predicted site x site commonness
+Currently used as a second measure for error quantification by us. This measure is NOT identical to the "proportion of occurrences correctly predicted", as used by Makony et al. (2011), sorry. I misunderstood Makony's measure in the beginning. Our measure (proportion of correctly predicted site x site commonness) might be correllated to $D$, but anyway I would suggest to keep it for a while. Maybe we drop it later if we know if it adds valuable extra information or not.
+
+## Proportion of occurrences correctly predicted
+This measure is on the level of species lists, and thus requires species labelling. Without either a kind of weighing of species occurrence probabilities at initialization, or without inclusion of species lists from a few sites as "known data", probabilities to obtain meaningful scores are low. This measure was taken from Makony et al. (2011), and has to be implemented yet.
+
+# First benchmark results (with BCI data)
+With 20k iterations, and < 60 sites and < 150 species, energy was always below 20%. Given 150 species and 120 sites, energy was close to 20%, and 83% of commonness between sites was predicted correctly. Calculations for one run took 45 minutes. 
+
+# crashes
+with large samples, spectre sometimes crashes the whole R session, thus I get no error message. 
+
+TODO: investigate crash scenarios 
+
+2020-07-07
+
+# Generated siteXspecies list from BCI data 
+Yesterday I downloaded BCI data from dryad repo, and chose the last version of the tree data to use (BCI tree 8). Data had to be transformed into SiteXspecies lists, and yielded a .rds with ~1500 sites and ~ 300 tree species. Number of sites, total gamma (~300) and average richness (~50-80) per 20 x 20 m plot was in accordance with paper's about the BCI. 
+
+# Test spectre using BCI data
+Today I started a similar evaluation of spectre's performance than I did last week with the breeding bird data from 1980-1985.  
+# Paper ideas summarized:
+*spectre* could produce two papers:
+
+As a result from our latest meetings with Kerstin, Sebastian, Jan, Craig, and I, the first one, a "benchmark" paper using empirical data (like the North American Breeding bird survey data & BCI tree data). Both data sets could be benchmarks for optimization of the package, as well as act as a case study.  
+
+Another paper could be an evaluation of the Bangalore bird data. In Detail, Arne collected the data and investigated alpha-diversity, and Gabriel investigated beta-diversity. I, together with other people, could use the estimates of Arne and Gabriel, and using k-fold validation, predict species composition with the remaining fraction of the 36 sites in Bangalore. The overall question would be: (1) how useful are Arne's and Gabriel's results to predict alpha and beta diversity (compare predicted values to empirical ones)? (2) how close would artificial species communities be to empirical ones, if calculated by *spectre*, using only alpha, beta, and gamma estimates?  
+

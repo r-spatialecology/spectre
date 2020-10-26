@@ -1,0 +1,84 @@
+---
+title: "Breeding bird survey 1980: dataset description"
+author: ""
+date: "7/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Description of test data set(s)
+To test the spectre algorithm(s), we used data from the North American Breeding Bird Survey dataset, provided as *data(bbsData)* within the *betapart* R-package. The data consists of binary bird occurrences from two time slots (1980: 1980-1985, 2000: 2000-2005), here we show summary statistics for the 1980 dataset.
+
+```{r, include = FALSE,echo=FALSE}
+library(betapart)
+data(bbsData)
+data <- bbs1980 # either 1980 or 2000 (years)
+```
+
+## Sites and species, data structure
+
+
+
+```{r, include = TRUE, echo=FALSE}
+# richness per site
+alpha_list <- rowSums(data)
+# gamma diversity
+total_gamma <- sum(colSums(data) > 0)
+
+
+```
+The dataset includes occurences of bird species across `r dim(data)[1]` US countries. Species in columns (aou coded), states rowwise. (*spectre* expects input data the other way around, thus data has to be transposed later... ). 
+
+Gamma diversity is `r total_gamma`, mean richness per site is `r round(mean(alpha_list),1) `, 1 SD = `r round(sd(alpha_list),1)`. The average richness is `r round(mean(alpha_list) / total_gamma * 100, 1)` % of gamma diversity.
+
+```{r, include = TRUE, echo=FALSE}
+
+data[1:5, 1:8]
+
+plot( 1:length(alpha_list), alpha_list, ylim = c(0, total_gamma + 1),
+      xlab = "Site", ylab = "Richness", main = "Blue = gamma-diversity, red = mean(richness)")
+abline(h = total_gamma, lty = "dotted", lwd = 2, col = "blue")
+abline(h = mean(alpha_list), col = "red", lty = 2)
+```
+
+## Commonness matrix
+
+```{r, include = TRUE, echo=FALSE}
+library(viridis)
+library(viridisLite)
+viridis_colours <- viridis(3)[3:1]
+plot_commonness_explore <- function(commonness_explore) {
+  
+  # commonness_explore <- calculate_solution_commonness_rcpp(species_grid[[1]])
+  
+  n_row <- nrow(commonness_explore)
+  n_col <- ncol(commonness_explore)
+  
+  #commonness_explore[upper.tri(commonness_explore, diag = TRUE)] <- NA
+  
+  commonness_difference_grid <- commonness_explore 
+  
+  commonness_difference <- expand.grid(x = seq_len(n_row), 
+                                       y = seq_len(n_col))
+  
+  commonness_difference$value <- commonness_difference_grid[seq_len(n_row * n_col)]
+  
+  plot <- ggplot2::ggplot(data = commonness_difference) + 
+    ggplot2::geom_raster(ggplot2::aes(x = x, y = y, fill = value)) + 
+    ggplot2::scale_fill_gradientn(name = "Commonness", 
+                                  colours = c(viridis_colours)) + 
+    ggplot2::coord_equal() + 
+    ggplot2::labs(title = "Commonness matrix", x = "Site ID", y = "Site ID")+
+    ggplot2::theme_void()
+  
+  return(plot)
+}
+commonness_explore <- as.matrix(spectre:::calculate_solution_commonness_rcpp(data))
+plot_commonness_explore(commonness_explore)
+
+```
+
+If (small) random subsamples are used for testing, there is a chance that all sites have no species in common, since commonness is low for many siteXsite pairs. So far, *min_conf_0* outputs *nan* if the summed commonness of the target equals zero. Thus the testing code checks whether the commonness of the target is > 0, and draws another subsample if so. 

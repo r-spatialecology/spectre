@@ -1,4 +1,4 @@
-# library(testthat)
-# library(OurFOAM)
-# 
-# test_check("OurFOAM")
+library(testthat)
+library(spectre)
+
+test_check("spectre")

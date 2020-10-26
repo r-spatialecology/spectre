@@ -9,21 +9,25 @@ Description: One paragraph description of what the package does as one
         or more full sentences.
 License: CC0
 Depends: 
-    R (>= 3.1)
+    R (>= 3.5)
 Imports: 
     ggplot2,
-    Rcpp (>= 1.0.1), 
-    stats
+    Rcpp (>= 1.0.1),
+    stats,
+    RcppProgress
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
-LinkingTo: Rcpp
+    rmarkdown,
+    covr
+LinkingTo: 
+    Rcpp,
+    RcppProgress,
+    testthat
 ByteCompile: true
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 SystemRequirements: C++11
 VignetteBuilder: knitr
-

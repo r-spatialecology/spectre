@@ -1,0 +1,71 @@
+#ifndef MINCONF_H
+#define MINCONF_H
+#include <random>
+#include <vector>
+#include <string>
+
+
+class MinConf
+{
+public:
+    MinConf(const std::vector<unsigned> &alpha_list,
+            const unsigned gamma_div,
+            const std::vector<int> &target_,
+            const std::vector<int> &fixed_species_ = std::vector<int>(),
+            const std::vector<int> &partial_solution = std::vector<int>());
+
+    int optimize(const long max_steps_ = 5000,
+                 const double max_energy = 0.0,
+                 long long seed = 0,
+                 bool verbose = true,
+                 bool interruptible = true);
+    double calc_energy_random_solution(const unsigned n = 10);
+    long long getSeed() const;
+    void setSeed(long long value);
+
+    std::vector<std::vector<int> > solution;
+    std::vector<int> iteration_count;
+    std::vector<double> energy_vector;
+    bool solution_has_best_energy = true;
+    const int RET_ABORT = -999;
+    static void update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix,
+                                         std::vector<std::vector<int> > &solution_commonness,
+                                         const unsigned n_sites,
+                                         const unsigned n_species,
+                                         const unsigned site);
+
+protected:
+    std::mt19937 rng;
+    long long seed;
+    const double epsilon = 0.00001;
+
+    std::vector<std::vector<int> > target;
+    const std::vector<unsigned> alpha_list;
+    std::vector<std::vector<int> > fixed_species;
+    const unsigned gamma_div;
+    const unsigned n_sites;
+
+    std::vector<std::vector<int> > gen_random_solution();
+    void set_fixed_species();
+    void set_fixed_species(unsigned site);
+    std::vector<unsigned> present_species_index(unsigned site, bool omit_fixed_species = true);
+    std::vector<unsigned> present_species_index(unsigned site,
+                                                const std::vector<std::vector<int> > partial_solution);
+    std::vector<unsigned> absent_species_index(unsigned site);
+    void add_species_min_conf(unsigned site,
+                              const std::vector<std::vector<int> > &target);
+    std::vector<unsigned> calc_min_conflict_species(const unsigned site,
+                                                    const std::vector<unsigned> free_species,
+                                                    const std::vector<std::vector<int> > &target);
+    bool add_missing_species(std::vector<unsigned> &missing_species);
+
+    std::vector<std::vector<int> > calculate_commonness();
+    std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution);
+
+
+    double calc_energy(const std::vector<std::vector<int> > &commonness,
+                       const std::vector<std::vector<int> > &target);
+    bool correct_alpha_div(const std::vector<unsigned> &missing_species);
+};
+
+#endif // MINCONF_H
