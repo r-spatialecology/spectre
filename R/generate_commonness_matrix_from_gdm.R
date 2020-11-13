@@ -15,7 +15,7 @@ generate_commonness_matrix_from_gdm <- function(gdm_predictions, alpha_list){
   
   n_sites <- length(alpha_list)
   
-  if( !(length(gdm_predictions) == (n_sites^2 - n_sites))){ # quick check
+  if( !(length(gdm_predictions) == ( (n_sites^2 - n_sites) / 2 ) ) ){ # quick check
     print(paste0("Probably number of sites in estimated richness and estimated gdm predictions do not match! Please check inputs"))
   }
   
