@@ -26,6 +26,11 @@ void TestMinConf::test_gen_init_solution()
     void gen_init_solution();
 }
 
+std::vector<unsigned> TestMinConf::test_calc_missing_species()
+{
+    return calc_missing_species();
+}
+
 std::vector<std::vector<int> > TestMinConf::getTarget() const
 {
     return target;
@@ -55,6 +60,22 @@ context("Tests for the MinConf class") {
     std::vector<int> target = {  -10, 0, 2 ,
                                  0, -10, 0 ,
                                  2, 0, -10  };
+
+    test_that("calc_missing_species()") {
+        std::vector<int> fixed_species = {  1, 1, 1 ,
+                                            0, 0, 0 ,
+                                            1, 0, 0  };
+        TestMinConf mc(alpha_list, gamma, target, fixed_species);
+        mc.solution = {{1, 1, 1},
+                       {0, 0, 0},
+                       {1, 0, 0}};
+        const auto missing_species = mc.test_calc_missing_species();
+
+        expect_true(missing_species.size() == 3);
+        expect_true(missing_species[0] == 0);
+        expect_true(missing_species[1] == 1);
+        expect_true(missing_species[2] == 1);
+    }
 
     TestMinConf mc(alpha_list, gamma, target);
     mc.solution = {{0, 1, 1},
