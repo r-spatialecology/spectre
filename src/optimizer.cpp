@@ -22,6 +22,7 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
     long iter = max_iterations - mc.optimize(max_iterations,
                                              energy_threshold,
                                              seed, verbose, interruptible);
+
     if (iter == max_iterations - mc.RET_ABORT) {
         Rcout << "The processing was aborted by the user. \n";
         return List();
