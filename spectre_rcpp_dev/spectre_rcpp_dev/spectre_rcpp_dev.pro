@@ -4,23 +4,15 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 HEADERS += \
-        ../../src/backtracking.h \
-        ../../src/calculate_solution_commonness.h \
-        ../../src/constraint_satisfaction_problem.h \
-        ../../src/mh_optimizer.h \
         ../../src/minconf.h \
-        ../../src/optimizer.h \
-        ../../src/rcpp_sample.h
+      #  ../../src/test-minconf.h \
+        ../../src/optimizer.h
 
 SOURCES += \
-        ../../src/backtracking.cpp \
-        ../../src/constraint_satisfaction_problem.cpp \
-        ../../src/mh_optimizer.cpp \
         ../../src/minconf.cpp \
+      #  ../../src/test-minconf.cpp \
         ../../src/optimizer.cpp \
-        main.cpp \
-        ../../src/calculate_solution_commonness.cpp \
-        ../../src/rcpp_sample.cpp
+        main.cpp
 
 # OpenMP support
 QMAKE_CXXFLAGS += -fopenmp
@@ -50,8 +42,11 @@ RCPPLIBS = 		$$system($$R_HOME/bin/Rscript -e \"Rcpp:::LdFlags\(\)\")
 RINSIDEINCL = 		$$system($$R_HOME/bin/Rscript -e \"RInside:::CxxFlags\(\)\")
 RINSIDELIBS = 		$$system($$R_HOME/bin/Rscript -e \"RInside:::LdFlags\(\)\")
 
+## include headers RcppProgress
+RCPPPROGRESSINCL = $$system($$R_HOME/bin/Rscript -e \"RcppProgress:::CxxFlags\(\)\")
+
 ## compiler etc settings used in default make rules
-QMAKE_CXXFLAGS +=	$$RCPPWARNING $$RCPPFLAGS $$RCPPINCL $$RINSIDEINCL
-QMAKE_LIBS +=           $$RLDFLAGS $$RBLAS $$RLAPACK $$RINSIDELIBS $$RCPPLIBS
+QMAKE_CXXFLAGS +=	$$RCPPWARNING $$RCPPFLAGS $$RCPPINCL $$RINSIDEINCL $$RCPPPROGRESSINCL
+QMAKE_LIBS += $$RLDFLAGS $$RBLAS $$RLAPACK $$RINSIDELIBS $$RCPPLIBS
 
 

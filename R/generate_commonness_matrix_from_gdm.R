@@ -1,17 +1,23 @@
 #' @title generate_commonness_matrix_from_gdm
 #' 
-#' @description Generate a commonness siteXsite matrix from sorensen gdm-package output
+#' @description Generates the best estimate objective (siteXsite commonness matrix) from predicted richness and predicted Bray-Curtis dissimilarity. 
 #' 
 #' 
-#' @details details
+#' @details The function expects predicted per site richness as a vector, and Bray-Curtis dissimilarity as provided by the gdm-package (Fitzpatrick et al. 2020) output (as a list).
 #' @return 
 #' @examples example
 #' @export
 ### Generate commonness matrix from sorensen gdm-package output 
 
-generate_commonness_matrix_from_gdm <- function(gdm_predictions, n_sites, alpha_list){
+generate_commonness_matrix_from_gdm <- function(gdm_predictions, alpha_list){
   # takes predictions from the gdm-package (in list form) and 
-  # generates a target sorensen matrix
+  # generates the best estimate objective matrix
+  
+  n_sites <- length(alpha_list)
+  
+  if( !(length(gdm_predictions) == ( (n_sites^2 - n_sites) / 2 ) ) ){ # quick check
+    print(paste0("Probably number of sites in estimated richness and estimated gdm predictions do not match! Please check inputs"))
+  }
   
   target_sorensen <- matrix(nrow = n_sites, ncol = n_sites, data = NA)
   
@@ -26,7 +32,6 @@ generate_commonness_matrix_from_gdm <- function(gdm_predictions, n_sites, alpha_
     }
   }
   
-  ### 
   target_commonness <- matrix(nrow = n_sites, ncol = n_sites, data = NA)
   for (site in 1:n_sites){
     for (other_site in 1:n_sites){
@@ -39,5 +44,6 @@ generate_commonness_matrix_from_gdm <- function(gdm_predictions, n_sites, alpha_
       
     }
   }
+  
   return(target_commonness) 
 }

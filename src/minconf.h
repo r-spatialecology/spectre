@@ -48,6 +48,7 @@ protected:
     std::vector<std::vector<int> > gen_random_solution();
     void set_fixed_species();
     void set_fixed_species(unsigned site);
+    std::vector<unsigned> calc_missing_species();
     std::vector<unsigned> present_species_index(unsigned site, bool omit_fixed_species = true);
     std::vector<unsigned> present_species_index(unsigned site,
                                                 const std::vector<std::vector<int> > partial_solution);
@@ -66,6 +67,7 @@ protected:
     double calc_energy(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target);
     bool correct_alpha_div(const std::vector<unsigned> &missing_species);
+
 };
 
 #endif // MINCONF_H

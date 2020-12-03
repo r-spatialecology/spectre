@@ -17,6 +17,7 @@ public:
                        const std::vector<std::vector<int> > &target);
     void test_gen_init_solution();
     std::vector<std::vector<int> > getTarget() const;
+    std::vector<unsigned> test_calc_missing_species();
 };
 
 #endif // TESTMINCONF_H

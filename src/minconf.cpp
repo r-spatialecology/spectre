@@ -74,6 +74,7 @@ int MinConf::optimize(const long max_steps_, const double max_energy, long long 
     if (seed == 0) {
         seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
     }
+
     this->seed = seed;
     rng = std::mt19937(seed);
     std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
@@ -84,10 +85,7 @@ int MinConf::optimize(const long max_steps_, const double max_energy, long long 
     }
 
     // optimize
-    auto missing_species = alpha_list;
-    for (unsigned site = 0; site < n_sites; site++) {
-        missing_species[site] -= present_species_index(site, false).size();
-    }
+    auto missing_species = calc_missing_species();
 
     const auto commonness = calculate_commonness();
     auto current_best_solution = solution;
@@ -227,6 +225,17 @@ void MinConf::set_fixed_species(unsigned site)
             site_present_species.pop_back();
         }
     }
+}
+
+std::vector<unsigned> MinConf::calc_missing_species()
+{
+    auto missing_species = alpha_list;
+    for (unsigned site = 0; site < n_sites; site++) {
+        const auto present_species = present_species_index(site, false).size();
+        missing_species[site] = (missing_species[site] < present_species) ? 0 : missing_species[site] - present_species;
+    }
+
+    return missing_species;
 }
 
 std::vector<unsigned> MinConf::present_species_index(unsigned site, bool omit_fixed_species)
