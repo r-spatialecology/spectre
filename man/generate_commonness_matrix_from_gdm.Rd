@@ -4,16 +4,16 @@
 \alias{generate_commonness_matrix_from_gdm}
 \title{generate_commonness_matrix_from_gdm}
 \usage{
-generate_commonness_matrix_from_gdm(gdm_predictions, n_sites, alpha_list)
+generate_commonness_matrix_from_gdm(gdm_predictions, alpha_list)
 }
 \value{
 
 }
 \description{
-Generate a commonness siteXsite matrix from sorensen gdm-package output
+Generates the best estimate objective (siteXsite commonness matrix) from predicted richness and predicted Bray-Curtis dissimilarity.
 }
 \details{
-details
+The function expects predicted per site richness as a vector, and Bray-Curtis dissimilarity as provided by the gdm-package (Fitzpatrick et al. 2020) output (as a list).
 }
 \examples{
 example
