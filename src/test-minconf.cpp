@@ -11,9 +11,9 @@ std::vector<unsigned> TestMinConf::test_calc_min_conflict_species(const unsigned
 }
 
 
-std::vector<std::vector<int> > TestMinConf::test_calculate_commonness()
+void TestMinConf::test_update_solution_commonness()
 {
-    return calculate_commonness();
+    update_solution_commonness();
 }
 
 double TestMinConf::test_calc_energy(const std::vector<std::vector<int> > &commonness, const std::vector<std::vector<int> > &target)
@@ -99,9 +99,10 @@ context("Tests for the MinConf class") {
 
     test_that("calculate_commonness()") {
         std::vector<std::vector<int> > commonness = { { -1, 0, 2 },
-                                                      { 0, -1, 0 },
-                                                      { 2, 0, -1 } };
-        expect_true(mc.test_calculate_commonness() == commonness);
+                                                      { -1, -1, 0 },
+                                                      { -1, -1, -1 } };
+        mc.test_update_solution_commonness();
+        expect_true(mc.commonness == commonness);
     }
 
     test_that("calc_min_conflict_species") {

@@ -12,7 +12,7 @@ public:
     std::vector<unsigned> test_calc_min_conflict_species(const unsigned site,
                                                     const std::vector<unsigned> free_species,
                                                     const std::vector<std::vector<int> > &target);
-    std::vector<std::vector<int> > test_calculate_commonness();
+    void test_update_solution_commonness();
     double test_calc_energy(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target);
     void test_gen_init_solution();
