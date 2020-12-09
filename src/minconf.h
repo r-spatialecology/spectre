@@ -24,15 +24,15 @@ public:
     void setSeed(long long value);
 
     std::vector<std::vector<int> > solution;
+    std::vector<std::vector<int> > commonness;
     std::vector<int> iteration_count;
     std::vector<double> energy_vector;
     bool solution_has_best_energy = true;
     const int RET_ABORT = -999;
-    static void update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix,
-                                         std::vector<std::vector<int> > &solution_commonness,
-                                         const unsigned n_sites,
-                                         const unsigned n_species,
-                                         const unsigned site);
+
+    static std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution,
+                                                        const unsigned n_sites,
+                                                        const unsigned n_species);
 
 protected:
     std::mt19937 rng;
@@ -60,14 +60,11 @@ protected:
                                                     const std::vector<std::vector<int> > &target);
     bool add_missing_species(std::vector<unsigned> &missing_species);
 
-    std::vector<std::vector<int> > calculate_commonness();
-    std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution);
-
-
     double calc_energy(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target);
     bool correct_alpha_div(const std::vector<unsigned> &missing_species);
 
+    void update_solution_commonness();
 };
 
 #endif // MINCONF_H

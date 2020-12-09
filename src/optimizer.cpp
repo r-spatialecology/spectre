@@ -69,7 +69,6 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
     const unsigned nsites = solution_matrix.ncol();
     const unsigned gamma_div = solution_matrix.nrow();
     std::vector<std::vector<int> > solution_mat(nsites, std::vector<int>(gamma_div, -1));
-    std::vector<std::vector<int> > commonness_mat(nsites, std::vector<int>(nsites));
     for (unsigned site = 0; site < nsites; site++) {
         for (unsigned species = 0; species < gamma_div; species++) {
             solution_mat[site][species] = solution_matrix(species, site);
@@ -78,9 +77,9 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
     IntegerMatrix result(nsites, nsites);
     std::fill(result.begin(), result.end(), NumericVector::get_na() );
 
+    const auto commonness_mat = MinConf::calculate_commonness(solution_mat,
+                                                              nsites, gamma_div);
     for (unsigned site = 0; site < nsites; site++) {
-        MinConf::update_solution_commonness_site(solution_mat, commonness_mat,
-                                                 nsites, gamma_div, site);
         for (unsigned other_site = 0; other_site < nsites; other_site++) {
             if(commonness_mat[site][other_site] != -1) { // NA
                 result(site, other_site) = commonness_mat[site][other_site];
