@@ -15,7 +15,6 @@ public:
             const std::vector<int> &partial_solution = std::vector<int>());
 
     int optimize(const long max_steps_ = 5000,
-                 const double max_energy = 0.0,
                  long long seed = 0,
                  bool verbose = true,
                  bool interruptible = true);

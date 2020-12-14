@@ -11,7 +11,6 @@ run_optimization_min_conf(
   fixed_species = NULL,
   partial_solution = NULL,
   max_iterations,
-  energy_threshold,
   seed = 0,
   verbose = TRUE,
   interruptible = TRUE
@@ -30,11 +29,11 @@ run_optimization_min_conf(
 
 \item{max_iterations}{Max number of loops before stopping.}
 
-\item{energy_threshold}{Optimization stops if energy threshold is reached. This is set as a value between 0 and 1 determining the proportion of error accepted}
-
 \item{seed}{Seed for random number generator. seed = 0 means that a time stamp is used as seed.}
 
 \item{verbose}{It TRUE, progress report is printed}
+
+\item{energy_threshold}{Optimization stops if energy threshold is reached. This is set as a value between 0 and 1 determining the proportion of error accepted}
 }
 \value{
 Best matrix of common species between each site.

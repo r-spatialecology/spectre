@@ -15,7 +15,6 @@ res_sim <- run_optimization_min_conf(alpha_list = alpha_list_test,
                                         total_gamma = total_gamma_test, 
                                         target = target_matrix_test, 
                                         max_iterations = 200, 
-                                        energy_threshold = 0.0,
                                         verbose = FALSE)
 
 suppressWarnings(

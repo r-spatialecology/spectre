@@ -71,7 +71,7 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
     gen_init_solution(missing_species);
 }
 
-int MinConf::optimize(const long max_steps_, const double max_energy, long long seed, bool verbose, bool interruptible)
+int MinConf::optimize(const long max_steps_, long long seed, bool verbose, bool interruptible)
 {
     Progress p(max_steps_, verbose);
 
@@ -97,14 +97,10 @@ int MinConf::optimize(const long max_steps_, const double max_energy, long long 
     iteration_count.push_back(0);
     error_vector.push_back(error);
 
-    while(error > max_energy) {
+    while(iter-- > 0) {
         p.increment(); // update progress
         if(interruptible) {
             if (Progress::check_abort() ) { return RET_ABORT; }
-        }
-
-        if(iter-- == 0) {
-            break;
         }
 
         const auto site = site_dist(rng); // choose random site
@@ -123,13 +119,16 @@ int MinConf::optimize(const long max_steps_, const double max_energy, long long 
         update_solution_commonness();
         error = calc_error(commonness, target);
 
+        iteration_count.push_back(max_steps_ - iter);
+        error_vector.push_back(error);
+
         if (min_error > error) {
             current_best_solution = solution;
             min_error = error;
+            if (min_error == 0) {
+                return iter;
+            }
         }
-
-        iteration_count.push_back(max_steps_ - iter);
-        error_vector.push_back(error);
     }
 
     solution = current_best_solution;

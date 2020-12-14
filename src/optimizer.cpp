@@ -10,7 +10,6 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                         IntegerMatrix target, IntegerMatrix fixed_species,
                         IntegerMatrix partial_solution,
                         const unsigned max_iterations,
-                        const double energy_threshold,
                         unsigned long seed, bool verbose, bool interruptible)
 {
     MinConf mc(as<std::vector<unsigned> >(alpha_list),
@@ -20,7 +19,6 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                as<std::vector<int> >(partial_solution));
 
     long iter = max_iterations - mc.optimize(max_iterations,
-                                             energy_threshold,
                                              seed, verbose, interruptible);
 
 

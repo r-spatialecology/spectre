@@ -24,7 +24,6 @@ int main()
 //    IntegerMatrix target_matrix = R.parseEval("target_matrix");
 
 //    auto sol_com = calculate_solution_commonness_rcpp(sol);
-//    //auto energy = calc_energy(target_matrix, sol_com);
 //    //R["result"]
 //    auto result = mh_optimizer(alpha_list, total_gamma, target_matrix);
 //    R.parseEvalQ("saveRDS(result, \"result.rds\"");
