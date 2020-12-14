@@ -92,12 +92,12 @@ int MinConf::optimize(const long max_steps_, const double max_energy, long long 
     // optimize
     update_solution_commonness();
     auto current_best_solution = solution;
-    unsigned energy = calc_energy(commonness, target);
-    unsigned min_energy = std::numeric_limits<unsigned>::max();
+    unsigned error = calc_error(commonness, target);
+    unsigned min_error = std::numeric_limits<unsigned>::max();
     iteration_count.push_back(0);
-    energy_vector.push_back(energy);
+    error_vector.push_back(error);
 
-    while(energy > max_energy) {
+    while(error > max_energy) {
         p.increment(); // update progress
         if(interruptible) {
             if (Progress::check_abort() ) { return RET_ABORT; }
@@ -121,15 +121,15 @@ int MinConf::optimize(const long max_steps_, const double max_energy, long long 
         // add min conf species
         add_species_min_conf(site, target);
         update_solution_commonness();
-        energy = calc_energy(commonness, target);
+        error = calc_error(commonness, target);
 
-        if (min_energy > energy) {
+        if (min_error > error) {
             current_best_solution = solution;
-            min_energy = energy;
+            min_error = error;
         }
 
         iteration_count.push_back(max_steps_ - iter);
-        energy_vector.push_back(energy);
+        error_vector.push_back(error);
     }
 
     solution = current_best_solution;
@@ -137,16 +137,16 @@ int MinConf::optimize(const long max_steps_, const double max_energy, long long 
     return iter;
 }
 
-unsigned MinConf::calc_energy_random_solution(const unsigned n)
+unsigned MinConf::calc_error_random_solution(const unsigned n)
 {
-    unsigned avg_energy = 0;
+    unsigned avg_error = 0;
     for (unsigned i = 0; i < n; i++) {
         const auto random_solution = gen_random_solution();
         const auto commonness = calculate_commonness(random_solution, n_sites);
-        avg_energy += calc_energy(commonness, target); // MSP
+        avg_error += calc_error(commonness, target); // MSP
     }
 
-    return avg_energy / n;
+    return avg_error / n;
 }
 
 long long MinConf::getSeed() const
@@ -290,7 +290,7 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site,
                                                          const std::vector<unsigned> free_species,
                                                          const std::vector<std::vector<int> > &target)
 {
-    double energy = std::numeric_limits<double>::max(); // makes sure that the first energy_ is smaller
+    double error = std::numeric_limits<double>::max(); // makes sure that the first error_ is smaller
     std::vector<unsigned> min_conflict_species;
 
     // try for each species at this site where the enery would be minimal
@@ -299,13 +299,13 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site,
         const unsigned species = free_species[species_idx];
         solution[site][species] = 1; // assign species (will be un-done later)
         update_solution_commonness();
-        unsigned energy_ = calc_energy(commonness, target);
+        unsigned error_ = calc_error(commonness, target);
 
-        if (energy_ < energy) {
+        if (error_ < error) {
             min_conflict_species.clear(); // found better fitting species delete other
             min_conflict_species.push_back(species);
-            energy = energy_;
-        } else if (fabs(energy_ - energy) <= epsilon) {
+            error = error_;
+        } else if (fabs(error_ - error) <= epsilon) {
             min_conflict_species.push_back(species); // as good as others, add this species
         }
         solution[site][species] = 0; // undo assign species
@@ -363,7 +363,7 @@ std::vector<std::vector<int> > MinConf::calculate_commonness(const std::vector<s
     return result;
 }
 
-unsigned MinConf::calc_energy(const std::vector<std::vector<int> > &commonness,
+unsigned MinConf::calc_error(const std::vector<std::vector<int> > &commonness,
                             const std::vector<std::vector<int> > &target)
 {
     unsigned sum_diff = 0;

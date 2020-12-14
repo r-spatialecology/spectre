@@ -19,15 +19,15 @@ public:
                  long long seed = 0,
                  bool verbose = true,
                  bool interruptible = true);
-    unsigned calc_energy_random_solution(const unsigned n = 10);
+    unsigned calc_error_random_solution(const unsigned n = 10);
     long long getSeed() const;
     void setSeed(long long value);
 
     std::vector<std::vector<int> > solution;
     std::vector<std::vector<int> > commonness;
     std::vector<int> iteration_count;
-    std::vector<unsigned> energy_vector;
-    bool solution_has_best_energy = true;
+    std::vector<unsigned> error_vector;
+    bool solution_has_best_error = true;
     const int RET_ABORT = -999;
 
     static std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution,
@@ -59,7 +59,7 @@ protected:
                                                     const std::vector<unsigned> free_species,
                                                     const std::vector<std::vector<int> > &target);
 
-    unsigned calc_energy(const std::vector<std::vector<int> > &commonness,
+    unsigned calc_error(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target);
     void update_solution_commonness();
 };
