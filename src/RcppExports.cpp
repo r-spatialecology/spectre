@@ -36,12 +36,28 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// calc_energy_random_solution
+unsigned calc_energy_random_solution(const unsigned n, IntegerVector alpha_list, const unsigned total_gamma, IntegerMatrix target, unsigned long seed);
+RcppExport SEXP _spectre_calc_energy_random_solution(SEXP nSEXP, SEXP alpha_listSEXP, SEXP total_gammaSEXP, SEXP targetSEXP, SEXP seedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const unsigned >::type n(nSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type alpha_list(alpha_listSEXP);
+    Rcpp::traits::input_parameter< const unsigned >::type total_gamma(total_gammaSEXP);
+    Rcpp::traits::input_parameter< IntegerMatrix >::type target(targetSEXP);
+    Rcpp::traits::input_parameter< unsigned long >::type seed(seedSEXP);
+    rcpp_result_gen = Rcpp::wrap(calc_energy_random_solution(n, alpha_list, total_gamma, target, seed));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP run_testthat_tests();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spectre_optimizer_min_conf", (DL_FUNC) &_spectre_optimizer_min_conf, 10},
     {"_spectre_calculate_solution_commonness_rcpp", (DL_FUNC) &_spectre_calculate_solution_commonness_rcpp, 1},
+    {"_spectre_calc_energy_random_solution", (DL_FUNC) &_spectre_calc_energy_random_solution, 5},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 0},
     {NULL, NULL, 0}
 };

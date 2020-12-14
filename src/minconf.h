@@ -19,20 +19,19 @@ public:
                  long long seed = 0,
                  bool verbose = true,
                  bool interruptible = true);
-    double calc_energy_random_solution(const unsigned n = 10);
+    unsigned calc_energy_random_solution(const unsigned n = 10);
     long long getSeed() const;
     void setSeed(long long value);
 
     std::vector<std::vector<int> > solution;
     std::vector<std::vector<int> > commonness;
     std::vector<int> iteration_count;
-    std::vector<double> energy_vector;
+    std::vector<unsigned> energy_vector;
     bool solution_has_best_energy = true;
     const int RET_ABORT = -999;
 
     static std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution,
-                                                        const unsigned n_sites,
-                                                        const unsigned n_species);
+                                                        const unsigned n_sites);
 
 protected:
     std::mt19937 rng;
@@ -45,6 +44,7 @@ protected:
     const unsigned gamma_div;
     const unsigned n_sites;
 
+    void gen_init_solution(std::vector<unsigned> missing_species);
     std::vector<std::vector<int> > gen_random_solution();
     void set_fixed_species();
     void set_fixed_species(unsigned site);
@@ -58,12 +58,9 @@ protected:
     std::vector<unsigned> calc_min_conflict_species(const unsigned site,
                                                     const std::vector<unsigned> free_species,
                                                     const std::vector<std::vector<int> > &target);
-    bool add_missing_species(std::vector<unsigned> &missing_species);
 
-    double calc_energy(const std::vector<std::vector<int> > &commonness,
+    unsigned calc_energy(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target);
-    bool correct_alpha_div(const std::vector<unsigned> &missing_species);
-
     void update_solution_commonness();
 };
 

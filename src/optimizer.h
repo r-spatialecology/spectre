@@ -14,4 +14,8 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                          unsigned long seed = 0, bool verbose = true, bool interruptible = true);
 // [[Rcpp::export]]
 IntegerMatrix calculate_solution_commonness_rcpp(IntegerMatrix solution_matrix);
+
+// [[Rcpp::export]]
+unsigned calc_energy_random_solution(const unsigned n, IntegerVector alpha_list, const unsigned total_gamma,
+                                     IntegerMatrix target, unsigned long seed);
 #endif // MH_OPTIMIZER_H

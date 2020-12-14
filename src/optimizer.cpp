@@ -23,6 +23,7 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                                              energy_threshold,
                                              seed, verbose, interruptible);
 
+
     if (iter == max_iterations - mc.RET_ABORT) {
         Rcout << "The processing was aborted by the user. \n";
         return List();
@@ -35,11 +36,6 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
         for (unsigned species = 0; species < total_gamma; species++) {
             solution(species, site) = mc.solution[site][species];
         }
-    }
-
-    const auto energy_normalizer = mc.calc_energy_random_solution(1000);
-    for (unsigned i = 0; i < mc.energy_vector.size(); i++) {
-        mc.energy_vector[i] /= energy_normalizer;
     }
 
     // generate dataframe for i and energy
@@ -77,8 +73,7 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
     IntegerMatrix result(nsites, nsites);
     std::fill(result.begin(), result.end(), NumericVector::get_na() );
 
-    const auto commonness_mat = MinConf::calculate_commonness(solution_mat,
-                                                              nsites, gamma_div);
+    const auto commonness_mat = MinConf::calculate_commonness(solution_mat, nsites);
     for (unsigned site = 0; site < nsites; site++) {
         for (unsigned other_site = 0; other_site < nsites; other_site++) {
             if(commonness_mat[site][other_site] != -1) { // NA
@@ -87,4 +82,12 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
         }
     }
     return result;
+}
+
+unsigned calc_energy_random_solution(const unsigned n, IntegerVector alpha_list, const unsigned total_gamma,
+                                     IntegerMatrix target, unsigned long seed)
+{
+    MinConf mc(as<std::vector<unsigned> >(alpha_list), total_gamma, as<std::vector<int> >(target));
+    mc.setSeed(seed);
+    return mc.calc_energy_random_solution(n);
 }
