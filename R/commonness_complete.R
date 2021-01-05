@@ -1,5 +1,3 @@
-# TODO Completely rethink this description and write it using the discussion in the manuscript
-
 #' @title commonness_complete
 #' 
 #' @description Calculates the overall proportion of matching cells between a 
