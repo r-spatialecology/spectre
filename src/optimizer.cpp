@@ -4,7 +4,6 @@
 #include <limits>
 #include <cmath>
 #include "minconf.h"
-//omp_set_nested(1);
 
 List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                         IntegerMatrix target, IntegerMatrix fixed_species,
@@ -63,11 +62,13 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
     const unsigned nsites = solution_matrix.ncol();
     const unsigned gamma_div = solution_matrix.nrow();
     std::vector<std::vector<int> > solution_mat(nsites, std::vector<int>(gamma_div, -1));
+
     for (unsigned site = 0; site < nsites; site++) {
         for (unsigned species = 0; species < gamma_div; species++) {
             solution_mat[site][species] = solution_matrix(species, site);
         }
     }
+
     IntegerMatrix result(nsites, nsites);
     std::fill(result.begin(), result.end(), NumericVector::get_na() );
 

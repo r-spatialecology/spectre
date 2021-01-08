@@ -5,12 +5,12 @@ CONFIG -= qt
 
 HEADERS += \
         ../../src/minconf.h \
-      //  ../../src/test-minconf.h \
+      #  ../../src/test-minconf.h \
         ../../src/optimizer.h
 
 SOURCES += \
         ../../src/minconf.cpp \
-      //  ../../src/test-minconf.cpp \
+      #  ../../src/test-minconf.cpp \
         ../../src/optimizer.cpp \
         main.cpp
 
