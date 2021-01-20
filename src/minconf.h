@@ -11,16 +11,14 @@ public:
     MinConf(const std::vector<unsigned> &alpha_list,
             const unsigned gamma_div,
             const std::vector<int> &target_,
+            const unsigned long seed,
             const std::vector<int> &fixed_species_ = std::vector<int>(),
             const std::vector<int> &partial_solution = std::vector<int>());
 
-    int optimize(const long max_steps_ = 5000,
-                 long long seed = 0,
-                 bool verbose = true,
-                 bool interruptible = true);
+    int optimize(const long max_steps_,
+                 bool verbose,
+                 bool interruptible);
     unsigned calc_error_random_solution(const unsigned n = 10);
-    long long getSeed() const;
-    void setSeed(long long value);
 
     std::vector<std::vector<int> > solution;
     std::vector<std::vector<int> > commonness;
@@ -30,11 +28,10 @@ public:
     const int RET_ABORT = -999;
 
     static std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution,
-                                                        const unsigned n_sites);
+                                                               const unsigned n_sites);
 
 protected:
     std::mt19937 rng;
-    long long seed;
     const double epsilon = 0.00001;
 
     std::vector<std::vector<int> > target;
@@ -59,7 +56,7 @@ protected:
                                                     const std::vector<std::vector<int> > &target);
 
     unsigned calc_error(const std::vector<std::vector<int> > &commonness,
-                       const std::vector<std::vector<int> > &target);
+                        const std::vector<std::vector<int> > &target);
     void update_solution_commonness();
 };
 

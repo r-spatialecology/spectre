@@ -16,8 +16,8 @@
 #'  match the estimated species richness of each site.
 #' @param max_iterations The maximum number of iterations that the optimization
 #'  algorithm may run through before stopping.
-#' @param seed Seed for random number generator. \code{seed = 0} means that a 
-#'  time stamp is used as the seed. 
+#' @param seed Seed for random number generator. Seed must be a positive integer value.
+#'   \code{seed = NA} means that a random integer is used as seed. 
 #' @param verbose If \code{TRUE} (default), a progress report is printed during
 #'  the optimization run. 
 #' 
@@ -50,7 +50,7 @@ run_optimization_min_conf <- function(alpha_list,
                                       fixed_species = NULL,
                                       partial_solution = NULL,
                                       max_iterations,
-                                      seed = 0,
+                                      seed = NA,
                                       verbose = TRUE,
                                       interruptible = TRUE) {
   
@@ -59,6 +59,10 @@ run_optimization_min_conf <- function(alpha_list,
   }
   if (is.null(partial_solution)) {
     partial_solution <- matrix()
+  }
+  
+  if (is.na(seed)) {
+    seed <- sample(0:.Machine$integer.max, 1)
   }
   
   result = optimizer_min_conf(alpha_list = alpha_list, 

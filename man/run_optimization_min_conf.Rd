@@ -11,7 +11,7 @@ run_optimization_min_conf(
   fixed_species = NULL,
   partial_solution = NULL,
   max_iterations,
-  seed = 0,
+  seed = NA,
   verbose = TRUE,
   interruptible = TRUE
 )
@@ -36,8 +36,8 @@ match the estimated species richness of each site.}
 \item{max_iterations}{The maximum number of iterations that the optimization
 algorithm may run through before stopping.}
 
-\item{seed}{Seed for random number generator. \code{seed = 0} means that a
-time stamp is used as the seed.}
+\item{seed}{Seed for random number generator. Seed must be a positive integer value.
+\code{seed = NA} means that a random integer is used as seed.}
 
 \item{verbose}{If \code{TRUE} (default), a progress report is printed during
 the optimization run.}

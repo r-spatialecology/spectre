@@ -9,16 +9,16 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                         IntegerMatrix target, IntegerMatrix fixed_species,
                         IntegerMatrix partial_solution,
                         const unsigned max_iterations,
-                        unsigned long seed, bool verbose, bool interruptible)
+                        const unsigned long seed, bool verbose, bool interruptible)
 {
     MinConf mc(as<std::vector<unsigned> >(alpha_list),
                total_gamma,
                as<std::vector<int> >(target),
+               seed,
                as<std::vector<int> >(fixed_species),
                as<std::vector<int> >(partial_solution));
 
-    long iter = max_iterations - mc.optimize(max_iterations,
-                                             seed, verbose, interruptible);
+    long iter = max_iterations - mc.optimize(max_iterations, verbose, interruptible);
 
 
     if (iter == max_iterations - mc.RET_ABORT) {
@@ -84,9 +84,8 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
 }
 
 unsigned calc_error_random_solution(const unsigned n, IntegerVector alpha_list, const unsigned total_gamma,
-                                     IntegerMatrix target, unsigned long seed)
+                                     IntegerMatrix target, const unsigned long seed)
 {
-    MinConf mc(as<std::vector<unsigned> >(alpha_list), total_gamma, as<std::vector<int> >(target));
-    mc.setSeed(seed);
+    MinConf mc(as<std::vector<unsigned> >(alpha_list), total_gamma, as<std::vector<int> >(target), seed);
     return mc.calc_error_random_solution(n);
 }

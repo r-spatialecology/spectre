@@ -8,10 +8,14 @@
 MinConf::MinConf(const std::vector<unsigned> &alpha_list,
                  const unsigned gamma_div,
                  const std::vector<int> &target_,
+                 const unsigned long seed,
                  const std::vector<int> &fixed_species_,
                  const std::vector<int> &partial_solution)
     : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size())
 {
+    // Random number generator
+    rng = std::mt19937(seed);
+
     solution.resize(n_sites);
     target.resize(n_sites);
     commonness.resize(n_sites);
@@ -71,18 +75,10 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
     gen_init_solution(missing_species);
 }
 
-int MinConf::optimize(const long max_steps_, long long seed, bool verbose, bool interruptible)
+int MinConf::optimize(const long max_steps_, bool verbose, bool interruptible)
 {
     Progress p(max_steps_, verbose);
 
-    // Random number generator
-    if (seed == 0) {
-        seed = std::chrono::high_resolution_clock::now().time_since_epoch().count();
-    }
-
-    this->seed = seed;
-    rng = std::mt19937(seed);
-    std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
     auto iter = max_steps_;
 
     if (fixed_species.size()) {
@@ -96,6 +92,7 @@ int MinConf::optimize(const long max_steps_, long long seed, bool verbose, bool 
     unsigned min_error = std::numeric_limits<unsigned>::max();
     iteration_count.push_back(0);
     error_vector.push_back(error);
+    std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
 
     while(iter-- > 0) {
         p.increment(); // update progress
@@ -146,17 +143,6 @@ unsigned MinConf::calc_error_random_solution(const unsigned n)
     }
 
     return avg_error / n;
-}
-
-long long MinConf::getSeed() const
-{
-    return seed;
-}
-
-void MinConf::setSeed(long long value)
-{
-    seed = value;
-    rng.seed(seed);
 }
 
 std::vector<std::vector<int> > MinConf::gen_random_solution()

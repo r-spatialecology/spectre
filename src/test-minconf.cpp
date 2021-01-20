@@ -38,6 +38,8 @@ std::vector<std::vector<int> > TestMinConf::getTarget() const
 
 
 context("MinConf does not skrew up the target") {
+    std::random_device rd;
+    long long seed = rd();
     std::vector<unsigned> alpha_list = {14, 12, 8};
     unsigned gamma = 30;
     std::vector<int> target = {-1, -1, -1,
@@ -48,13 +50,15 @@ context("MinConf does not skrew up the target") {
                                                        {5, -1, 4},
                                                        {3, 4, -1} };
 
-    TestMinConf min_conf(alpha_list, gamma, target);
+    TestMinConf min_conf(alpha_list, gamma, target, seed);
     auto calc_target = min_conf.getTarget();
     expect_true(calc_target == expected_target);
 }
 
 
 context("Tests for the MinConf class") {
+    std::random_device rd;
+    long long seed = rd();
     std::vector<unsigned> alpha_list = {2, 1, 2};
     unsigned gamma = 3;
     std::vector<int> target = {  -10, 0, 2 ,
@@ -65,7 +69,7 @@ context("Tests for the MinConf class") {
         std::vector<int> fixed_species = {  1, 1, 1 ,
                                             0, 0, 0 ,
                                             1, 0, 0  };
-        TestMinConf mc(alpha_list, gamma, target, fixed_species);
+        TestMinConf mc(alpha_list, gamma, target, seed, fixed_species);
         mc.solution = {{1, 1, 1},
                        {0, 0, 0},
                        {1, 0, 0}};
@@ -77,7 +81,7 @@ context("Tests for the MinConf class") {
         expect_true(missing_species[2] == 1);
     }
 
-    TestMinConf mc(alpha_list, gamma, target);
+    TestMinConf mc(alpha_list, gamma, target, seed);
     mc.solution = {{0, 1, 1},
                    {1, 0, 0},
                    {0, 1, 1}};
