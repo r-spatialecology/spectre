@@ -15,24 +15,22 @@ public:
             const std::vector<int> &partial_solution = std::vector<int>());
 
     int optimize(const long max_steps_ = 5000,
-                 const double max_energy = 0.0,
                  long long seed = 0,
                  bool verbose = true,
                  bool interruptible = true);
-    double calc_energy_random_solution(const unsigned n = 10);
+    unsigned calc_error_random_solution(const unsigned n = 10);
     long long getSeed() const;
     void setSeed(long long value);
 
     std::vector<std::vector<int> > solution;
+    std::vector<std::vector<int> > commonness;
     std::vector<int> iteration_count;
-    std::vector<double> energy_vector;
-    bool solution_has_best_energy = true;
+    std::vector<unsigned> error_vector;
+    bool solution_has_best_error = true;
     const int RET_ABORT = -999;
-    static void update_solution_commonness_site(const std::vector<std::vector<int> > &solution_matrix,
-                                         std::vector<std::vector<int> > &solution_commonness,
-                                         const unsigned n_sites,
-                                         const unsigned n_species,
-                                         const unsigned site);
+
+    static std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution,
+                                                        const unsigned n_sites);
 
 protected:
     std::mt19937 rng;
@@ -45,6 +43,7 @@ protected:
     const unsigned gamma_div;
     const unsigned n_sites;
 
+    void gen_init_solution(std::vector<unsigned> missing_species);
     std::vector<std::vector<int> > gen_random_solution();
     void set_fixed_species();
     void set_fixed_species(unsigned site);
@@ -58,16 +57,10 @@ protected:
     std::vector<unsigned> calc_min_conflict_species(const unsigned site,
                                                     const std::vector<unsigned> free_species,
                                                     const std::vector<std::vector<int> > &target);
-    bool add_missing_species(std::vector<unsigned> &missing_species);
 
-    std::vector<std::vector<int> > calculate_commonness();
-    std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution);
-
-
-    double calc_energy(const std::vector<std::vector<int> > &commonness,
+    unsigned calc_error(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target);
-    bool correct_alpha_div(const std::vector<unsigned> &missing_species);
-
+    void update_solution_commonness();
 };
 
 #endif // MINCONF_H

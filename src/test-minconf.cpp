@@ -11,14 +11,14 @@ std::vector<unsigned> TestMinConf::test_calc_min_conflict_species(const unsigned
 }
 
 
-std::vector<std::vector<int> > TestMinConf::test_calculate_commonness()
+void TestMinConf::test_update_solution_commonness()
 {
-    return calculate_commonness();
+    update_solution_commonness();
 }
 
-double TestMinConf::test_calc_energy(const std::vector<std::vector<int> > &commonness, const std::vector<std::vector<int> > &target)
+double TestMinConf::test_calc_error(const std::vector<std::vector<int> > &commonness, const std::vector<std::vector<int> > &target)
 {
-    return calc_energy(commonness, target);
+    return calc_error(commonness, target);
 }
 
 void TestMinConf::test_gen_init_solution()
@@ -82,7 +82,7 @@ context("Tests for the MinConf class") {
                    {1, 0, 0},
                    {0, 1, 1}};
 
-    test_that("calc_energy() ") {
+    test_that("calc_error() ") {
         std::vector<std::vector<int> > commonness = {{-1, 2, 2},
                                                      {2, -1, 3},
                                                      {2, 3, -1}};
@@ -90,18 +90,19 @@ context("Tests for the MinConf class") {
                                                  {2, -1, 3},
                                                  {2, 3, -1}};
 
-        expect_true(mc.test_calc_energy(commonness, target) == Approx(0.0));
+        expect_true(mc.test_calc_error(commonness, target) == Approx(0.0));
         target[2][1] = 2;
-        expect_true(mc.test_calc_energy(commonness, target) == Approx(1.0));
+        expect_true(mc.test_calc_error(commonness, target) == Approx(1.0));
         commonness[0][1] = 5;
-        expect_true(mc.test_calc_energy(commonness, target) == Approx(4.0));
+        expect_true(mc.test_calc_error(commonness, target) == Approx(4.0));
     }
 
     test_that("calculate_commonness()") {
         std::vector<std::vector<int> > commonness = { { -1, 0, 2 },
-                                                      { 0, -1, 0 },
-                                                      { 2, 0, -1 } };
-        expect_true(mc.test_calculate_commonness() == commonness);
+                                                      { -1, -1, 0 },
+                                                      { -1, -1, -1 } };
+        mc.test_update_solution_commonness();
+        expect_true(mc.commonness == commonness);
     }
 
     test_that("calc_min_conflict_species") {

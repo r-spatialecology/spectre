@@ -1,22 +1,47 @@
 #' @title run_optimization_min_conf
 #' 
-#' @description xxx
+#' @description Generate an optimized estimate of community composition 
+#'  (species presences and absences) for every site in the study area.
 #' 
-#' @param alpha_list Matrix of predicted alpha diversity in each cell.
-#' @param total_gamma Total (estimated) species in the system.
-#' @param target Pairwise matrix of species in common.
-#' @param fixed_species Fixed partial solution with species that are considered as given. Those species are not going to be changed during optimization.
-#' @param partial_solution Partial or complete initial solution as a start for the optimization.
-#' @param max_iterations Max number of loops before stopping.
-#' @param energy_threshold Optimization stops if energy threshold is reached. This is set as a value between 0 and 1 determining the proportion of error accepted
-#' @param seed Seed for random number generator. seed = 0 means that a time stamp is used as seed. 
-#' @param verbose It TRUE, progress report is printed
+#' @param alpha_list \code{Matrix} of predicted alpha diversity (species richness) in 
+#'  each cell.
+#' @param total_gamma Total number of species present throughout the entire
+#'  landscape.
+#' @param target Pairwise matrix of species in common between each site by site 
+#'  pair.
+#' @param fixed_species Fixed partial solution with species that are considered 
+#'  as given. Those species are not going to be changed during optimization.
+#' @param partial_solution An initial \code{matrix} of species presences and 
+#'  absences for each site in the landscape. The total number of presences must
+#'  match the estimated species richness of each site.
+#' @param max_iterations The maximum number of iterations that the optimization
+#'  algorithm may run through before stopping.
+#' @param seed Seed for random number generator. \code{seed = 0} means that a 
+#'  time stamp is used as the seed. 
+#' @param verbose If \code{TRUE} (default), a progress report is printed during
+#'  the optimization run. 
 #' 
-#' @details 
-#' This is the function which runs the optimization algorithm.
+#' @details \code{run_optimization_min_conf} is the core function of the 
+#'  \code{spectre} package. The underlying algorithm of this function is
+#'  adapted from Mokany et al. (2011). A pairwise commonness matrix (having the 
+#'  same structure as the \code{target} matrix) is calculated from the 
+#'  \code{partial_solution} matrix and the value difference with the 
+#'  \code{target} determined. If a difference is present and depending on the 
+#'  set stopping criteria the algorithm continues. A random site in the 
+#'  presence/absence matrix is selected, and a random presence record at this 
+#'  site replaced with an absence. Every absence in the selected site is then 
+#'  individually flipped to a presence and the value difference with the 
+#'  objective recorded. The presence record which resulted in the lowest value 
+#'  difference (minimum conflict) is retained. This cycle continues, with a 
+#'  random site selected every iteration, until the pairwise commonness and 
+#'  objective matrices match or the algorithm runs beyond the 
+#'  \code{max_iterations}.
 #' 
-#' @return Best matrix of common species between each site.
-#' @references xxx
+#' @return A species presence/absence \code{matrix} of the study landscape.
+#' 
+#' @references Mokany, K., Harwood, T.D., Overton, J.M., Barker, G.M., &
+#'  Ferrier, S. (2011). Combining \alpha and \beta diversity models to fill
+#'  gaps in our knowledge of biodiversity. Ecology Letters, 14(10), 1043-1051.
 
 #' @export
 run_optimization_min_conf <- function(alpha_list, 
@@ -25,7 +50,6 @@ run_optimization_min_conf <- function(alpha_list,
                                       fixed_species = NULL,
                                       partial_solution = NULL,
                                       max_iterations,
-                                      energy_threshold,
                                       seed = 0,
                                       verbose = TRUE,
                                       interruptible = TRUE) {
@@ -43,7 +67,6 @@ run_optimization_min_conf <- function(alpha_list,
                               fixed_species = fixed_species,
                               partial_solution = partial_solution,
                               max_iterations = max_iterations,
-                              energy_threshold = energy_threshold,
                               seed = seed, 
                               verbose = verbose,
                               interruptible = interruptible)

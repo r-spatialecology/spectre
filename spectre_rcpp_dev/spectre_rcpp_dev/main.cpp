@@ -16,14 +16,14 @@ int main()
     IntegerMatrix target = R["target15"];
 
     R.parseEvalQ("load(\"~/sebastian@hanss.info/2_ECOMOD/1_Projects/spectre2/spectre/data/random_solution.rda\")");
-//auto res = optimizer_min_conf2(alpha_list, 15, target, IntegerMatrix {}, 15000);
+//    auto res = optimizer_min_conf(alpha_list, total_gamma, target, IntegerMatrix(), IntegerMatrix(),
+//                                  50, 0.0, 0, false, false);
 //    IntegerMatrix sol = R.parseEval("current_solution");
 //    IntegerVector alpha_list = R.parseEval("alpha_list");
 //    int total_gamma = R.parseEval("estimated_gamma");
 //    IntegerMatrix target_matrix = R.parseEval("target_matrix");
 
 //    auto sol_com = calculate_solution_commonness_rcpp(sol);
-//    //auto energy = calc_energy(target_matrix, sol_com);
 //    //R["result"]
 //    auto result = mh_optimizer(alpha_list, total_gamma, target_matrix);
 //    R.parseEvalQ("saveRDS(result, \"result.rds\"");

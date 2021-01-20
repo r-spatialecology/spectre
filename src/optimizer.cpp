@@ -4,13 +4,11 @@
 #include <limits>
 #include <cmath>
 #include "minconf.h"
-//omp_set_nested(1);
 
 List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                         IntegerMatrix target, IntegerMatrix fixed_species,
                         IntegerMatrix partial_solution,
                         const unsigned max_iterations,
-                        const double energy_threshold,
                         unsigned long seed, bool verbose, bool interruptible)
 {
     MinConf mc(as<std::vector<unsigned> >(alpha_list),
@@ -20,8 +18,8 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                as<std::vector<int> >(partial_solution));
 
     long iter = max_iterations - mc.optimize(max_iterations,
-                                             energy_threshold,
                                              seed, verbose, interruptible);
+
 
     if (iter == max_iterations - mc.RET_ABORT) {
         Rcout << "The processing was aborted by the user. \n";
@@ -37,27 +35,22 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
         }
     }
 
-    const auto energy_normalizer = mc.calc_energy_random_solution(1000);
-    for (unsigned i = 0; i < mc.energy_vector.size(); i++) {
-        mc.energy_vector[i] /= energy_normalizer;
-    }
-
-    // generate dataframe for i and energy
+    // generate dataframe for i and error
     DataFrame measures_df = DataFrame::create(_["i"] = mc.iteration_count,
-            _["energy"] = mc.energy_vector);
+            _["error"] = mc.error_vector);
 
     List results = List::create(Rcpp::Named("optimized_grid") = solution,
-                                Rcpp::Named("energy") = measures_df);
+                                Rcpp::Named("error") = measures_df);
     if (verbose) {
-        double best_energy = *std::min_element(mc.energy_vector.begin(), mc.energy_vector.end());
-        double worst_energy = *std::max_element(mc.energy_vector.begin(), mc.energy_vector.end());
-        Rcout << "\n > Optimization finished with lowest energy = " << best_energy << " %"
-              << " (highest energy was: " << worst_energy << " %, improved by: "
-              << worst_energy - best_energy << " %)";
+        double best_error = *std::min_element(mc.error_vector.begin(), mc.error_vector.end());
+        double worst_error = *std::max_element(mc.error_vector.begin(), mc.error_vector.end());
+        Rcout << "\n > Optimization finished with lowest absolute error = " << best_error << " %"
+              << " (highest absolute error was: " << worst_error << " %, improved by: "
+              << worst_error - best_error << " %)";
     }
 
-    if (!mc.solution_has_best_energy) {
-        Rcout << "\n Warning: this solution does not neccessarily correnpond to the lowest energy. \n";
+    if (!mc.solution_has_best_error) {
+        Rcout << "\n Warning: this solution does not neccessarily correnpond to the lowest absolute error. \n";
     }
 
     return(results);
@@ -69,18 +62,18 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
     const unsigned nsites = solution_matrix.ncol();
     const unsigned gamma_div = solution_matrix.nrow();
     std::vector<std::vector<int> > solution_mat(nsites, std::vector<int>(gamma_div, -1));
-    std::vector<std::vector<int> > commonness_mat(nsites, std::vector<int>(nsites));
+
     for (unsigned site = 0; site < nsites; site++) {
         for (unsigned species = 0; species < gamma_div; species++) {
             solution_mat[site][species] = solution_matrix(species, site);
         }
     }
+
     IntegerMatrix result(nsites, nsites);
     std::fill(result.begin(), result.end(), NumericVector::get_na() );
 
+    const auto commonness_mat = MinConf::calculate_commonness(solution_mat, nsites);
     for (unsigned site = 0; site < nsites; site++) {
-        MinConf::update_solution_commonness_site(solution_mat, commonness_mat,
-                                                 nsites, gamma_div, site);
         for (unsigned other_site = 0; other_site < nsites; other_site++) {
             if(commonness_mat[site][other_site] != -1) { // NA
                 result(site, other_site) = commonness_mat[site][other_site];
@@ -88,4 +81,12 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
         }
     }
     return result;
+}
+
+unsigned calc_error_random_solution(const unsigned n, IntegerVector alpha_list, const unsigned total_gamma,
+                                     IntegerMatrix target, unsigned long seed)
+{
+    MinConf mc(as<std::vector<unsigned> >(alpha_list), total_gamma, as<std::vector<int> >(target));
+    mc.setSeed(seed);
+    return mc.calc_error_random_solution(n);
 }
