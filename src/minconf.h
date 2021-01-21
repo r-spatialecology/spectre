@@ -44,8 +44,6 @@ protected:
 
     void gen_init_solution(std::vector<unsigned> missing_species);
     std::vector<std::vector<int> > gen_random_solution();
-    void set_fixed_species();
-    void set_fixed_species(unsigned site);
     std::vector<unsigned> calc_missing_species();
     std::vector<unsigned> present_species_index(unsigned site, bool omit_fixed_species = true);
     std::vector<unsigned> present_species_index(unsigned site,
