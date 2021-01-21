@@ -26,7 +26,7 @@ public:
     std::vector<unsigned> error_vector;
     bool solution_has_best_error = true;
     const int RET_ABORT = -999;
-    const int NA_VAL = -2147483648; // == NA value in Rcpp
+    static const int NA = -2147483648; // == NA value in Rcpp
 
     static std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution,
                                                                const unsigned n_sites);

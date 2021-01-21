@@ -28,7 +28,7 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
         target[site].resize(n_sites);
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
             if (target_[other_site * n_sites + site] < 0) { // i.e. NA
-                target[site][other_site] = NA_VAL;
+                target[site][other_site] = NA;
             } else {
                 target[site][other_site] = target_[other_site * n_sites + site];
             }
