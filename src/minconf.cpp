@@ -27,7 +27,7 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
         // convert target matrix to a more convenient format
         target[site].resize(n_sites);
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-            if (target_[other_site * n_sites + site] < 0) { // i.e. NA
+            if (target_[other_site * n_sites + site] == NA) {
                 target[site][other_site] = NA;
             } else {
                 target[site][other_site] = target_[other_site * n_sites + site];
@@ -352,7 +352,7 @@ unsigned MinConf::calc_error(const std::vector<std::vector<int> > &commonness,
     unsigned sum_diff = 0;
     for (unsigned site = 0; site < n_sites; site++) {
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-            if (target[site][other_site] < 0) {// i.e. NA
+            if (target[site][other_site] == NA) {
                 continue;
             }
             sum_diff += std::abs(commonness[site][other_site] -
