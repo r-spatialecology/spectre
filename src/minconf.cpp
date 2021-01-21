@@ -10,12 +10,11 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
                  const std::vector<int> &target_,
                  const unsigned long seed,
                  const std::vector<int> &fixed_species_,
-                 const std::vector<int> &partial_solution)
-    : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size())
+                 const std::vector<int> &partial_solution, const int na_val)
+    : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size()), NA(na_val)
 {
     // Random number generator
     rng = std::mt19937(seed);
-
     solution.resize(n_sites);
     target.resize(n_sites);
     commonness.resize(n_sites);
@@ -27,10 +26,8 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
         // convert target matrix to a more convenient format
         target[site].resize(n_sites);
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-            if (site == other_site) {
-                target[site][other_site] = -1; // i.e. NA
-            } else if (target_[other_site * n_sites + site] < 0) { // i.e. NA
-                target[site][other_site] = target_[site * n_sites + other_site];
+            if (target_[other_site * n_sites + site] == NA) {
+                target[site][other_site] = NA;
             } else {
                 target[site][other_site] = target_[other_site * n_sites + site];
             }
@@ -354,7 +351,7 @@ unsigned MinConf::calc_error(const std::vector<std::vector<int> > &commonness,
     unsigned sum_diff = 0;
     for (unsigned site = 0; site < n_sites; site++) {
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-            if (target[site][other_site] < 0) {// i.e. NA
+            if (target[site][other_site] == NA) {
                 continue;
             }
             sum_diff += std::abs(commonness[site][other_site] -

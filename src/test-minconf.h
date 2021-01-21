@@ -18,6 +18,7 @@ public:
     void test_gen_init_solution();
     std::vector<std::vector<int> > getTarget() const;
     std::vector<unsigned> test_calc_missing_species();
+    static const int NA = -2147483648; // Rcpp NA_INTEGER == R_NaInt
 };
 
 #endif // TESTMINCONF_H

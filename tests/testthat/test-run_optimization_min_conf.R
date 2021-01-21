@@ -26,3 +26,4 @@ target_matrix_result <- calculate_solution_commonness_rcpp(res_sim$optimized_gri
 testthat::expect_equal(alpha_list_test, alpha_list_result)
 testthat::expect_equal(total_gamma_test, total_gamma_result)
 testthat::expect_equal(target_matrix_test, target_matrix_result)
+testthat::expect_equal(min(res_sim$error$error), 0)

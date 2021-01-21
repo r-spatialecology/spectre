@@ -42,13 +42,14 @@ context("MinConf does not skrew up the target") {
     long long seed = rd();
     std::vector<unsigned> alpha_list = {14, 12, 8};
     unsigned gamma = 30;
-    std::vector<int> target = {-1, -1, -1,
-                               5, -1, -1,
-                               3, 4, -1};
 
-    std::vector<std::vector<int> > expected_target = { {-1, 5, 3},
-                                                       {5, -1, 4},
-                                                       {3, 4, -1} };
+    std::vector<int> target = {TestMinConf::NA, TestMinConf::NA, TestMinConf::NA,
+                               5, TestMinConf::NA, TestMinConf::NA,
+                               3, 4, TestMinConf::NA};
+
+    std::vector<std::vector<int> > expected_target = { {TestMinConf::NA, 5, 3},
+                                                       {TestMinConf::NA, TestMinConf::NA, 4},
+                                                       {TestMinConf::NA, TestMinConf::NA, TestMinConf::NA} };
 
     TestMinConf min_conf(alpha_list, gamma, target, seed);
     auto calc_target = min_conf.getTarget();
