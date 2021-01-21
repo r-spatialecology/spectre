@@ -13,7 +13,8 @@ public:
             const std::vector<int> &target_,
             const unsigned long seed,
             const std::vector<int> &fixed_species_ = std::vector<int>(),
-            const std::vector<int> &partial_solution = std::vector<int>());
+            const std::vector<int> &partial_solution = std::vector<int>(),
+            const int na_val = -2147483648);
 
     int optimize(const long max_steps_,
                  bool verbose,
@@ -26,7 +27,7 @@ public:
     std::vector<unsigned> error_vector;
     bool solution_has_best_error = true;
     const int RET_ABORT = -999;
-    static const int NA = -2147483648; // == NA value in Rcpp
+    const int NA; // == NA value in Rcpp
 
     static std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution,
                                                                const unsigned n_sites);

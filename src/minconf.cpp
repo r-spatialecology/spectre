@@ -10,12 +10,11 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
                  const std::vector<int> &target_,
                  const unsigned long seed,
                  const std::vector<int> &fixed_species_,
-                 const std::vector<int> &partial_solution)
-    : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size())
+                 const std::vector<int> &partial_solution, const int na_val)
+    : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size()), NA(na_val)
 {
     // Random number generator
     rng = std::mt19937(seed);
-
     solution.resize(n_sites);
     target.resize(n_sites);
     commonness.resize(n_sites);

@@ -16,7 +16,8 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                as<std::vector<int> >(target),
                seed,
                as<std::vector<int> >(fixed_species),
-               as<std::vector<int> >(partial_solution));
+               as<std::vector<int> >(partial_solution),
+               NA_INTEGER);
 
     long iter = max_iterations - mc.optimize(max_iterations, verbose, interruptible);
 
