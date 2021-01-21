@@ -195,12 +195,26 @@ void MinConf::set_fixed_species(unsigned site)
     }
 }
 
+/**
+ * @brief MinConf::calc_missing_species calculates the number of species the algorithm needs to add to equal the number
+ * of species with alpha diversity. The actual number of missing species species might differ for two resonns:
+ * If the number of species present is higher than the number of species estimated by alpha diversity
+ * (due to the partial_solution parameter), then the number of missing species is 0. If the number of missing species is
+ * higher than the number of potential species (because potential species are blocked by the fixed_species parameter),
+ * then the number of missing_species is equal to the number of potential species.
+ * @return vector of the number of species to be assigned for each site.
+ */
 std::vector<unsigned> MinConf::calc_missing_species()
 {
     auto missing_species = alpha_list;
     for (unsigned site = 0; site < n_sites; site++) {
         const auto present_species = present_species_index(site, false).size();
+        const auto potential_species = absent_species_index(site).size();
         missing_species[site] = (missing_species[site] < present_species) ? 0 : missing_species[site] - present_species;
+
+        if (missing_species[site] > potential_species) {
+            missing_species[site] = potential_species;
+        }
     }
 
     return missing_species;
@@ -211,7 +225,7 @@ std::vector<unsigned> MinConf::present_species_index(unsigned site, bool omit_fi
     std::vector<unsigned> species_idx;
     for (unsigned species = 0; species < gamma_div; species++) {
         if (omit_fixed_species && fixed_species.size()) {
-            if (fixed_species[site][species] == solution[site][species]) {
+            if (fixed_species[site][species]) {
                 continue;
             }
         }
@@ -240,6 +254,11 @@ std::vector<unsigned> MinConf::absent_species_index(unsigned site)
     std::vector<unsigned> absent_species_idx;
     for (unsigned species = 0; species < gamma_div; species++) {
         if (!solution[site][species]) {
+            if (fixed_species.size()) {
+                if (fixed_species[site][species]) {
+                    continue;
+                }
+            }
             absent_species_idx.push_back(species);
         }
     }
@@ -346,7 +365,7 @@ std::vector<std::vector<int> > MinConf::calculate_commonness(const std::vector<s
 }
 
 unsigned MinConf::calc_error(const std::vector<std::vector<int> > &commonness,
-                            const std::vector<std::vector<int> > &target)
+                             const std::vector<std::vector<int> > &target)
 {
     unsigned sum_diff = 0;
     for (unsigned site = 0; site < n_sites; site++) {
