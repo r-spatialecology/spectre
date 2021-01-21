@@ -44,9 +44,9 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
     if (verbose) {
         double best_error = *std::min_element(mc.error_vector.begin(), mc.error_vector.end());
         double worst_error = *std::max_element(mc.error_vector.begin(), mc.error_vector.end());
-        Rcout << "\n > Optimization finished with lowest absolute error = " << best_error << " %"
-              << " (highest absolute error was: " << worst_error << " %, improved by: "
-              << worst_error - best_error << " %)";
+        Rcout << "\n > Optimization finished with lowest absolute error = " << best_error
+              << " (highest absolute error was: " << worst_error << " improved by: "
+              << worst_error - best_error << ")";
     }
 
     if (!mc.solution_has_best_error) {
