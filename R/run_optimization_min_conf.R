@@ -57,6 +57,7 @@ run_optimization_min_conf <- function(alpha_list,
   if(is.null(fixed_species)) {
     fixed_species <- matrix()
   }
+  
   if (is.null(partial_solution)) {
     partial_solution <- matrix()
   }
@@ -64,6 +65,9 @@ run_optimization_min_conf <- function(alpha_list,
   if (is.na(seed)) {
     seed <- sample(0:.Machine$integer.max, 1)
   }
+  
+  # we need the upper triangle of the target matrix, only
+  target[lower.tri(target, diag = TRUE)] <- NA
   
   result = optimizer_min_conf(alpha_list = alpha_list, 
                               total_gamma = total_gamma, 
