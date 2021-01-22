@@ -41,7 +41,6 @@ total_gamma_result <- resultdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow(
 target_matrix_result <- calculate_solution_commonness_rcpp(res_sim$optimized_grid)
 
 resultdata <- resultdata %>% as.matrix()
-names(resultdata) <- NULL
 
 testthat::expect_equal(alpha_list_result[5], 6L)
 testthat::expect_equal(total_gamma_test, total_gamma_result)
