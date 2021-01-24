@@ -19,7 +19,7 @@ jobs:
       with:
         fetch-depth: 0
     - name: r-benchmark
-      uses: LooDaHu/R-benchmark@test
+      uses: LooDaHu/R-benchmark@v1
       with:
         username: spatialecology
         commit: 5
