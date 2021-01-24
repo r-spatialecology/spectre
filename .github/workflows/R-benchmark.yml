@@ -1,21 +1,25 @@
-name: R-benchmark # The name of this workflow
+name: R-benchmark
 
-# The condition of triggering this workflow. For this workflow, it will be triggered when push or pull request happens at master branch.
-on:  
+on:
   push:
-    branches: [ dev ] 
+    branches: [ dev ]
+    paths-ignore: 
+      - 'Rperform_Data/**'
   pull_request:
     branches: [ dev ]
+    paths-ignore: 
+      - '.github/workflows/**'
+      - 'Rperform_Data/**'
 
 jobs:
   benchmark:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2 # Checkout@v2 is a Github official workflow that can checkout your repo on VM.
+    - uses: actions/checkout@v2
       with:
-        fetch-depth: 0 # will fetch all commits in history in the repo.
+        fetch-depth: 0
     - name: r-benchmark
-      uses: LooDaHu/R-benchmark@v1
+      uses: LooDaHu/R-benchmark@test
       with:
-        username: r-spatialecology
-        commit: 2
+        username: spatialecology
+        commit: 5
