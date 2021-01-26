@@ -1,7 +1,6 @@
-name: Catch2-Benchmarks
+name: benchmark
 
 on:
-  #workflow_dispatch:
   push:
      branches:
        - dev
@@ -9,6 +8,8 @@ on:
   #   paths:
   #     - 'src/**'
   #     - 'R**'
+    #workflow_dispatch:
+
 
 jobs:
   benchmark:
