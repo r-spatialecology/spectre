@@ -1,11 +1,11 @@
 name: Catch2-Benchmarks
 
 on:
-  workflow_dispatch:
-  # push:
-  #   branches:
-  #     - dev
-  #     - master
+  #workflow_dispatch:
+  push:
+     branches:
+       - dev
+       - master
   #   paths:
   #     - 'src/**'
   #     - 'R**'
