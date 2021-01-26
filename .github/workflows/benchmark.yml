@@ -22,8 +22,9 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y qt5-qmake
+          sudo ln -s 
           cd spectre_rcpp_dev/benchmark
-          qmake
+          /usr/bin/qmake
           make
           cd ../../
           ./spectre_rcpp_dev/benchmark/benchmark | tee benchmark_result.txt
