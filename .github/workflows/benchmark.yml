@@ -1,0 +1,45 @@
+name: Catch2 C++ Benchmarks
+on:
+  push:
+    branches:
+      - dev
+      - master
+      paths:
+        - 'src'
+        - 'R'
+          
+
+jobs:
+  benchmark:
+    name: Performance regression check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build and run benchmarks with Catch2
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y qt5-qmake
+          cd spectre_rcpp_dev/test
+          qmake && make all
+          cd ../../
+          ./spectre_rcpp_dev/test/test | tee benchmark_result.txt
+      # Download previous benchmark result from cache (if exists)
+      - name: Download previous benchmark data
+        uses: actions/cache@v1
+        with:
+          path: ./cache
+          key: ${{ runner.os }}-benchmark
+      # Run `github-action-benchmark` action
+      - name: Store benchmark result
+        #uses: rhysd/github-action-benchmark@v1
+        uses: leoholz/github-action-benchmark@v1
+        with:
+          # What benchmark tool the benchmark_result.txt came from
+          name: Spectre Benchmark
+          tool: 'catch2'
+          output-file-path: benchmark_result.txt
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          auto-push: true
+          # Show alert with commit comment on detecting possible performance regression
+          alert-threshold: "150%"
+
