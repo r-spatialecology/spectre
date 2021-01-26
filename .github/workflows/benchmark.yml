@@ -1,5 +1,6 @@
 name: Catch2 C++ Benchmarks
 on:
+  workflow_dispatch:
   push:
     branches:
       - dev
