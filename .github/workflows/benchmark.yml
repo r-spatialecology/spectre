@@ -16,7 +16,7 @@ jobs:
   benchmark:
     name: Performance regression check
     runs-on: ubuntu-latest
-    container: rocker/r-ubuntu:latest
+    container: rocker/r-ubuntu
     if: "!contains(github.event.head_commit.message, 'ci skip')"
     steps:
     - name: Install prerequisites
