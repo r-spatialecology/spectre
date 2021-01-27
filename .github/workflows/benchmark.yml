@@ -23,7 +23,9 @@ jobs:
       run: |
         apt-get update -y
         apt-get install -y qt5-qmake
-        R -e 'install.packages(c("Rcpp", "RcppProgress", "RInside"))'
+        R -e 'install.packages(c("Rcpp", "RInside", "remotes"))'
+        # the R package of spectre works fine with RcppProgress from CRAN, but here we need some extra functionality
+        R -e 'remotes::install_github("bitbacchus/rcpp_progress")' 
     - uses: actions/checkout@v2
     - name: Build and run benchmarks with Catch2
       run: |
