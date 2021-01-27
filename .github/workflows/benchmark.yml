@@ -21,8 +21,8 @@ jobs:
     steps:
     - name: Install prerequisites
       run: |
-        sudo apt-get update -y
-        sudo apt-get install -y qt5-qmake
+        apt-get update -y
+        apt-get install -y qt5-qmake
         R -e  "install.packages(c("Rcpp", "RcppProgress", "RInside"))"
     - uses: actions/checkout@v2
     - name: Build and run benchmarks with Catch2
