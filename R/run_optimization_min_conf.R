@@ -52,7 +52,8 @@ run_optimization_min_conf <- function(alpha_list,
                                       max_iterations,
                                       seed = NA,
                                       verbose = TRUE,
-                                      interruptible = TRUE) {
+                                      interruptible = TRUE,
+                                      T_0 = 1000) {
   
   if(is.null(fixed_species)) {
     fixed_species <- matrix()
@@ -77,7 +78,8 @@ run_optimization_min_conf <- function(alpha_list,
                               max_iterations = max_iterations,
                               seed = seed, 
                               verbose = verbose,
-                              interruptible = interruptible)
+                              interruptible = interruptible,
+                              T_0 = T_0)
   
   return(result)
 }

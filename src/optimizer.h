@@ -10,7 +10,7 @@ List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
                          IntegerMatrix target, IntegerMatrix fixed_species,
                          IntegerMatrix partial_solution,
                          const unsigned max_iterations,
-                         const unsigned long seed = 0, bool verbose = true, bool interruptible = true);
+                         const unsigned long seed = 0, bool verbose = true, bool interruptible = true, double T_0 = 1000.0);
 // [[Rcpp::export]]
 IntegerMatrix calculate_solution_commonness_rcpp(IntegerMatrix solution_matrix);
 
