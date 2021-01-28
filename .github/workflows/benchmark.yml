@@ -1,16 +1,15 @@
 name: benchmark
 
 on:
-  push:
-     branches:
-       - dev
-       - master
-       - benchmark
+  workflow_dispatch:
+#  push:
+#     branches:
+#       - dev
+#       - master
+#       - benchmark
   #   paths:
   #     - 'src/**'
   #     - 'R**'
-  # workflow_dispatch:
-
 
 jobs:
   benchmark:
