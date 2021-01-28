@@ -75,35 +75,36 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
 int MinConf::optimize(const long max_steps_, bool verbose, bool interruptible)
 {
     Progress p(max_steps_, verbose);
+    std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
 
     auto iter = max_steps_;
 
-    // optimize
+    // calculate and save the start values
     update_solution_commonness();
     unsigned error = calc_error(commonness, target);
     iteration_count.push_back(0);
     error_vector.push_back(error);
-    std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
 
+    // optimize
     while(iter-- > 0) {
-        p.increment(); // update progress
+        // update progress bar
+        p.increment();
         if(interruptible) {
             if (Progress::check_abort() ) { return RET_ABORT; }
         }
 
-        const auto site = site_dist(rng); // choose random site
+        // choose random site
+        const auto site = site_dist(rng);
 
         // remove a random species at this site
-        std::vector<unsigned> species_idx = present_species_index(site, true);
-        if (species_idx.size() == 0) {
-            continue; // all species fixed, nothing to remove
+        // (and skip iteration if it was not possible to remove a species)
+        if (remove_random_species(site) == false) {
+            continue;
         }
-        std::shuffle(species_idx.begin(), species_idx.end(), rng);
-        const unsigned species = species_idx.back();
-        solution[site][species] = 0;
 
         // add min conf species
         add_species_min_conf(site, target);
+
         update_solution_commonness();
         error = calc_error(commonness, target);
 
@@ -211,6 +212,19 @@ std::vector<unsigned> MinConf::absent_species_index(unsigned site)
         }
     }
     return absent_species_idx;
+}
+
+bool MinConf::remove_random_species(const unsigned site)
+{
+    std::vector<unsigned> species_idx = present_species_index(site, true); // omit fixed_species == true
+    if (species_idx.size() == 0) {
+        return false; // all species fixed, nothing to remove here
+    }
+    std::shuffle(species_idx.begin(), species_idx.end(), rng);
+    const unsigned species = species_idx.back();
+    solution[site][species] = 0;
+
+    return true;
 }
 
 void MinConf::add_species_min_conf(unsigned site,

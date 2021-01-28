@@ -49,6 +49,7 @@ protected:
     std::vector<unsigned> present_species_index(unsigned site,
                                                 const std::vector<std::vector<int> > partial_solution);
     std::vector<unsigned> absent_species_index(unsigned site);
+    bool remove_random_species(const unsigned site);
     void add_species_min_conf(unsigned site,
                               const std::vector<std::vector<int> > &target);
     std::vector<unsigned> calc_min_conflict_species(const unsigned site,
