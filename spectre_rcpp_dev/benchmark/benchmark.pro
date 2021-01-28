@@ -4,19 +4,12 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 HEADERS += \
-        ../../src/minconf.h \
-     #  ../../src/test-minconf.h \
-        ../../src/optimizer.h
+    ../../tests/benchmark/catch.hpp \
+    ../../src/minconf.h
 
 SOURCES += \
-        ../../src/minconf.cpp \
-        ../../src/optimizer.cpp \
-     #  ../../src/test-minconf.cpp \
-        main.cpp
-
-# OpenMP support
-QMAKE_CXXFLAGS += -fopenmp
-LIBS += -fopenmp
+    ../../tests/benchmark/benchmark-minconf.cpp \
+    ../../src/minconf.cpp
 
 ## Template from the example at http://dirk.eddelbuettel.com/blog/2011/03/25/#rinside_and_qt
 
@@ -48,5 +41,3 @@ RCPPPROGRESSINCL = $$system($$R_HOME/bin/Rscript -e \"RcppProgress:::CxxFlags\(\
 ## compiler etc settings used in default make rules
 QMAKE_CXXFLAGS +=	$$RCPPWARNING $$RCPPFLAGS $$RCPPINCL $$RINSIDEINCL $$RCPPPROGRESSINCL
 QMAKE_LIBS += $$RLDFLAGS $$RBLAS $$RLAPACK $$RINSIDELIBS $$RCPPLIBS
-
-

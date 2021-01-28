@@ -1,0 +1,74 @@
+name: benchmark
+
+on:
+#  push:
+#    branches:
+#      - master
+#      - dev
+#  pull_request:
+#    branches: 
+#      - master
+#      - dev
+#  push:
+#     branches:
+#       - dev
+#       - master
+#       - benchmark
+  #   paths:
+  #     - 'src/**'
+  #     - 'R**'
+
+jobs:
+  unittests:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
+    if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        #  - {os: windows-latest, r: 'release'}
+        #  - {os: macOS-latest, r: 'release'}
+          - {os: ubuntu-latest, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: r-lib/actions/setup-r@master
+      with:
+        r-version: ${{ matrix.config.r }}
+    - name: Install prerequisites
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y qt5-qmake
+        R -e 'install.packages(c("Rcpp", "RInside", "remotes"))'
+        # the R package of spectre works fine with RcppProgress from CRAN, but here we need some extra functionality
+        R -e 'remotes::install_github("bitbacchus/rcpp_progress")' 
+    - name: Build and run benchmarks with Catch2
+      run: |
+        cd spectre_rcpp_dev/benchmark
+        /usr/lib/x86_64-linux-gnu/qt5/bin/qmake
+        make
+        cd ../../
+        ./spectre_rcpp_dev/benchmark/benchmark | tee benchmark_result.txt
+    # Download previous benchmark result from cache (if exists)
+    - name: Download previous benchmark data
+      uses: actions/cache@v1
+      with:
+        path: ./cache
+        key: ${{ runner.os }}-benchmark
+    # Run `github-action-benchmark` action
+    - name: Store benchmark result
+      #uses: rhysd/github-action-benchmark@v1
+      uses: leoholz/github-action-benchmark@v1 # until PR #38 is merged
+      with:
+        # What benchmark tool the benchmark_result.txt came from
+        name: Spectre Benchmark
+        tool: 'catch2'
+        output-file-path: benchmark_result.txt
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        auto-push: true
+        # Show alert with commit comment on detecting possible performance regression
+        alert-threshold: "150%"
+        comment-on-alert: true
+        fail-on-alert: false
+        alert-comment-cc-users: "@bitbacchus"
