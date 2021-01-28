@@ -37,8 +37,8 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
     - uses: r-lib/actions/setup-r@master
-        with:
-          r-version: ${{ matrix.config.r }}
+      with:
+        r-version: ${{ matrix.config.r }}
     - name: Query dependencies
         run: |
           install.packages("remotes")
