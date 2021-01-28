@@ -38,8 +38,8 @@ jobs:
         r-version: ${{ matrix.config.r }}
     - name: Install prerequisites
       run: |
-        apt-get update -y
-        apt-get install -y qt5-qmake
+        sudo apt-get update -y
+        sudo apt-get install -y qt5-qmake
         R -e 'install.packages(c("Rcpp", "RInside", "remotes"))'
         # the R package of spectre works fine with RcppProgress from CRAN, but here we need some extra functionality
         R -e 'remotes::install_github("bitbacchus/rcpp_progress")' 
