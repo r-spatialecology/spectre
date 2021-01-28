@@ -18,8 +18,6 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   unittests:
-    # The type of runner that the job will run on
-        # The type of runner that the job will run on
     runs-on: ${{ matrix.config.os }}
     name: ${{ matrix.config.os }} (${{ matrix.config.r }})
     if: "!contains(github.event.head_commit.message, 'ci skip')"
@@ -45,13 +43,13 @@ jobs:
         saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
         writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
       shell: Rscript {0}
-     - name: Cache R packages
-       if: runner.os != 'Windows'
-       uses: actions/cache@v1
-       with:
-        path: ${{ env.R_LIBS_USER }}
-        key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-        restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+    - name: Cache R packages
+      if: runner.os != 'Windows'
+      uses: actions/cache@v1
+      with:
+       path: ${{ env.R_LIBS_USER }}
+       key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+       restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
     - name: Install system dependencies
       if: runner.os == 'Linux'
       env:
