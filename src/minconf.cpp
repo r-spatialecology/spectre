@@ -80,9 +80,7 @@ int MinConf::optimize(const long max_steps_, bool verbose, bool interruptible)
 
     // optimize
     update_solution_commonness();
-    auto current_best_solution = solution;
     unsigned error = calc_error(commonness, target);
-    unsigned min_error = std::numeric_limits<unsigned>::max();
     iteration_count.push_back(0);
     error_vector.push_back(error);
     std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
@@ -112,17 +110,10 @@ int MinConf::optimize(const long max_steps_, bool verbose, bool interruptible)
         iteration_count.push_back(max_steps_ - iter);
         error_vector.push_back(error);
 
-        if (min_error > error) {
-            current_best_solution = solution;
-            min_error = error;
-            if (min_error == 0) {
-                return iter;
-            }
+        if (error == 0) {
+            return iter;
         }
     }
-
-    solution = current_best_solution;
-
     return iter;
 }
 
