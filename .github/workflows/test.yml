@@ -57,6 +57,7 @@ jobs:
       run: |
         sudo apt install -y libgit2-dev
         Rscript -e "remotes::install_github('r-hub/sysreqs')"
+        Rscript -e "install.packages('dplyr')"
         sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
         sudo -s eval "$sysreqs"
     - name: Install dependencies
