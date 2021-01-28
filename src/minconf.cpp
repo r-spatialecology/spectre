@@ -271,7 +271,7 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site,
         unsigned error_ = calc_error(commonness, target);
         
         // MSP STUFF START
-        double temperature = T_0 - T_0 / 50000 * iter_incr ; // MSP: acceptance rate here
+        double temperature = std::max(T_0 - T_0 / 100000 * iter_incr, 0.0) ; // MSP: acceptance rate here
         std::uniform_real_distribution<double> accept_prob(0.0, 1.0);
         double acceptance_prob = accept_prob(rng); 
         double delta_e = error_ - error;
