@@ -1,7 +1,14 @@
 name: benchmark
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - dev
+  pull_request:
+    branches: 
+      - master
+      - dev
 #  push:
 #     branches:
 #       - dev
@@ -12,12 +19,23 @@ on:
   #     - 'R**'
 
 jobs:
-  benchmark:
-    name: Performance regression check
-    runs-on: ubuntu-latest
-    container: rocker/r-ubuntu:18.04
+  unittests:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
     if: "!contains(github.event.head_commit.message, 'ci skip')"
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        #  - {os: windows-latest, r: 'release'}
+        #  - {os: macOS-latest, r: 'release'}
+          - {os: ubuntu-latest, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
     steps:
+    - uses: actions/checkout@v2
+    - uses: r-lib/actions/setup-r@master
+      with:
+        r-version: ${{ matrix.config.r }}
     - name: Install prerequisites
       run: |
         apt-get update -y
@@ -25,7 +43,6 @@ jobs:
         R -e 'install.packages(c("Rcpp", "RInside", "remotes"))'
         # the R package of spectre works fine with RcppProgress from CRAN, but here we need some extra functionality
         R -e 'remotes::install_github("bitbacchus/rcpp_progress")' 
-    - uses: actions/checkout@v2
     - name: Build and run benchmarks with Catch2
       run: |
         cd spectre_rcpp_dev/benchmark
