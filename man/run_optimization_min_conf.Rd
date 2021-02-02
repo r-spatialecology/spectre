@@ -68,6 +68,6 @@ objective matrices match or the algorithm runs beyond the
 }
 \references{
 Mokany, K., Harwood, T.D., Overton, J.M., Barker, G.M., &
-Ferrier, S. (2011). Combining \alpha and \beta diversity models to fill
+Ferrier, S. (2011). Combining \eqn{\alpha} and \eqn{\beta} diversity models to fill
 gaps in our knowledge of biodiversity. Ecology Letters, 14(10), 1043-1051.
 }
