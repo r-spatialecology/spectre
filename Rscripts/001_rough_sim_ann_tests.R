@@ -4,19 +4,19 @@
 
 library("foreach")
 library("tidyr")
-doParallel::registerDoParallel(15)
+doParallel::registerDoParallel(12)
 
 out_dir <- "./results/001_SA001"
 getwd()
 dir.create(file.path(out_dir))
 
 ### Parameters:
-replicate <- 1:5
+replicate <- 1:10
 nspecies <- 100
 nsites <- 50
-max_iterations <- 100000
-presence_prob <- 0.3 # probability for each species to be present at each site
-T_0_factor <- c(1, 1/10, 1/100, 1/1000, 1/10000, 0) # to scale T_0 
+max_iterations <- 120000
+presence_prob <- c(0.2, 0.3) # probability for each species to be present at each site
+T_0_factor <- seq(0, 0.001, 0.00005) # to scale T_0 T_0 < 0.001 was best 
 
 p <- tidyr::crossing(replicate,
                      nspecies,
