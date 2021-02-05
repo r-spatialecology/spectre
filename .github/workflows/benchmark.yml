@@ -20,22 +20,12 @@ on:
 
 jobs:
   unittests:
-    runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
-    if: "!contains(github.event.head_commit.message, 'ci skip')"
-
-    strategy:
-      fail-fast: false
-      matrix:
-        config:
-        #  - {os: windows-latest, r: 'release'}
-        #  - {os: macOS-latest, r: 'release'}
-          - {os: ubuntu-latest, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/bionic/latest"}
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - uses: r-lib/actions/setup-r@master
       with:
-        r-version: ${{ matrix.config.r }}
+        r-version: 4.0.2
     - name: Install prerequisites
       run: |
         sudo apt-get update -y
@@ -50,7 +40,7 @@ jobs:
         qmake
         make
         cd ../../
-        ./spectre_rcpp_dev/benchmark/benchmark | tee benchmark_result.txt
+        ./spectre_rcpp_dev/benchmark/benchmark | tee ~/benchmark_result.txt
   #  # Download previous benchmark result from cache (if exists)
   #  - name: Download previous benchmark data
   #    uses: actions/cache@v1
@@ -65,7 +55,7 @@ jobs:
         # What benchmark tool the benchmark_result.txt came from
         name: Spectre Benchmark
         tool: "catch2"
-        output-file-path: benchmark_result.txt
+        output-file-path: ~/benchmark_result.txt
         github-token: ${{ secrets.GITHUB_TOKEN }}
         auto-push: true
         # Show alert with commit comment on detecting possible performance regression
