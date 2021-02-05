@@ -11,6 +11,8 @@ SOURCES += \
     ../../tests/benchmark/benchmark-minconf.cpp \
     ../../src/minconf.cpp
 
+QMAKE_CXXFLAGS = -c -O3 -march=native -pipe -std=gnu++11 -Wall -W -fPIC -g
+
 ## Template from the example at http://dirk.eddelbuettel.com/blog/2011/03/25/#rinside_and_qt
 
 ## comment this out if you need a different version of R,
@@ -39,5 +41,5 @@ RINSIDELIBS = 		$$system($$R_HOME/bin/Rscript -e \"RInside:::LdFlags\(\)\")
 RCPPPROGRESSINCL = $$system($$R_HOME/bin/Rscript -e \"RcppProgress:::CxxFlags\(\)\")
 
 ## compiler etc settings used in default make rules
-QMAKE_CXXFLAGS +=	$$RCPPWARNING $$RCPPFLAGS $$RCPPINCL $$RINSIDEINCL $$RCPPPROGRESSINCL
-QMAKE_LIBS += $$RLDFLAGS $$RBLAS $$RLAPACK $$RINSIDELIBS $$RCPPLIBS
+QMAKE_CXXFLAGS += $$RCPPWARNING $$RCPPFLAGS $$RCPPINCL $$RINSIDEINCL $$RCPPPROGRESSINCL
+QMAKE_LIBS     += $$RLDFLAGS $$RBLAS $$RLAPACK $$RINSIDELIBS $$RCPPLIBS
