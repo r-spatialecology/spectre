@@ -15,7 +15,10 @@ TEST_CASE("MinConf") {
     MinConf mc(alpha_list, gamma, target, seed);
 
     // now let's benchmark (will stop automatically when it found a solution after a few iterations)
-    BENCHMARK("optimize") { return mc.optimize(5000, false, false); };
+    BENCHMARK("MinConf optimize 3 sites, 3 species, <<5k iterations") { return mc.optimize(5000, false, false); };
+    //    BENCHMARK("MinConf optimize 3 sites, 3 species, <<5k iterations") {
+    //        return mc.optimize(5000, false, false); // will be finished after <<5k steps
+    //    };
 
 
     //    const std::vector<unsigned> alpha_list_large = {15, 13, 13, 12, 21, 12, 15, 14, 14, 14, 13, 15, 12, 11, 13, 10, 14, 14, 18, 15,
