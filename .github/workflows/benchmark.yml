@@ -20,6 +20,7 @@ on:
 
 jobs:
   unittests:
+    name: Run C++ benchmark
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -39,18 +40,9 @@ jobs:
         cd spectre_rcpp_dev/benchmark
         qmake
         make
-        cd ../../
-        ./spectre_rcpp_dev/benchmark/benchmark | tee ~/benchmark_result.txt
-  #  # Download previous benchmark result from cache (if exists)
-  #  - name: Download previous benchmark data
-  #    uses: actions/cache@v1
-  #    with:
-  #      path: ./cache
-  #      key: ${{ runner.os }}-benchmark
-    # Run `github-action-benchmark` action
+        ./benchmark | tee ~/benchmark_result.txt
     - name: Store benchmark result
-      #uses: rhysd/github-action-benchmark@v1
-      uses: leoholz/github-action-benchmark@v1 # until PR #38 is merged
+      uses: rhysd/github-action-benchmark@v1
       with:
         # What benchmark tool the benchmark_result.txt came from
         name: Spectre Benchmark
@@ -61,5 +53,5 @@ jobs:
         # Show alert with commit comment on detecting possible performance regression
         alert-threshold: "200%"
         comment-on-alert: true
-        fail-on-alert: true
+        fail-on-alert: false # change later
         alert-comment-cc-users: "@bitbacchus"
