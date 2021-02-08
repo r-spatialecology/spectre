@@ -42,7 +42,8 @@ jobs:
         make
         ./benchmark | tee ~/benchmark_result.txt
     - name: Store benchmark result
-      uses: rhysd/github-action-benchmark@v1
+      # uses: rhysd/github-action-benchmark@v1
+      uses: leoholz/github-action-benchmark@v1 # until PR #38 is merged
       with:
         # What benchmark tool the benchmark_result.txt came from
         name: Spectre Benchmark
