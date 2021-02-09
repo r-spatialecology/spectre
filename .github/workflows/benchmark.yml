@@ -4,9 +4,9 @@ on:
     branches:
       - master
       - dev
-    paths:
-      - 'src/**'
-      - 'tests/benchmark/**'
+#    paths:
+#      - 'src/**'
+#      - 'tests/benchmark/**'
   pull_request:
     branches: 
       - master
