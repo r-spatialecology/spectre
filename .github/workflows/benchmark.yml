@@ -39,7 +39,7 @@ jobs:
         qmake
         make
         ./benchmark | tee ~/benchmark_result.txt
-     - name: Store benchmark result
+    - name: Store benchmark result
       # uses: rhysd/github-action-benchmark@v1
       uses: leoholz/github-action-benchmark@v1 # until PR #38 is merged
       with:
