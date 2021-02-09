@@ -13,6 +13,7 @@ on:
       - dev
     paths:
       - 'src/**'
+  workflow_dispatch:
 
 jobs:
   unittests:
