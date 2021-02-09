@@ -130,11 +130,8 @@ TEST_CASE("MinConf") {
     MinConf mc_large(alpha_list_large, gamma_large, target_large, seed, std::vector<int>(), std::vector<int>(), -1);
 
 
-    BENCHMARK("optimize 100 sites, 139 spec, 5 it") {
-        return mc_large.optimize(5, false, false);
-    };
+    BENCHMARK("optimize 100 sites, 139 spec, 5 it") { return mc_large.optimize(5, false, false); };
 
-    BENCHMARK("Calc commonness 100x100") {
-        return mc_large.calculate_commonness(mc_large.solution, alpha_list_large.size());
-    };
+    BENCHMARK("Calc commonness 100x100") { return mc_large.calculate_commonness(
+                    mc_large.solution, alpha_list_large.size()); };
 }
