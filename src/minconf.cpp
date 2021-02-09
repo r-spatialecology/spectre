@@ -15,6 +15,7 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
 {
     // Random number generator
     rng = std::mt19937(seed);
+
     solution.resize(n_sites);
     target.resize(n_sites);
     commonness.resize(n_sites);

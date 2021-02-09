@@ -132,6 +132,7 @@ TEST_CASE("MinConf") {
 
     BENCHMARK("optimize 100 sites, 139 spec, 5 it") { return mc_large.optimize(5, false, false); };
 
-    BENCHMARK("Calc commonness 100x100") { return mc_large.calculate_commonness(
-                    mc_large.solution, alpha_list_large.size()); };
+    BENCHMARK("Calc commonness 100x100") {
+        return mc_large.calculate_commonness(mc_large.solution, alpha_list_large.size());
+    };
 }
