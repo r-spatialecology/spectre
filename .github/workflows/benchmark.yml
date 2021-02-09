@@ -5,17 +5,17 @@ on:
     branches:
       - master
       - dev
-    paths:
-      - 'src/**'
-      - 'tests/benchmark/**'
-  pull_request:
-    branches: 
-      - master
-      - dev
-    paths:
-      - 'src/**'
-      - 'tests/benchmark/**'
-  workflow_dispatch:
+#    paths:
+#      - 'src/**'
+#      - 'tests/benchmark/**'
+#  pull_request:
+#    branches: 
+#      - master
+#      - dev
+#    paths:
+#      - 'src/**'
+#      - 'tests/benchmark/*'*''
+#  workflow_dispatch:
 
 jobs:
   unittests:
