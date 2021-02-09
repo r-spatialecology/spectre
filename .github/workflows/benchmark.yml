@@ -1,5 +1,4 @@
 name: benchmark
-
 on:
   push:
     branches:
@@ -18,7 +17,7 @@ on:
 #  workflow_dispatch:
 
 jobs:
-  unittests:
+  benchmarks:
     name: Run C++ benchmark
     runs-on: ubuntu-latest
     steps:
@@ -40,23 +39,7 @@ jobs:
         qmake
         make
         ./benchmark | tee ~/benchmark_result.txt
-    - name: Check benchmark result
-      if: github.event_name == 'pull_request'
-      uses: rhysd/github-action-benchmark@v1
-      with:
-        # What benchmark tool the benchmark_result.txt came from
-        name: Spectre Benchmark
-        tool: "catch2"
-        output-file-path: ~/benchmark_result.txt
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        auto-push: false
-        # Show alert with commit comment on detecting possible performance regression
-        alert-threshold: "200%"
-        comment-on-alert: true
-        fail-on-alert: true
-        alert-comment-cc-users: "@bitbacchus"
-    - name: Store benchmark result
-      if: github.event_name != 'pull_request'
+     - name: Store benchmark result
       # uses: rhysd/github-action-benchmark@v1
       uses: leoholz/github-action-benchmark@v1 # until PR #38 is merged
       with:
@@ -65,9 +48,10 @@ jobs:
         tool: "catch2"
         output-file-path: ~/benchmark_result.txt
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        auto-push: true
         # Show alert with commit comment on detecting possible performance regression
         alert-threshold: "200%"
         comment-on-alert: true
         fail-on-alert: true
         alert-comment-cc-users: "@bitbacchus"
+        if: github.event_name == 'pull_request'
+        auto-push: true
