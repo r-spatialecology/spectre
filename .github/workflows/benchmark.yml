@@ -3,20 +3,16 @@ name: benchmark
 on:
   push:
     branches:
-#      - master
+      - master
       - dev
-#  pull_request:
-#    branches: 
-#      - master
-#      - dev
-#  push:
-#     branches:
-#       - dev
-#       - master
-#       - benchmark
-  #   paths:
-  #     - 'src/**'
-  #     - 'R**'
+    paths:
+      - 'src/**'
+  pull_request:
+    branches: 
+      - master
+      - dev
+     paths:
+       - 'src/**'
 
 jobs:
   unittests:
@@ -41,7 +37,23 @@ jobs:
         qmake
         make
         ./benchmark | tee ~/benchmark_result.txt
+    - name: Check benchmark result
+      if: github.event_name == 'pull_request'
+      uses: rhysd/github-action-benchmark@v1
+      with:
+        # What benchmark tool the benchmark_result.txt came from
+        name: Spectre Benchmark
+        tool: "catch2"
+        output-file-path: ~/benchmark_result.txt
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        auto-push: false
+        # Show alert with commit comment on detecting possible performance regression
+        alert-threshold: "200%"
+        comment-on-alert: true
+        fail-on-alert: true
+        alert-comment-cc-users: "@bitbacchus"
     - name: Store benchmark result
+      if: github.event_name != 'pull_request'
       # uses: rhysd/github-action-benchmark@v1
       uses: leoholz/github-action-benchmark@v1 # until PR #38 is merged
       with:
@@ -54,5 +66,5 @@ jobs:
         # Show alert with commit comment on detecting possible performance regression
         alert-threshold: "200%"
         comment-on-alert: true
-        fail-on-alert: false # change later
+        fail-on-alert: true
         alert-comment-cc-users: "@bitbacchus"
