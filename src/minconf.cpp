@@ -149,6 +149,12 @@ std::vector<unsigned> MinConf::calc_missing_species() {
   return missing_species;
 }
 
+/**
+ * @brief MinConf::present_species_index
+ * @param site
+ * @param omit_fixed_species
+ * @return a vector with the indices of each species present.
+ */
 std::vector<unsigned> MinConf::present_species_index(unsigned site,
                                                      bool omit_fixed_species) {
   std::vector<unsigned> species_idx;
@@ -159,18 +165,6 @@ std::vector<unsigned> MinConf::present_species_index(unsigned site,
       }
     }
     if (solution[site][species]) {
-      species_idx.push_back(species);
-    }
-  }
-
-  return species_idx;
-}
-
-std::vector<unsigned> MinConf::present_species_index(
-    unsigned site, const std::vector<std::vector<int>> partial_solution) {
-  std::vector<unsigned> species_idx;
-  for (unsigned species = 0; species < gamma_div; species++) {
-    if (partial_solution[site][species]) {
       species_idx.push_back(species);
     }
   }
