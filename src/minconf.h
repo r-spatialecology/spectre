@@ -30,7 +30,6 @@ protected:
   const unsigned gamma_div;
   const unsigned n_sites;
 
-  void gen_init_solution(std::vector<unsigned> missing_species);
   std::vector<unsigned> calc_missing_species();
   std::vector<unsigned> present_species_index(unsigned site,
                                               bool omit_fixed_species = true);
@@ -38,9 +37,9 @@ protected:
   bool remove_random_species(const unsigned site);
   void add_species_min_conf(unsigned site);
   std::vector<unsigned> calc_min_conflict_species(const unsigned site);
-
-  unsigned calc_error();
+  void gen_init_solution(std::vector<unsigned> missing_species);
   void update_solution_commonness();
+  unsigned calc_error();
 };
 
 #endif // MINCONF_H
