@@ -102,7 +102,7 @@ int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
 
   // calculate and save the start values
   update_solution_commonness();
-  unsigned error = calc_error(commonness, target);
+  unsigned error = calc_error();
   iteration_count.push_back(0);
   error_vector.push_back(error);
 
@@ -129,7 +129,7 @@ int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
     add_species_min_conf(site);
 
     update_solution_commonness();
-    error = calc_error(commonness, target);
+    error = calc_error();
 
     iteration_count.push_back(max_steps - iter);
     error_vector.push_back(error);
@@ -271,7 +271,7 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site) {
     const unsigned species = absent_species_idx[species_idx];
     solution[site][species] = 1; // assign species (will be un-done later)
     update_solution_commonness();
-    unsigned error_ = calc_error(commonness, target);
+    unsigned error_ = calc_error();
 
     if (error_ < error) {
       min_conflict_species.clear(); // found better fitting species delete other
@@ -286,6 +286,10 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site) {
   return min_conflict_species;
 }
 
+/**
+ * @brief MinConf::gen_init_solution generates a random solution
+ * @param missing_species species that are still missing to alpha diversity
+ */
 void MinConf::gen_init_solution(std::vector<unsigned> missing_species) {
   for (unsigned site = 0; site < n_sites; site++) {
     auto absent_species = absent_species_index(site);
@@ -304,6 +308,9 @@ void MinConf::gen_init_solution(std::vector<unsigned> missing_species) {
   }
 }
 
+/**
+ * @brief MinConf::update_solution_commonness
+ */
 void MinConf::update_solution_commonness() {
   for (unsigned site = 0; site < n_sites - 1; site++) {
     for (unsigned other_site = site + 1; other_site < n_sites; other_site++) {
@@ -314,8 +321,11 @@ void MinConf::update_solution_commonness() {
   }
 }
 
-unsigned MinConf::calc_error(const std::vector<std::vector<int>> &commonness,
-                             const std::vector<std::vector<int>> &target) {
+/**
+ * @brief MinConf::calc_error the error is the Hamming distance between the
+ * commonness and the target
+ */
+unsigned MinConf::calc_error() {
   unsigned sum_diff = 0;
   for (unsigned site = 0; site < n_sites; site++) {
     for (unsigned other_site = 0; other_site < n_sites; other_site++) {

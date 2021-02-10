@@ -21,7 +21,9 @@ void TestMinConf::test_update_solution_commonness()
 
 double TestMinConf::test_calc_error(const std::vector<std::vector<int> > &commonness, const std::vector<std::vector<int> > &target)
 {
-  return calc_error(commonness, target);
+  this->commonness = commonness;
+  this->target = target;
+  return calc_error();
 }
 
 void TestMinConf::test_gen_init_solution()

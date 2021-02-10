@@ -40,8 +40,7 @@ protected:
   void add_species_min_conf(unsigned site);
   std::vector<unsigned> calc_min_conflict_species(const unsigned site);
 
-  unsigned calc_error(const std::vector<std::vector<int>> &commonness,
-                      const std::vector<std::vector<int>> &target);
+  unsigned calc_error();
   void update_solution_commonness();
 };
 
