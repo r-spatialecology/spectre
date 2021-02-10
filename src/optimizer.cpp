@@ -1,8 +1,5 @@
 #include "optimizer.h"
 #include "minconf.h"
-#include <chrono>
-#include <cmath>
-#include <limits>
 
 List optimizer_min_conf(const IntegerVector alpha_list,
                         const unsigned total_gamma, const IntegerMatrix target,
@@ -16,7 +13,7 @@ List optimizer_min_conf(const IntegerVector alpha_list,
              as<std::vector<int>>(partial_solution),
              as<std::vector<int>>(fixed_species), seed, NA_INTEGER);
 
-  long iter =
+  const long iter =
       max_iterations - mc.optimize(max_iterations, verbose, interruptible);
 
   if (iter == max_iterations - mc.RET_ABORT) {
@@ -68,8 +65,9 @@ calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix) {
   MinConf mc(std::vector<unsigned>(n_sites), gamma_div,
              std::vector<int>(n_sites * n_sites),
              as<std::vector<int>>(solution_matrix), fixed_mat, 0, NA_INTEGER);
-  mc.optimize(0, false,
-              false); // zero iterations, just to calculate the commonness
+
+  // zero iterations, just to calculate the commonness
+  mc.optimize(0, false, false);
 
   IntegerMatrix result(n_sites, n_sites);
   std::fill(result.begin(), result.end(), NA_INTEGER);
@@ -81,5 +79,6 @@ calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix) {
       }
     }
   }
+
   return result;
 }

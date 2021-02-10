@@ -1,7 +1,6 @@
 #ifndef MINCONF_H
 #define MINCONF_H
 #include <random>
-#include <string>
 #include <vector>
 
 class MinConf {
