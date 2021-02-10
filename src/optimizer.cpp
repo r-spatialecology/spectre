@@ -63,7 +63,6 @@ List optimizer_min_conf(const IntegerVector alpha_list,
 IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix) {
     // create results matrix, filled with NAs
     // and translate solution_matrix to 2-D std::vector
-    const int na_val = -2147483648;
     const unsigned n_sites = solution_matrix.ncol();
     const unsigned gamma_div = solution_matrix.nrow();
     std::vector<int> fixed_mat(n_sites * gamma_div, 1); // all fixed

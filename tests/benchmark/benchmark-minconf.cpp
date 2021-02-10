@@ -3,6 +3,13 @@
 #include "catch.hpp"
 #include "../../src/minconf.h"
 
+class BenchmarkMinConf : public MinConf
+{
+public:
+    using MinConf::MinConf;
+    void calculate_commonness() {update_solution_commonness();};
+};
+
 TEST_CASE("MinConf") {
 
     std::random_device rd;
@@ -127,11 +134,11 @@ TEST_CASE("MinConf") {
                                            -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,3,
                                            -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
                                           };
-    MinConf mc_large(alpha_list_large, gamma_large, target_large, std::vector<int>(), std::vector<int>(), seed, -1);
+    BenchmarkMinConf mc_large(alpha_list_large, gamma_large, target_large, std::vector<int>(), std::vector<int>(), seed, -1);
 
     BENCHMARK("optimize 100 sites, 139 spec, 5 it") { return mc_large.optimize(5, false, false); };
 
     BENCHMARK("Calc commonness 100x100") {
-        return mc_large.calculate_commonness(mc_large.solution, alpha_list_large.size());
+        return mc_large.calculate_commonness();
     };
 }
