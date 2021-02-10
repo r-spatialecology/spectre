@@ -1,5 +1,4 @@
 #include "optimizer.h"
-#include <random>
 #include <chrono>
 #include <limits>
 #include <cmath>
@@ -62,38 +61,30 @@ List optimizer_min_conf(const IntegerVector alpha_list,
 }
 
 IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix) {
-    // create results matrix, filled with NAs (== -1)
+    // create results matrix, filled with NAs
     // and translate solution_matrix to 2-D std::vector
-    const unsigned nsites = solution_matrix.ncol();
+    const int na_val = -2147483648;
+    const unsigned n_sites = solution_matrix.ncol();
     const unsigned gamma_div = solution_matrix.nrow();
-    std::vector<std::vector<int> > solution_mat(nsites, std::vector<int>(gamma_div, -1));
+    std::vector<int> fixed_mat(n_sites * gamma_div, 1); // all fixed
 
-    for (unsigned site = 0; site < nsites; site++) {
-        for (unsigned species = 0; species < gamma_div; species++) {
-            solution_mat[site][species] = solution_matrix(species, site);
-        }
-    }
+    MinConf mc(std::vector<unsigned>(n_sites),
+               gamma_div,
+               std::vector<int>(n_sites * n_sites),
+               as<std::vector<int> >(solution_matrix),
+               fixed_mat,
+               0, NA_INTEGER);
+    mc.optimize(0, false, false); // zero iterations, just to calculate the commonness
 
-    IntegerMatrix result(nsites, nsites);
-    std::fill(result.begin(), result.end(), NumericVector::get_na() );
+    IntegerMatrix result(n_sites, n_sites);
+    std::fill(result.begin(), result.end(), NA_INTEGER );
 
-    const auto commonness_mat = MinConf::calculate_commonness(solution_mat, nsites);
-    for (unsigned site = 0; site < nsites; site++) {
-        for (unsigned other_site = 0; other_site < nsites; other_site++) {
-            if(commonness_mat[site][other_site] != -1) { // NA
-                result(site, other_site) = commonness_mat[site][other_site];
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if(mc.commonness[site][other_site] != NA_INTEGER) {
+                result(site, other_site) = mc.commonness[site][other_site];
             }
         }
     }
     return result;
-}
-
-unsigned calc_error_random_solution(const unsigned n,
-                                    const IntegerVector alpha_list,
-                                    const unsigned total_gamma,
-                                    const IntegerMatrix target,
-                                    const unsigned long seed)
-{
-    MinConf mc(as<std::vector<unsigned> >(alpha_list), total_gamma, as<std::vector<int> >(target), std::vector<int>(), std::vector<int>(), seed);
-    return mc.calc_error_random_solution(n);
 }

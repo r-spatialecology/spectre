@@ -9,7 +9,3 @@ calculate_solution_commonness_rcpp <- function(solution_matrix) {
     .Call(`_spectre_calculate_solution_commonness_rcpp`, solution_matrix)
 }
 
-calc_error_random_solution <- function(n, alpha_list, total_gamma, target, seed) {
-    .Call(`_spectre_calc_error_random_solution`, n, alpha_list, total_gamma, target, seed)
-}
-

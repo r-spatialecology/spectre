@@ -85,12 +85,12 @@ context("Tests for the MinConf class") {
                  {0, 1, 1}};
 
   test_that("calc_error() ") {
-    std::vector<std::vector<int> > commonness = {{-1, 2, 2},
-                                                 {2, -1, 3},
-                                                 {2, 3, -1}};
-    std::vector<std::vector<int> > target = {{-1, 2, 2},
-                                             {2, -1, 3},
-                                             {2, 3, -1}};
+    std::vector<std::vector<int> > commonness = {{TestMinConf::NA, 2, 2},
+                                                 {2, TestMinConf::NA, 3},
+                                                 {2, 3, TestMinConf::NA}};
+    std::vector<std::vector<int> > target = {{TestMinConf::NA, 2, 2},
+                                             {2, TestMinConf::NA, 3},
+                                             {2, 3, TestMinConf::NA}};
 
     expect_true(mc.test_calc_error(commonness, target) == Approx(0.0));
     target[2][1] = 2;
@@ -100,9 +100,9 @@ context("Tests for the MinConf class") {
   }
 
   test_that("calculate_commonness()") {
-    std::vector<std::vector<int> > commonness = { { -1, 0, 2 },
-                                                  { -1, -1, 0 },
-                                                  { -1, -1, -1 } };
+    std::vector<std::vector<int> > commonness = { { TestMinConf::NA, 0, 2 },
+                                                  { TestMinConf::NA, TestMinConf::NA, 0 },
+                                                  { TestMinConf::NA, TestMinConf::NA, TestMinConf::NA } };
     mc.test_update_solution_commonness();
     expect_true(mc.commonness == commonness);
   }
@@ -113,9 +113,9 @@ context("Tests for the MinConf class") {
                    {0, 1, 1}};
     unsigned site = 1;
     std::vector<unsigned> absent_species = {1,2};
-    std::vector<std::vector<int> > target = { { -1, 0, 2 },
-                                              { 0, -1, 0 },
-                                              { 2, 0, -1 } };
+    std::vector<std::vector<int> > target = { { TestMinConf::NA, 0, 2 },
+                                              { 0, TestMinConf::NA, 0 },
+                                              { 2, 0, TestMinConf::NA } };
     expect_true(mc.test_calc_min_conflict_species(site, absent_species, target) == absent_species);
     mc.solution = {{0, 1, 1},
                    {0, 1, 0},
@@ -132,9 +132,9 @@ context("Tests for the MinConf class") {
     std::vector<std::vector<int> > expected_solution = {{0, 1, 1},
                                                         {1, 0, 0},
                                                         {0, 1, 1}};
-    std::vector<std::vector<int> > target = { { -1, 0, 2 },
-                                              { 0, -1, 0 },
-                                              { 2, 0, -1 } };
+    std::vector<std::vector<int> > target = { { TestMinConf::NA, 0, 2 },
+                                              { 0, TestMinConf::NA, 0 },
+                                              { 2, 0, TestMinConf::NA } };
     mc.test_add_species_min_conf(site, target);
     expect_true(mc.solution == expected_solution);
     mc.test_add_species_min_conf(site, target);

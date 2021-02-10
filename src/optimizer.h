@@ -1,5 +1,6 @@
 #ifndef MH_OPTIMIZER_H
 #define MH_OPTIMIZER_H
+#include <random>
 #include "Rcpp.h"
 
 using namespace Rcpp;
@@ -17,11 +18,4 @@ List optimizer_min_conf(const IntegerVector alpha_list,
                         const bool interruptible = true);
 // [[Rcpp::export]]
 IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix);
-
-// [[Rcpp::export]]
-unsigned calc_error_random_solution(const unsigned n,
-                                    const IntegerVector alpha_list,
-                                    const unsigned total_gamma,
-                                    const IntegerMatrix target,
-                                    const unsigned long seed);
 #endif // MH_OPTIMIZER_H

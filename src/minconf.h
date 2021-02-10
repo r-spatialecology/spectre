@@ -16,10 +16,9 @@ public:
             const unsigned long seed,
             const int na_val = -2147483648);
 
-    int optimize(const long max_steps_,
+    int optimize(const long max_steps,
                  bool verbose,
                  bool interruptible);
-    unsigned calc_error_random_solution(const unsigned n = 10);
 
     std::vector<std::vector<int> > solution;
     std::vector<std::vector<int> > commonness;
@@ -28,9 +27,6 @@ public:
     bool solution_has_best_error = true;
     const int RET_ABORT = -999;
     const int NA; // == NA value in Rcpp
-
-    static std::vector<std::vector<int> > calculate_commonness(const std::vector<std::vector<int> > &solution,
-                                                               const unsigned n_sites);
 
 protected:
     std::mt19937 rng;

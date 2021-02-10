@@ -33,7 +33,7 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
 
     for (unsigned site = 0; site < n_sites; site++) {
         solution[site].resize(gamma_div);
-        commonness[site].resize(n_sites, -1);
+        commonness[site].resize(n_sites, na_val);
 
         // convert target matrix to a more convenient format
         this->target[site].resize(n_sites);
@@ -84,12 +84,12 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
     gen_init_solution(missing_species);
 }
 
-int MinConf::optimize(const long max_steps_, bool verbose, bool interruptible)
+int MinConf::optimize(const long max_steps, bool verbose, bool interruptible)
 {
-    Progress p(max_steps_, verbose);
+    Progress p(max_steps, verbose);
     std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
 
-    auto iter = max_steps_;
+    auto iter = max_steps;
 
     // calculate and save the start values
     update_solution_commonness();
@@ -120,7 +120,7 @@ int MinConf::optimize(const long max_steps_, bool verbose, bool interruptible)
         update_solution_commonness();
         error = calc_error(commonness, target);
 
-        iteration_count.push_back(max_steps_ - iter);
+        iteration_count.push_back(max_steps - iter);
         error_vector.push_back(error);
 
         if (error == 0) {
@@ -128,18 +128,6 @@ int MinConf::optimize(const long max_steps_, bool verbose, bool interruptible)
         }
     }
     return iter;
-}
-
-unsigned MinConf::calc_error_random_solution(const unsigned n)
-{
-    unsigned avg_error = 0;
-    for (unsigned i = 0; i < n; i++) {
-        const auto random_solution = gen_random_solution();
-        const auto commonness = calculate_commonness(random_solution, n_sites);
-        avg_error += calc_error(commonness, target); // MSP
-    }
-
-    return avg_error / n;
 }
 
 std::vector<std::vector<int> > MinConf::gen_random_solution()
@@ -319,23 +307,6 @@ void MinConf::update_solution_commonness()
                                                               solution[other_site].begin(), 0);
         }
     }
-}
-
-std::vector<std::vector<int> > MinConf::calculate_commonness(const std::vector<std::vector<int> > &solution,
-                                                             const unsigned n_sites) {
-    ///TODO: this is a near 1:1 copy of update_solution_commonness() and needs to be
-    /// tidy-up w/o compromising the performance of update_solution_commonness()
-    std::vector<std::vector<int> > result(n_sites, std::vector<int>(n_sites, -1));
-
-    for (unsigned site = 0; site < n_sites - 1; site++) {
-        for (unsigned other_site = site + 1; other_site < n_sites; other_site++) {
-            result[site][other_site] = std::inner_product(solution[site].begin(),
-                                                          solution[site].end(),
-                                                          solution[other_site].begin(), 0);
-        }
-    }
-
-    return result;
 }
 
 unsigned MinConf::calc_error(const std::vector<std::vector<int> > &commonness,
