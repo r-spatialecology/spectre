@@ -5,19 +5,30 @@
 // [[Rcpp::depends(RcppProgress)]]
 #include <progress.hpp>
 
+/**
+ * @brief MinConf::MinConf
+ * @param alpha_list list of alpha diversity for each site
+ * @param gamma_div total number of species
+ * @param target matrix of the target beta diversity
+ * @param partial_solution optional solution matrix as a start for the optimization. Species are added to fit the alpha diveristy of each site
+ * @param fixed_species matrix to fix specific species presences/absences (0: not fixed, !=0 fixed)
+ * @param seed random seed
+ * @param na_val NA value (default: Rcpp's NA -2147483648)
+ */
 MinConf::MinConf(const std::vector<unsigned> &alpha_list,
                  const unsigned gamma_div,
-                 const std::vector<int> &target_,
+                 const std::vector<int> &target,
+                 const std::vector<int> &partial_solution,
+                 const std::vector<int> &fixed_species,
                  const unsigned long seed,
-                 const std::vector<int> &fixed_species_,
-                 const std::vector<int> &partial_solution, const int na_val)
+                 const int na_val)
     : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size()), NA(na_val)
 {
     // Random number generator
     rng = std::mt19937(seed);
 
     solution.resize(n_sites);
-    target.resize(n_sites);
+    this->target.resize(n_sites);
     commonness.resize(n_sites);
 
     for (unsigned site = 0; site < n_sites; site++) {
@@ -25,12 +36,12 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
         commonness[site].resize(n_sites, -1);
 
         // convert target matrix to a more convenient format
-        target[site].resize(n_sites);
+        this->target[site].resize(n_sites);
         for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-            if (target_[other_site * n_sites + site] == NA) {
-                target[site][other_site] = NA;
+            if (target[other_site * n_sites + site] == NA) {
+                this->target[site][other_site] = NA;
             } else {
-                target[site][other_site] = target_[other_site * n_sites + site];
+                this->target[site][other_site] = target[other_site * n_sites + site];
             }
         }
     }
@@ -51,18 +62,18 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
         }
     }
 
-    if (fixed_species_.size() > 1) {
-        if(fixed_species_.size() != n_sites * gamma_div) {
+    if (fixed_species.size() > 1) {
+        if(fixed_species.size() != n_sites * gamma_div) {
             std::cerr << "The size of the fixed_species vector does not match n_sites * gamma_div. "
                       << "fixed_species ignored."
                       << std::endl;
         } else {
-            fixed_species.resize(n_sites);
+            this->fixed_species.resize(n_sites);
             for (unsigned site = 0; site < n_sites; site++) {
-                fixed_species[site].resize(gamma_div);
+                this->fixed_species[site].resize(gamma_div);
                 for (unsigned species = 0; species < gamma_div; species++) {
-                    if(fixed_species_[site * gamma_div + species]) {
-                        fixed_species[site][species] = 1;
+                    if(fixed_species[site * gamma_div + species]) {
+                        this->fixed_species[site][species] = 1;
                     }
                 }
             }

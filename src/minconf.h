@@ -10,10 +10,10 @@ class MinConf
 public:
     MinConf(const std::vector<unsigned> &alpha_list,
             const unsigned gamma_div,
-            const std::vector<int> &target_,
+            const std::vector<int> &target,
+            const std::vector<int> &partial_solution,
+            const std::vector<int> &fixed_species,
             const unsigned long seed,
-            const std::vector<int> &fixed_species_ = std::vector<int>(),
-            const std::vector<int> &partial_solution = std::vector<int>(),
             const int na_val = -2147483648);
 
     int optimize(const long max_steps_,

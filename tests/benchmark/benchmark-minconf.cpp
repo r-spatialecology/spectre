@@ -12,7 +12,7 @@ TEST_CASE("MinConf") {
     std::vector<int> target = {  -10, 0, 2 ,
                                  0, -10, 0 ,
                                  2, 0, -10  };
-    MinConf mc(alpha_list, gamma, target, seed);
+    MinConf mc(alpha_list, gamma, target, std::vector<int>(), std::vector<int>(), seed);
 
     // now let's benchmark (will stop automatically when it found a solution after a few iterations)
     BENCHMARK("optimize 3 sites, 3 species") {
@@ -127,8 +127,7 @@ TEST_CASE("MinConf") {
                                            -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,3,
                                            -1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1
                                           };
-    MinConf mc_large(alpha_list_large, gamma_large, target_large, seed, std::vector<int>(), std::vector<int>(), -1);
-
+    MinConf mc_large(alpha_list_large, gamma_large, target_large, std::vector<int>(), std::vector<int>(), seed, -1);
 
     BENCHMARK("optimize 100 sites, 139 spec, 5 it") { return mc_large.optimize(5, false, false); };
 

@@ -6,15 +6,22 @@ using namespace Rcpp;
 
 // [[Rcpp::plugins(cpp11)]]
 // [[Rcpp::export]]
-List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
-                         IntegerMatrix target, IntegerMatrix fixed_species,
-                         IntegerMatrix partial_solution,
-                         const unsigned max_iterations,
-                         const unsigned long seed = 0, bool verbose = true, bool interruptible = true);
+List optimizer_min_conf(const IntegerVector alpha_list,
+                        const unsigned total_gamma,
+                        const IntegerMatrix target,
+                        const unsigned max_iterations,
+                        const IntegerMatrix partial_solution,
+                        const IntegerMatrix fixed_species,
+                        const unsigned long seed = 0,
+                        const bool verbose = true,
+                        const bool interruptible = true);
 // [[Rcpp::export]]
-IntegerMatrix calculate_solution_commonness_rcpp(IntegerMatrix solution_matrix);
+IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix);
 
 // [[Rcpp::export]]
-unsigned calc_error_random_solution(const unsigned n, IntegerVector alpha_list, const unsigned total_gamma,
-                                     IntegerMatrix target, const unsigned long seed);
+unsigned calc_error_random_solution(const unsigned n,
+                                    const IntegerVector alpha_list,
+                                    const unsigned total_gamma,
+                                    const IntegerMatrix target,
+                                    const unsigned long seed);
 #endif // MH_OPTIMIZER_H

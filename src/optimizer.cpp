@@ -5,18 +5,22 @@
 #include <cmath>
 #include "minconf.h"
 
-List optimizer_min_conf(IntegerVector alpha_list, const unsigned total_gamma,
-                        IntegerMatrix target, IntegerMatrix fixed_species,
-                        IntegerMatrix partial_solution,
+List optimizer_min_conf(const IntegerVector alpha_list,
+                        const unsigned total_gamma,
+                        const IntegerMatrix target,
                         const unsigned max_iterations,
-                        const unsigned long seed, bool verbose, bool interruptible)
+                        const IntegerMatrix partial_solution,
+                        const IntegerMatrix fixed_species,
+                        const unsigned long seed,
+                        const bool verbose,
+                        const bool interruptible)
 {
     MinConf mc(as<std::vector<unsigned> >(alpha_list),
                total_gamma,
                as<std::vector<int> >(target),
-               seed,
-               as<std::vector<int> >(fixed_species),
                as<std::vector<int> >(partial_solution),
+               as<std::vector<int> >(fixed_species),
+               seed,
                NA_INTEGER);
 
     long iter = max_iterations - mc.optimize(max_iterations, verbose, interruptible);
@@ -84,9 +88,12 @@ IntegerMatrix calculate_solution_commonness_rcpp(const IntegerMatrix solution_ma
     return result;
 }
 
-unsigned calc_error_random_solution(const unsigned n, IntegerVector alpha_list, const unsigned total_gamma,
-                                     IntegerMatrix target, const unsigned long seed)
+unsigned calc_error_random_solution(const unsigned n,
+                                    const IntegerVector alpha_list,
+                                    const unsigned total_gamma,
+                                    const IntegerMatrix target,
+                                    const unsigned long seed)
 {
-    MinConf mc(as<std::vector<unsigned> >(alpha_list), total_gamma, as<std::vector<int> >(target), seed);
+    MinConf mc(as<std::vector<unsigned> >(alpha_list), total_gamma, as<std::vector<int> >(target), std::vector<int>(), std::vector<int>(), seed);
     return mc.calc_error_random_solution(n);
 }

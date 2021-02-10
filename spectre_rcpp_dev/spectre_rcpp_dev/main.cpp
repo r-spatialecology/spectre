@@ -16,7 +16,7 @@ int main()
     std::vector<int> target = {  -10, 0, 2 ,
                                  0, -10, 0 ,
                                  2, 0, -10  };
-    MinConf mc(alpha_list, gamma, target, seed);
+    MinConf mc(alpha_list, gamma, target, std::vector<int>(), std::vector<int>(), seed);
 
     // now let's benchmark:
     //    BENCHMARK("MinConf") {
