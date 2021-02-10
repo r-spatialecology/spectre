@@ -22,7 +22,7 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
                  const std::vector<int> &fixed_species,
                  const unsigned long seed,
                  const int na_val)
-    : alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size()), NA(na_val)
+    : NA(na_val), alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size())
 {
     // Random number generator
     rng = std::mt19937(seed);
