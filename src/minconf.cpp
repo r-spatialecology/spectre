@@ -6,18 +6,6 @@
 // [[Rcpp::depends(RcppProgress)]]
 #include <progress.hpp>
 
-/**
- * @brief MinConf::MinConf
- * @param alpha_list list of alpha diversity for each site
- * @param gamma_div total number of species
- * @param target matrix of the target beta diversity
- * @param partial_solution optional solution matrix as a start for the
- * optimization. Species are added to fit the alpha diveristy of each site
- * @param fixed_species matrix to fix specific species presences/absences (0:
- * not fixed, !=0 fixed)
- * @param seed random seed
- * @param na_val NA value (default: Rcpp's NA -2147483648)
- */
 MinConf::MinConf(const std::vector<unsigned> &alpha_list,
                  const unsigned gamma_div, const std::vector<int> &target,
                  const std::vector<int> &partial_solution,
