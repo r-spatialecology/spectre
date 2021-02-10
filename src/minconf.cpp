@@ -6,6 +6,18 @@
 // [[Rcpp::depends(RcppProgress)]]
 #include <progress.hpp>
 
+/**
+ * @brief MinConf
+ * @param alpha_list list of alpha diversity for each site
+ * @param gamma_div total number of species
+ * @param target matrix of the target beta diversity
+ * @param partial_solution optional solution matrix as a start for the
+ * optimization. Species are added to fit the alpha diveristy of each site
+ * @param fixed_species matrix to fix specific species presences/absences (0:
+ * not fixed, !=0 fixed)
+ * @param seed random seed
+ * @param na_val NA value (default: Rcpp's NA -2147483648)
+ */
 MinConf::MinConf(const std::vector<unsigned> &alpha_list,
                  const unsigned gamma_div, const std::vector<int> &target,
                  const std::vector<int> &partial_solution,
@@ -73,6 +85,15 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
   gen_init_solution(missing_species);
 }
 
+/**
+ * @brief optimize runs the actual optimization algorithm
+ * @param max_steps
+ * @param verbose enables a progress bar to the R terminal. This will slow
+ * down the optimization.
+ * @param interruptible makes the optimization interruptable from R (this is
+ * computationally a rather cheap option)
+ * @return
+ */
 int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
   Progress p(max_steps, verbose);
   std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
@@ -105,7 +126,7 @@ int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
     }
 
     // add min conf species
-    add_species_min_conf(site, target);
+    add_species_min_conf(site);
 
     update_solution_commonness();
     error = calc_error(commonness, target);
@@ -168,10 +189,14 @@ std::vector<unsigned> MinConf::present_species_index(unsigned site,
       species_idx.push_back(species);
     }
   }
-
   return species_idx;
 }
 
+/**
+ * @brief MinConf::absent_species_index
+ * @param site
+ * @return a vector with the indices of each species absent.
+ */
 std::vector<unsigned> MinConf::absent_species_index(unsigned site) {
   std::vector<unsigned> absent_species_idx;
   for (unsigned species = 0; species < gamma_div; species++) {
@@ -187,6 +212,11 @@ std::vector<unsigned> MinConf::absent_species_index(unsigned site) {
   return absent_species_idx;
 }
 
+/**
+ * @brief MinConf::remove_random_species
+ * @param site
+ * @return true on success
+ */
 bool MinConf::remove_random_species(const unsigned site) {
   std::vector<unsigned> species_idx =
       present_species_index(site, true); // omit fixed_species == true
@@ -200,18 +230,19 @@ bool MinConf::remove_random_species(const unsigned site) {
   return true;
 }
 
-void MinConf::add_species_min_conf(
-    unsigned site, const std::vector<std::vector<int>> &target) {
-  // Get index of all non-present species of this site
-  std::vector<unsigned> absent_species_idx = absent_species_index(site);
-
+/**
+ * @brief MinConf::add_species_min_conf adds a species at `site` that results in
+ * the lowest error. If there is more than one possibility, a random choice is
+ * drawn.
+ * @param site
+ */
+void MinConf::add_species_min_conf(unsigned site) {
   // calculate the best-fitting species for this site
-  auto min_conflict_species =
-      calc_min_conflict_species(site, absent_species_idx, target);
+  auto min_conflict_species = calc_min_conflict_species(site);
 
   if (min_conflict_species.size() < 1) {
-    std::cerr << "no species found to add at add_species_min_conf, site: "
-              << site << std::endl; // something odd happened
+    Rcpp::Rcerr << "no species found to add at add_species_min_conf, site: "
+                << site << std::endl; // something odd happened
   } else {
     std::shuffle(min_conflict_species.begin(), min_conflict_species.end(), rng);
     const auto species = min_conflict_species[0];
@@ -219,18 +250,26 @@ void MinConf::add_species_min_conf(
   }
 }
 
-std::vector<unsigned> MinConf::calc_min_conflict_species(
-    const unsigned site, const std::vector<unsigned> free_species,
-    const std::vector<std::vector<int>> &target) {
+/**
+ * @brief MinConf::calc_min_conflict_species adds and removes all *absent*
+ * species one-by-one to figure out which ones would cause the lowest error.
+ * @param site
+ * @return all *absent* species that would lead to the lowest error if they were
+ * present.
+ */
+std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site) {
+  // Get index of all non-present species of this site
+  std::vector<unsigned> absent_species_idx = absent_species_index(site);
+
   double error = std::numeric_limits<double>::max(); // makes sure that the
                                                      // first error_ is smaller
   std::vector<unsigned> min_conflict_species;
 
   // try for each species at this site where the enery would be minimal
 
-  for (unsigned species_idx = 0; species_idx < free_species.size();
+  for (unsigned species_idx = 0; species_idx < absent_species_idx.size();
        species_idx++) {
-    const unsigned species = free_species[species_idx];
+    const unsigned species = absent_species_idx[species_idx];
     solution[site][species] = 1; // assign species (will be un-done later)
     update_solution_commonness();
     unsigned error_ = calc_error(commonness, target);
@@ -245,7 +284,6 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(
     }
     solution[site][species] = 0; // undo assign species
   }
-
   return min_conflict_species;
 }
 
@@ -289,6 +327,5 @@ unsigned MinConf::calc_error(const std::vector<std::vector<int>> &commonness,
           std::abs(commonness[site][other_site] - target[site][other_site]);
     }
   }
-
   return sum_diff;
 }

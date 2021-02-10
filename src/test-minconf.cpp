@@ -2,12 +2,15 @@
 
 void TestMinConf::test_add_species_min_conf(unsigned site, const std::vector<std::vector<int> > &target)
 {
-  add_species_min_conf(site, target);
+  this->target = target;
+  add_species_min_conf(site);
 }
 
-std::vector<unsigned> TestMinConf::test_calc_min_conflict_species(const unsigned site, const std::vector<unsigned> free_species, const std::vector<std::vector<int> > &target)
+std::vector<unsigned> TestMinConf::test_calc_min_conflict_species(const unsigned site,
+                                                                  const std::vector<std::vector<int> > &target)
 {
-  return calc_min_conflict_species(site, free_species, target);
+  this->target = target;
+  return calc_min_conflict_species(site);
 }
 
 
@@ -116,12 +119,12 @@ context("Tests for the MinConf class") {
     std::vector<std::vector<int> > target = { { TestMinConf::NA, 0, 2 },
                                               { 0, TestMinConf::NA, 0 },
                                               { 2, 0, TestMinConf::NA } };
-    expect_true(mc.test_calc_min_conflict_species(site, absent_species, target) == absent_species);
+    expect_true(mc.test_calc_min_conflict_species(site, target) == absent_species);
     mc.solution = {{0, 1, 1},
                    {0, 1, 0},
                    {0, 1, 1}};
     absent_species[0] = 0;
-    expect_true(mc.test_calc_min_conflict_species(site, absent_species, target) == std::vector<unsigned>{0});
+    expect_true(mc.test_calc_min_conflict_species(site, target) == std::vector<unsigned>{0});
   }
 
   test_that("add_species_min_conf") {
