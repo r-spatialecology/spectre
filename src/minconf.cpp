@@ -120,21 +120,6 @@ int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
   return iter;
 }
 
-std::vector<std::vector<int>> MinConf::gen_random_solution() {
-  const auto n_sites = alpha_list.size(); // number of cols
-  std::vector<std::vector<int>> random_solution(n_sites,
-                                                std::vector<int>(gamma_div));
-  for (unsigned site = 0; site < n_sites; site++) {
-    for (unsigned species = 0; species < alpha_list[site]; species++) {
-      random_solution[site][species] = 1;
-    }
-    std::shuffle(random_solution[site].begin(), random_solution[site].end(),
-                 rng);
-  }
-
-  return random_solution;
-}
-
 /**
  * @brief MinConf::calc_missing_species calculates the number of species the
  * algorithm needs to add to equal the number of species with alpha diversity.

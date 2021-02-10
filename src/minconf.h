@@ -54,7 +54,6 @@ protected:
   const unsigned n_sites;
 
   void gen_init_solution(std::vector<unsigned> missing_species);
-  std::vector<std::vector<int>> gen_random_solution();
   std::vector<unsigned> calc_missing_species();
   std::vector<unsigned> present_species_index(unsigned site,
                                               bool omit_fixed_species = true);
