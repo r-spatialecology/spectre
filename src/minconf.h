@@ -24,7 +24,6 @@ public:
 
 protected:
   std::mt19937 rng;
-  const double epsilon = 0.00001;
 
   std::vector<std::vector<int>> target;
   const std::vector<unsigned> alpha_list;

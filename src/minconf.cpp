@@ -261,12 +261,11 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site) {
   // Get index of all non-present species of this site
   std::vector<unsigned> absent_species_idx = absent_species_index(site);
 
-  double error = std::numeric_limits<double>::max(); // makes sure that the
-                                                     // first error_ is smaller
+  // makes sure that the first actual error_ is smaller
+  unsigned error = std::numeric_limits<unsigned>::max();
   std::vector<unsigned> min_conflict_species;
 
   // try for each species at this site where the enery would be minimal
-
   for (unsigned species_idx = 0; species_idx < absent_species_idx.size();
        species_idx++) {
     const unsigned species = absent_species_idx[species_idx];
@@ -278,9 +277,9 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site) {
       min_conflict_species.clear(); // found better fitting species delete other
       min_conflict_species.push_back(species);
       error = error_;
-    } else if (fabs(error_ - error) <= epsilon) {
-      min_conflict_species.push_back(
-          species); // as good as others, add this species
+    } else if (error_ == error) {
+      // as good as other species, add this species
+      min_conflict_species.push_back(species);
     }
     solution[site][species] = 0; // undo assign species
   }
