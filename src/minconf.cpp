@@ -1,4 +1,5 @@
 #include "minconf.h"
+
 #include <algorithm>
 #include <chrono>
 #include <iostream>
@@ -10,318 +11,317 @@
  * @param alpha_list list of alpha diversity for each site
  * @param gamma_div total number of species
  * @param target matrix of the target beta diversity
- * @param partial_solution optional solution matrix as a start for the optimization. Species are added to fit the alpha diveristy of each site
- * @param fixed_species matrix to fix specific species presences/absences (0: not fixed, !=0 fixed)
+ * @param partial_solution optional solution matrix as a start for the
+ * optimization. Species are added to fit the alpha diveristy of each site
+ * @param fixed_species matrix to fix specific species presences/absences (0:
+ * not fixed, !=0 fixed)
  * @param seed random seed
  * @param na_val NA value (default: Rcpp's NA -2147483648)
  */
 MinConf::MinConf(const std::vector<unsigned> &alpha_list,
-                 const unsigned gamma_div,
-                 const std::vector<int> &target,
+                 const unsigned gamma_div, const std::vector<int> &target,
                  const std::vector<int> &partial_solution,
                  const std::vector<int> &fixed_species,
-                 const unsigned long seed,
-                 const int na_val)
-    : NA(na_val), alpha_list(alpha_list), gamma_div(gamma_div), n_sites(alpha_list.size())
-{
-    // Random number generator
-    rng = std::mt19937(seed);
+                 const unsigned long seed, const int na_val)
+    : NA(na_val), alpha_list(alpha_list), gamma_div(gamma_div),
+      n_sites(alpha_list.size()) {
+  // Random number generator
+  rng = std::mt19937(seed);
 
-    solution.resize(n_sites);
-    this->target.resize(n_sites);
-    commonness.resize(n_sites);
+  solution.resize(n_sites);
+  this->target.resize(n_sites);
+  commonness.resize(n_sites);
 
-    for (unsigned site = 0; site < n_sites; site++) {
-        solution[site].resize(gamma_div);
-        commonness[site].resize(n_sites, na_val);
+  for (unsigned site = 0; site < n_sites; site++) {
+    solution[site].resize(gamma_div);
+    commonness[site].resize(n_sites, na_val);
 
-        // convert target matrix to a more convenient format
-        this->target[site].resize(n_sites);
-        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-            if (target[other_site * n_sites + site] == NA) {
-                this->target[site][other_site] = NA;
-            } else {
-                this->target[site][other_site] = target[other_site * n_sites + site];
-            }
-        }
+    // convert target matrix to a more convenient format
+    this->target[site].resize(n_sites);
+    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+      if (target[other_site * n_sites + site] == NA) {
+        this->target[site][other_site] = NA;
+      } else {
+        this->target[site][other_site] = target[other_site * n_sites + site];
+      }
     }
+  }
 
-    if (partial_solution.size() > 1) {
-        if(partial_solution.size() != n_sites * gamma_div) {
-            std::cerr << "The size of the partial_solution vector does not match n_sites * gamma_div. "
-                      << "partial_solution ignored."
-                      << std::endl;
-        } else {
-            for (unsigned site = 0; site < n_sites; site++) {
-                for (unsigned species = 0; species < gamma_div; species++) {
-                    if (partial_solution[site * gamma_div + species]) {
-                        solution[site][species] = 1;
-                    }
-                }
-            }
+  if (partial_solution.size() > 1) {
+    if (partial_solution.size() != n_sites * gamma_div) {
+      std::cerr << "The size of the partial_solution vector does not match "
+                   "n_sites * gamma_div. "
+                << "partial_solution ignored." << std::endl;
+    } else {
+      for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned species = 0; species < gamma_div; species++) {
+          if (partial_solution[site * gamma_div + species]) {
+            solution[site][species] = 1;
+          }
         }
+      }
     }
+  }
 
-    if (fixed_species.size() > 1) {
-        if(fixed_species.size() != n_sites * gamma_div) {
-            std::cerr << "The size of the fixed_species vector does not match n_sites * gamma_div. "
-                      << "fixed_species ignored."
-                      << std::endl;
-        } else {
-            this->fixed_species.resize(n_sites);
-            for (unsigned site = 0; site < n_sites; site++) {
-                this->fixed_species[site].resize(gamma_div);
-                for (unsigned species = 0; species < gamma_div; species++) {
-                    if(fixed_species[site * gamma_div + species]) {
-                        this->fixed_species[site][species] = 1;
-                    }
-                }
-            }
+  if (fixed_species.size() > 1) {
+    if (fixed_species.size() != n_sites * gamma_div) {
+      std::cerr << "The size of the fixed_species vector does not match "
+                   "n_sites * gamma_div. "
+                << "fixed_species ignored." << std::endl;
+    } else {
+      this->fixed_species.resize(n_sites);
+      for (unsigned site = 0; site < n_sites; site++) {
+        this->fixed_species[site].resize(gamma_div);
+        for (unsigned species = 0; species < gamma_div; species++) {
+          if (fixed_species[site * gamma_div + species]) {
+            this->fixed_species[site][species] = 1;
+          }
         }
+      }
     }
+  }
 
-    const auto missing_species = calc_missing_species();
-    gen_init_solution(missing_species);
+  const auto missing_species = calc_missing_species();
+  gen_init_solution(missing_species);
 }
 
-int MinConf::optimize(const long max_steps, bool verbose, bool interruptible)
-{
-    Progress p(max_steps, verbose);
-    std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
+int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
+  Progress p(max_steps, verbose);
+  std::uniform_int_distribution<unsigned> site_dist(0, n_sites - 1);
 
-    auto iter = max_steps;
+  auto iter = max_steps;
 
-    // calculate and save the start values
+  // calculate and save the start values
+  update_solution_commonness();
+  unsigned error = calc_error(commonness, target);
+  iteration_count.push_back(0);
+  error_vector.push_back(error);
+
+  // optimize
+  while (iter-- > 0) {
+    // update progress bar
+    p.increment();
+    if (interruptible) {
+      if (Progress::check_abort()) {
+        return RET_ABORT;
+      }
+    }
+
+    // choose random site
+    const auto site = site_dist(rng);
+
+    // remove a random species at this site
+    // (and skip iteration if it was not possible to remove a species)
+    if (remove_random_species(site) == false) {
+      continue;
+    }
+
+    // add min conf species
+    add_species_min_conf(site, target);
+
     update_solution_commonness();
-    unsigned error = calc_error(commonness, target);
-    iteration_count.push_back(0);
+    error = calc_error(commonness, target);
+
+    iteration_count.push_back(max_steps - iter);
     error_vector.push_back(error);
 
-    // optimize
-    while(iter-- > 0) {
-        // update progress bar
-        p.increment();
-        if(interruptible) {
-            if (Progress::check_abort() ) { return RET_ABORT; }
-        }
-
-        // choose random site
-        const auto site = site_dist(rng);
-
-        // remove a random species at this site
-        // (and skip iteration if it was not possible to remove a species)
-        if (remove_random_species(site) == false) {
-            continue;
-        }
-
-        // add min conf species
-        add_species_min_conf(site, target);
-
-        update_solution_commonness();
-        error = calc_error(commonness, target);
-
-        iteration_count.push_back(max_steps - iter);
-        error_vector.push_back(error);
-
-        if (error == 0) {
-            return iter;
-        }
+    if (error == 0) {
+      return iter;
     }
-    return iter;
+  }
+  return iter;
 }
 
-std::vector<std::vector<int> > MinConf::gen_random_solution()
-{
-    const auto n_sites = alpha_list.size(); // number of cols
-    std::vector<std::vector<int> > random_solution(n_sites, std::vector<int>(gamma_div));
-    for (unsigned site = 0; site < n_sites; site++) {
-        for (unsigned species = 0; species < alpha_list[site]; species++) {
-            random_solution[site][species] = 1;
-        }
-        std::shuffle(random_solution[site].begin(), random_solution[site].end(), rng);
+std::vector<std::vector<int>> MinConf::gen_random_solution() {
+  const auto n_sites = alpha_list.size(); // number of cols
+  std::vector<std::vector<int>> random_solution(n_sites,
+                                                std::vector<int>(gamma_div));
+  for (unsigned site = 0; site < n_sites; site++) {
+    for (unsigned species = 0; species < alpha_list[site]; species++) {
+      random_solution[site][species] = 1;
     }
+    std::shuffle(random_solution[site].begin(), random_solution[site].end(),
+                 rng);
+  }
 
-    return random_solution;
+  return random_solution;
 }
 
 /**
- * @brief MinConf::calc_missing_species calculates the number of species the algorithm needs to add to equal the number
- * of species with alpha diversity. The actual number of missing species species might differ for two resonns:
- * If the number of species present is higher than the number of species estimated by alpha diversity
- * (due to the partial_solution parameter), then the number of missing species is 0. If the number of missing species is
- * higher than the number of potential species (because potential species are blocked by the fixed_species parameter),
- * then the number of missing_species is equal to the number of potential species.
+ * @brief MinConf::calc_missing_species calculates the number of species the
+ * algorithm needs to add to equal the number of species with alpha diversity.
+ * The actual number of missing species species might differ for two resonns: If
+ * the number of species present is higher than the number of species estimated
+ * by alpha diversity (due to the partial_solution parameter), then the number
+ * of missing species is 0. If the number of missing species is higher than the
+ * number of potential species (because potential species are blocked by the
+ * fixed_species parameter), then the number of missing_species is equal to the
+ * number of potential species.
  * @return vector of the number of species to be assigned for each site.
  */
-std::vector<unsigned> MinConf::calc_missing_species()
-{
-    auto missing_species = alpha_list;
-    for (unsigned site = 0; site < n_sites; site++) {
-        const auto present_species = present_species_index(site, false).size();
-        const auto potential_species = absent_species_index(site).size();
-        missing_species[site] = (missing_species[site] < present_species) ? 0 : missing_species[site] - present_species;
+std::vector<unsigned> MinConf::calc_missing_species() {
+  auto missing_species = alpha_list;
+  for (unsigned site = 0; site < n_sites; site++) {
+    const auto present_species = present_species_index(site, false).size();
+    const auto potential_species = absent_species_index(site).size();
+    missing_species[site] = (missing_species[site] < present_species)
+                                ? 0
+                                : missing_species[site] - present_species;
 
-        if (missing_species[site] > potential_species) {
-            missing_species[site] = potential_species;
-        }
+    if (missing_species[site] > potential_species) {
+      missing_species[site] = potential_species;
     }
+  }
 
-    return missing_species;
+  return missing_species;
 }
 
-std::vector<unsigned> MinConf::present_species_index(unsigned site, bool omit_fixed_species)
-{
-    std::vector<unsigned> species_idx;
-    for (unsigned species = 0; species < gamma_div; species++) {
-        if (omit_fixed_species && fixed_species.size()) {
-            if (fixed_species[site][species]) {
-                continue;
-            }
-        }
-        if (solution[site][species]) {
-            species_idx.push_back(species);
-        }
+std::vector<unsigned> MinConf::present_species_index(unsigned site,
+                                                     bool omit_fixed_species) {
+  std::vector<unsigned> species_idx;
+  for (unsigned species = 0; species < gamma_div; species++) {
+    if (omit_fixed_species && fixed_species.size()) {
+      if (fixed_species[site][species]) {
+        continue;
+      }
     }
+    if (solution[site][species]) {
+      species_idx.push_back(species);
+    }
+  }
 
-    return  species_idx;
+  return species_idx;
 }
 
-std::vector<unsigned> MinConf::present_species_index(unsigned site, const std::vector<std::vector<int> > partial_solution)
-{
-    std::vector<unsigned> species_idx;
-    for (unsigned species = 0; species < gamma_div; species++) {
-        if (partial_solution[site][species]) {
-            species_idx.push_back(species);
-        }
+std::vector<unsigned> MinConf::present_species_index(
+    unsigned site, const std::vector<std::vector<int>> partial_solution) {
+  std::vector<unsigned> species_idx;
+  for (unsigned species = 0; species < gamma_div; species++) {
+    if (partial_solution[site][species]) {
+      species_idx.push_back(species);
     }
+  }
 
-    return  species_idx;
+  return species_idx;
 }
 
-std::vector<unsigned> MinConf::absent_species_index(unsigned site)
-{
-    std::vector<unsigned> absent_species_idx;
-    for (unsigned species = 0; species < gamma_div; species++) {
-        if (!solution[site][species]) {
-            if (fixed_species.size()) {
-                if (fixed_species[site][species]) {
-                    continue;
-                }
-            }
-            absent_species_idx.push_back(species);
+std::vector<unsigned> MinConf::absent_species_index(unsigned site) {
+  std::vector<unsigned> absent_species_idx;
+  for (unsigned species = 0; species < gamma_div; species++) {
+    if (!solution[site][species]) {
+      if (fixed_species.size()) {
+        if (fixed_species[site][species]) {
+          continue;
         }
+      }
+      absent_species_idx.push_back(species);
     }
-    return absent_species_idx;
+  }
+  return absent_species_idx;
 }
 
-bool MinConf::remove_random_species(const unsigned site)
-{
-    std::vector<unsigned> species_idx = present_species_index(site, true); // omit fixed_species == true
-    if (species_idx.size() == 0) {
-        return false; // all species fixed, nothing to remove here
-    }
-    std::shuffle(species_idx.begin(), species_idx.end(), rng);
-    const unsigned species = species_idx.back();
-    solution[site][species] = 0;
+bool MinConf::remove_random_species(const unsigned site) {
+  std::vector<unsigned> species_idx =
+      present_species_index(site, true); // omit fixed_species == true
+  if (species_idx.size() == 0) {
+    return false; // all species fixed, nothing to remove here
+  }
+  std::shuffle(species_idx.begin(), species_idx.end(), rng);
+  const unsigned species = species_idx.back();
+  solution[site][species] = 0;
 
-    return true;
+  return true;
 }
 
-void MinConf::add_species_min_conf(unsigned site,
-                                   const std::vector<std::vector<int> > &target)
-{
-    // Get index of all non-present species of this site
-    std::vector<unsigned> absent_species_idx = absent_species_index(site);
+void MinConf::add_species_min_conf(
+    unsigned site, const std::vector<std::vector<int>> &target) {
+  // Get index of all non-present species of this site
+  std::vector<unsigned> absent_species_idx = absent_species_index(site);
 
-    // calculate the best-fitting species for this site
-    auto min_conflict_species = calc_min_conflict_species(site,
-                                                          absent_species_idx,
-                                                          target);
+  // calculate the best-fitting species for this site
+  auto min_conflict_species =
+      calc_min_conflict_species(site, absent_species_idx, target);
 
-    if (min_conflict_species.size() < 1) {
-        std::cerr << "no species found to add at add_species_min_conf, site: "
-                  << site
-                  << std::endl; // something odd happened
-    } else {
-        std::shuffle(min_conflict_species.begin(), min_conflict_species.end(), rng);
-        const auto species = min_conflict_species[0];
-        solution[site][species] = 1;
-    }
+  if (min_conflict_species.size() < 1) {
+    std::cerr << "no species found to add at add_species_min_conf, site: "
+              << site << std::endl; // something odd happened
+  } else {
+    std::shuffle(min_conflict_species.begin(), min_conflict_species.end(), rng);
+    const auto species = min_conflict_species[0];
+    solution[site][species] = 1;
+  }
 }
 
-std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site,
-                                                         const std::vector<unsigned> free_species,
-                                                         const std::vector<std::vector<int> > &target)
-{
-    double error = std::numeric_limits<double>::max(); // makes sure that the first error_ is smaller
-    std::vector<unsigned> min_conflict_species;
+std::vector<unsigned> MinConf::calc_min_conflict_species(
+    const unsigned site, const std::vector<unsigned> free_species,
+    const std::vector<std::vector<int>> &target) {
+  double error = std::numeric_limits<double>::max(); // makes sure that the
+                                                     // first error_ is smaller
+  std::vector<unsigned> min_conflict_species;
 
-    // try for each species at this site where the enery would be minimal
+  // try for each species at this site where the enery would be minimal
 
-    for (unsigned species_idx = 0; species_idx < free_species.size(); species_idx++) {
-        const unsigned species = free_species[species_idx];
-        solution[site][species] = 1; // assign species (will be un-done later)
-        update_solution_commonness();
-        unsigned error_ = calc_error(commonness, target);
+  for (unsigned species_idx = 0; species_idx < free_species.size();
+       species_idx++) {
+    const unsigned species = free_species[species_idx];
+    solution[site][species] = 1; // assign species (will be un-done later)
+    update_solution_commonness();
+    unsigned error_ = calc_error(commonness, target);
 
-        if (error_ < error) {
-            min_conflict_species.clear(); // found better fitting species delete other
-            min_conflict_species.push_back(species);
-            error = error_;
-        } else if (fabs(error_ - error) <= epsilon) {
-            min_conflict_species.push_back(species); // as good as others, add this species
-        }
-        solution[site][species] = 0; // undo assign species
+    if (error_ < error) {
+      min_conflict_species.clear(); // found better fitting species delete other
+      min_conflict_species.push_back(species);
+      error = error_;
+    } else if (fabs(error_ - error) <= epsilon) {
+      min_conflict_species.push_back(
+          species); // as good as others, add this species
     }
+    solution[site][species] = 0; // undo assign species
+  }
 
-    return min_conflict_species;
+  return min_conflict_species;
 }
 
-void MinConf::gen_init_solution(std::vector<unsigned> missing_species)
-{
-    for (unsigned site = 0; site < n_sites; site++) {
-        auto absent_species = absent_species_index(site);
+void MinConf::gen_init_solution(std::vector<unsigned> missing_species) {
+  for (unsigned site = 0; site < n_sites; site++) {
+    auto absent_species = absent_species_index(site);
 
-        if (missing_species[site] > absent_species.size()) {
-            Rcpp::Rcerr << "missing species: "
-                        << missing_species[site]
-                           << "absent_species: "
-                           << absent_species.size();
-            return;
-        }
-
-        std::shuffle(absent_species.begin(), absent_species.end(), rng);
-        for (unsigned s = 0; s < missing_species[site]; s++) {
-            const unsigned species = absent_species[s];
-            solution[site][species] = 1;
-        }
+    if (missing_species[site] > absent_species.size()) {
+      Rcpp::Rcerr << "missing species: " << missing_species[site]
+                  << "absent_species: " << absent_species.size();
+      return;
     }
+
+    std::shuffle(absent_species.begin(), absent_species.end(), rng);
+    for (unsigned s = 0; s < missing_species[site]; s++) {
+      const unsigned species = absent_species[s];
+      solution[site][species] = 1;
+    }
+  }
 }
 
-void MinConf::update_solution_commonness()
-{
-    for (unsigned site = 0; site < n_sites - 1; site++) {
-        for (unsigned other_site = site + 1; other_site < n_sites; other_site++) {
-            commonness[site][other_site] = std::inner_product(solution[site].begin(),
-                                                              solution[site].end(),
-                                                              solution[other_site].begin(), 0);
-        }
+void MinConf::update_solution_commonness() {
+  for (unsigned site = 0; site < n_sites - 1; site++) {
+    for (unsigned other_site = site + 1; other_site < n_sites; other_site++) {
+      commonness[site][other_site] =
+          std::inner_product(solution[site].begin(), solution[site].end(),
+                             solution[other_site].begin(), 0);
     }
+  }
 }
 
-unsigned MinConf::calc_error(const std::vector<std::vector<int> > &commonness,
-                             const std::vector<std::vector<int> > &target)
-{
-    unsigned sum_diff = 0;
-    for (unsigned site = 0; site < n_sites; site++) {
-        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-            if (target[site][other_site] == NA) {
-                continue;
-            }
-            sum_diff += std::abs(commonness[site][other_site] -
-                                 target[site][other_site]);
-        }
+unsigned MinConf::calc_error(const std::vector<std::vector<int>> &commonness,
+                             const std::vector<std::vector<int>> &target) {
+  unsigned sum_diff = 0;
+  for (unsigned site = 0; site < n_sites; site++) {
+    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+      if (target[site][other_site] == NA) {
+        continue;
+      }
+      sum_diff +=
+          std::abs(commonness[site][other_site] - target[site][other_site]);
     }
+  }
 
-    return sum_diff;
+  return sum_diff;
 }
