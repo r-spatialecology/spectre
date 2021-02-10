@@ -1,8 +1,4 @@
 #include "minconf.h"
-
-#include <algorithm>
-#include <chrono>
-#include <iostream>
 // [[Rcpp::depends(RcppProgress)]]
 #include <progress.hpp>
 

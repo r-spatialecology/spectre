@@ -1,7 +1,6 @@
 #ifndef MH_OPTIMIZER_H
 #define MH_OPTIMIZER_H
 #include "Rcpp.h"
-#include <random>
 
 using namespace Rcpp;
 
