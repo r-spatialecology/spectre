@@ -17,7 +17,6 @@ public:
   std::vector<std::vector<int>> commonness;
   std::vector<int> iteration_count;
   std::vector<unsigned> error_vector;
-  bool solution_has_best_error = true;
   const int RET_ABORT = -999;
   const int NA;
 

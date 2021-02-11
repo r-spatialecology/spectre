@@ -46,11 +46,6 @@ List optimizer_min_conf(const IntegerVector alpha_list,
           << " improved by: " << worst_error - best_error << ")";
   }
 
-  if (!mc.solution_has_best_error) {
-    Rcout << "\n Warning: this solution does not neccessarily correnpond to "
-             "the lowest absolute error. \n";
-  }
-
   return (results);
 }
 
