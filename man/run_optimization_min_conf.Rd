@@ -8,9 +8,9 @@ run_optimization_min_conf(
   alpha_list,
   total_gamma,
   target,
-  fixed_species = NULL,
-  partial_solution = NULL,
   max_iterations,
+  partial_solution = NULL,
+  fixed_species = NULL,
   seed = NA,
   verbose = TRUE,
   interruptible = TRUE
@@ -26,15 +26,15 @@ landscape.}
 \item{target}{Pairwise matrix of species in common between each site by site
 pair.}
 
-\item{fixed_species}{Fixed partial solution with species that are considered
-as given. Those species are not going to be changed during optimization.}
+\item{max_iterations}{The maximum number of iterations that the optimization
+algorithm may run through before stopping.}
 
 \item{partial_solution}{An initial \code{matrix} of species presences and
 absences for each site in the landscape. The total number of presences must
 match the estimated species richness of each site.}
 
-\item{max_iterations}{The maximum number of iterations that the optimization
-algorithm may run through before stopping.}
+\item{fixed_species}{Fixed partial solution with species that are considered
+as given. Those species are not going to be changed during optimization.}
 
 \item{seed}{Seed for random number generator. Seed must be a positive integer value.
 \code{seed = NA} means that a random integer is used as seed.}
