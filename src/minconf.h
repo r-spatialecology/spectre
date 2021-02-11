@@ -37,7 +37,7 @@ protected:
   bool remove_random_species(const unsigned site);
   void add_species_min_conf(unsigned site);
   std::vector<unsigned> calc_min_conflict_species(const unsigned site);
-  void gen_init_solution(std::vector<unsigned> missing_species);
+  void gen_init_solution();
   void update_solution_commonness();
   unsigned calc_error();
 };
