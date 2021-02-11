@@ -45,7 +45,7 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
 
   if (partial_solution.size() > 1) {
     if (partial_solution.size() != n_sites * gamma_div) {
-      std::cerr << "The size of the partial_solution vector does not match "
+      Rcpp::Rcerr << "The size of the partial_solution vector does not match "
                    "n_sites * gamma_div. "
                 << "partial_solution ignored." << std::endl;
     } else {
@@ -61,7 +61,7 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
 
   if (fixed_species.size() > 1) {
     if (fixed_species.size() != n_sites * gamma_div) {
-      std::cerr << "The size of the fixed_species vector does not match "
+      Rcpp::Rcerr << "The size of the fixed_species vector does not match "
                    "n_sites * gamma_div. "
                 << "fixed_species ignored." << std::endl;
     } else {
