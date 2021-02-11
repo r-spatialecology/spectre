@@ -2,7 +2,7 @@
 #' 
 #' @description Transforms rasterstack containing presence/absence maps to a solution matrix
 #' 
-#' @param species raster stack containing presence/absence maps
+#' @param spp raster stack containing presence/absence maps
 #' 
 #' @details 
 #' 

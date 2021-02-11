@@ -58,17 +58,17 @@ generate_data_virtualspecies <- function(ncol,
   communities <- ifelse(corr_among == 0, gamma, round(gamma / (gamma * corr_among)))
   
   ## Generate a suitability map for each community:
-  suitability <- purrr::map(seq(communities), function(x){
-    NLMR::nlm_gaussianfield(ncol=ncol, nrow=nrow, mag_var = corr_within)}) 
+  suitability <- lapply(seq(communities), function(x){
+    NLMR::nlm_gaussianfield(ncol = ncol, nrow = nrow, mag_var = corr_within)}) 
   suitability <- raster::stack(suitability)
   
   ## Generate species distributions:
-  spp <- purrr::map(seq(gamma), function(x){
+  spp <- lapply(seq(gamma), function(x){
     ## Select community (choose one random suitability distribution)
     id <- sample(raster::nlayers(suitability), 1)
     spp_suitable <- suitability[[id]]
     ## Generate virtual species distribution:
-    spp_x <- suppressMessages(virtualspecies::convertToPA(spp_suitable, plot=FALSE, beta=beta))
+    spp_x <- suppressMessages(virtualspecies::convertToPA(spp_suitable, plot = FALSE, beta = beta))
     spp_x <- spp_x$pa.raster
     return(spp_x)
   })

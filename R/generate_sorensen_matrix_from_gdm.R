@@ -2,9 +2,11 @@
 #' 
 #' @description Generate a sorensen siteXsite matrix from gdm-package output
 #' 
+#' @param gdm_predictions Add information
+#' @param n_sites Add information
 #' 
 #' @details details
-#' @return 
+#' @return return
 #' @examples example
 #' @export
 ### Generate target sorensen matrix from gdm-package-output 

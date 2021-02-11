@@ -10,8 +10,8 @@ generate_data_simple <- function(total_gamma, n_sites, alpha_list) {
   
   for (n in seq_len(n_sites)) {
     
-    change_locations <- spectre::rcpp_sample(x = seq_len(total_gamma),
-                                             size = alpha_list[n])
+    change_locations <- sample(x = seq_len(total_gamma),
+                               size = alpha_list[n])
     
     current_solution[change_locations, n] <- 1
   }
