@@ -14,7 +14,7 @@ partial_solution <- tibble("1" = c(0,0,0,0,0,0),
                            "4" = c(0,0,0,0,0,0),
                            "5" = c(1,1,1,1,1,1)) %>% as.matrix()
 
-fixed_species <- tibble("1" = c(0,0,0,0,0,0),
+fixed_species <- tibble("1" = c(1,1,1,1,1,1),
                         "2" = c(0,0,1,0,0,0),
                         "3" = c(1,0,0,0,1,0),
                         "4" = c(0,0,1,0,0,1),
@@ -43,6 +43,7 @@ target_matrix_result <- calculate_solution_commonness_rcpp(res_sim$optimized_gri
 resultdata <- resultdata %>% as.matrix()
 
 testthat::expect_equal(alpha_list_result[5], 6L)
+testthat::expect_equal(alpha_list_result[1], 0L)
 testthat::expect_equal(total_gamma_test, total_gamma_result)
 testthat::expect_true(resultdata[1,3] == 0L)
 testthat::expect_true(resultdata[3,2] == 0L)
