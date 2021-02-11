@@ -10,3 +10,8 @@
 ^tests/testIdeas\.R$
 ^codecov\.yml$
 ^\.github$
+^MSP_tests/
+^bird_study_MSP/
+^data-raw$
+^bird_study_MSP$
+^MSP_tests$

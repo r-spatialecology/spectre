@@ -14,13 +14,19 @@ Imports:
     ggplot2,
     Rcpp (>= 1.0.1),
     stats,
-    RcppProgress
+    RcppProgress, 
+    raster,
+    NLMR, 
+    virtualspecies
 Suggests: 
     dplyr,
     testthat,
     knitr,
     rmarkdown,
-    covr
+    covr, 
+    betapart,
+    viridis, 
+    viridisLite
 LinkingTo: 
     Rcpp,
     RcppProgress,
