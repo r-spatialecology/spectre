@@ -26,11 +26,6 @@ double TestMinConf::test_calc_error(const std::vector<std::vector<int> > &common
   return calc_error();
 }
 
-void TestMinConf::test_gen_init_solution()
-{
-  void gen_init_solution();
-}
-
 std::vector<unsigned> TestMinConf::test_calc_missing_species()
 {
   return calc_missing_species();

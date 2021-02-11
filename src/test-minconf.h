@@ -14,7 +14,6 @@ public:
     void test_update_solution_commonness();
     double test_calc_error(const std::vector<std::vector<int> > &commonness,
                        const std::vector<std::vector<int> > &target);
-    void test_gen_init_solution();
     std::vector<std::vector<int> > getTarget() const;
     std::vector<unsigned> test_calc_missing_species();
     static const int NA = -2147483648; // Rcpp NA_INTEGER == R_NaInt
