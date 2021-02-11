@@ -1,0 +1,915 @@
+---
+title: "Things to order"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Things to order}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# sebastian.R 
+
+```{r, eval = FALSE}
+library(spectre)
+
+# welcome to the section of simulated (sim) data 
+# ==============================================
+# the aim is to test/compare algorithm performance under different conditions:
+# i.e. number of sites, gamma diversity and average richness per site
+# as a start, we assume no correlations between sites
+total_gamma_sim <- 30
+n_sites_sim <- 25 
+
+# average number of species per site, if equal richness across all sites is demanded, change "sd_sim" to "0".
+# to allow both for constant and varying richness across sites, I used round( rnorm() ) instead of rpois() here. 
+mean_alpha_sim <- 12 
+sd_sim <- 5 # variation in mean / change to 0 if no variation is needed 
+alpha_list_sim <- round(rnorm(n = n_sites_sim, mean = mean_alpha_sim, sd = sd_sim))
+alpha_list_sim[alpha_list_sim < 1] <- 1 # only positive species numbers allowed 
+print(alpha_list_sim) # check
+hist(alpha_list_sim) # visual check of richness per site
+
+# create simulated target
+target_matrix_sim <- spectre:::generate_data_simple(total_gamma = total_gamma_sim, n_sites = n_sites_sim, alpha_list = alpha_list_sim)
+fixed_species <- matrix()
+
+measure <- tibble::tibble(
+  measure = vector(length = 400),
+  n =  as.factor(c(rep(1, 100), rep(10, 100), rep(100, 100), rep(1000, 100))))
+for (i in 1:100) {
+  measure$measure[i] <- spectre:::calc_random_energy(1, alpha_list_sim, total_gamma_sim, target_matrix_sim, i, "max")
+  measure$measure[i + 100] <- spectre:::calc_random_energy(10, alpha_list_sim, total_gamma_sim, target_matrix_sim, i, "max")
+  measure$measure[i + 200] <- spectre:::calc_random_energy(100, alpha_list_sim, total_gamma_sim, target_matrix_sim, i, "max")
+  measure$measure[i + 300] <- spectre:::calc_random_energy(1000, alpha_list_sim, total_gamma_sim, target_matrix_sim, i, "max")
+}
+
+library(ggplot2)
+
+p <- ggplot(measure, aes(x = n, y = measure))
+p + geom_boxplot() + 
+  labs(title = "Averaged measure for a random solution (max norm)", x = "# repetitions")
+ggsave("random_max.png")
+
+
+res_sim0_sum <- run_optimization_min_conf_0(alpha_list = alpha_list_sim,
+                                            total_gamma = total_gamma_sim,
+                                            target = target_matrix_sim,
+                                            fixed_species = NULL,
+                                            partial_solution = NULL,
+                                            max_iterations = 15000,
+                                            energy_threshold = 0.0,
+                                            seed = 1,
+                                            verbose = TRUE,
+                                            norm = "sum")
+
+res_sim0_euclid <- run_optimization_min_conf_0(alpha_list = alpha_list_sim,
+                                               total_gamma = total_gamma_sim,
+                                               target = target_matrix_sim,
+                                               fixed_species = NULL,
+                                               partial_solution = NULL,
+                                               max_iterations = 15000,
+                                               energy_threshold = 0.0,
+                                               seed = 1,
+                                               verbose = TRUE,
+                                               norm = "euclid")
+
+res_sim0_max <- run_optimization_min_conf_0(alpha_list = alpha_list_sim,
+                                            total_gamma = total_gamma_sim,
+                                            target = target_matrix_sim,
+                                            fixed_species = NULL,
+                                            partial_solution = NULL,
+                                            max_iterations = 15000,
+                                            energy_threshold = 0.0,
+                                            seed = 1,
+                                            verbose = TRUE,
+                                            norm = "max")
+plot_energy(res_sim0_sum)
+spectre:::calc_energy(spectre:::calculate_solution_commonness_rcpp(res_sim0_sum$optimized_grid), target_matrix_sim)
+plot_commonness(res_sim0_sum, target_matrix_sim)
+plot_energy(res_sim0_euclid)
+spectre:::calc_energy(spectre:::calculate_solution_commonness_rcpp(res_sim0_euclid$optimized_grid), target_matrix_sim)
+plot_commonness(res_sim0_euclid, target_matrix_sim)
+plot_energy(res_sim0_max)
+spectre:::calc_energy(spectre:::calculate_solution_commonness_rcpp(res_sim0_max$optimized_grid), target_matrix_sim)
+plot_commonness(res_sim0_max, target_matrix_sim)
+
+
+
+
+true_solution <- matrix(data = 0, 
+                        nrow = total_gamma_sim, 
+                        ncol = n_sites_sim)
+
+for (n in seq_len(n_sites_sim)) {
+  
+  change_locations <- sample(x = seq_len(total_gamma_sim),
+                                  size = alpha_list_sim[n])
+  
+  true_solution[change_locations, n] <- 1
+}
+
+target_matrix_sim <- spectre:::calculate_solution_commonness_rcpp(true_solution)
+
+fixed_species <- matrix(data = c(c(0,1,1,1,0,0), rep(0, 54)), nrow = 6, ncol = 10)
+fixed_species <- true_solution
+
+
+# solve / optimize 
+energy <- 0
+energy0 <- 0
+energy1 <- 0
+energy2 <- 0
+for (i in 1:10) {
+  res_sim <- spectre:::optimizer_min_conf(alpha_list_sim, 
+                                          total_gamma_sim, 
+                                          target_matrix_sim, 5000, 0.0)
+  energy <- energy + min(res_sim$energy$energy)
+  
+  res_sim0 <- spectre:::optimizer_min_conf0(alpha_list = alpha_list_sim, 
+                                            total_gamma = total_gamma_sim, 
+                                            target = target_matrix_sim,
+                                            fixed_species = fixed_species,
+                                            max_iterations = 5000, 
+                                            energy_threshold = 0.0)
+  energy0 <- energy0 + min(res_sim0$energy$energy)
+  
+  
+  
+  res_sim1 <- spectre:::optimizer_min_conf1(alpha_list = alpha_list_sim, 
+                                            total_gamma = total_gamma_sim, 
+                                            target = target_matrix_sim,
+                                            fixed_species = fixed_species,
+                                            tabu = 0,
+                                            fixed_partial_solution = TRUE,
+                                            max_iterations = 5000, 
+                                            energy_threshold = 0.0)
+  energy1 <- energy1 + min(res_sim1$energy$energy)
+  
+  res_sim2 <- spectre:::optimizer_min_conf2(alpha_list = alpha_list_sim, 
+                                            total_gamma = total_gamma_sim, 
+                                            target = target_matrix_sim,
+                                            fixed_species = fixed_species,
+                                            tabu = 0,
+                                            fixed_partial_solution = TRUE,
+                                            max_iterations = 5000, 
+                                            energy_threshold = 0.0)
+  energy2 <- energy2 + min(res_sim2$energy$energy)
+}
+
+energy0 <- 0
+energy1 <- 0
+for (i in 1:10) {
+  res_sim0 <- spectre:::optimizer_min_conf0(alpha_list = alpha_list_sim, 
+                                            total_gamma = total_gamma_sim, 
+                                            target = target_matrix_sim,
+                                            fixed_species = fixed_species,
+                                            tabu = 0,
+                                            fixed_partial_solution = TRUE,
+                                            max_iterations = 25000, 
+                                            energy_threshold = 0.0)
+  energy0 <- energy0 + min(res_sim0$energy$energy) / 10
+  
+  res_sim1 <- spectre:::optimizer_min_conf1(alpha_list = alpha_list_sim, 
+                                            total_gamma = total_gamma_sim, 
+                                            target = target_matrix_sim,
+                                            fixed_species = fixed_species,
+                                            tabu = 0,
+                                            fixed_partial_solution = TRUE,
+                                            max_iterations = 25000, 
+                                            energy_threshold = 0.0)
+  energy1 <- energy1 + min(res_sim1$energy$energy) / 10
+}
+
+saveRDS(res_sim1, file = "./res1.RDS")
+
+res_sim2$optimized_grid
+
+spectre::plot_energy(res_sim)
+spectre::plot_energy(res_sim0)
+spectre::plot_energy(res_sim01)
+spectre::plot_energy(res_sim2)
+
+spectre::plot_commonness(res_sim0, target_matrix_sim)
+spectre::plot_commonness(res_sim01, target_matrix_sim)
+spectre::plot_commonness(res_sim2, target_matrix_sim)
+spectre::plot_commonness(res_sim3, target_matrix_sim)
+
+alpha_list_res1 <- alpha_list_sim
+alpha_list_res2 <- alpha_list_sim
+for (site in 1:n_sites_sim) {
+  alpha_list_res1[site] <-  sum(res_sim1$optimized_grid[,site])
+  alpha_list_res2[site] <-  sum(res_sim2$optimized_grid[,site])
+}
+res_sim2$optimized_grid[,1]
+
+# end of simulated data section 
+# =============================
+
+
+
+
+
+load("data/alpha_list_test.rda")
+load("data/target_matrix_test.rda")
+load("data/total_gamma_test.rda")
+
+res1 <- spectre:::optimizer(alpha_list_test, total_gamma_test, target_matrix_test, 2000)
+
+spectre::plot_energy(res1)
+spectre::plot_commonness(res1, target_matrix_test)
+res1$optimized_grid
+
+
+load("data/alpha_list.rda")
+load("data/target_matrix.rda")
+load("data/estimated_gamma.rda")
+# 15:30 - 16:10
+res2 <- spectre:::optimizer(alpha_list, estimated_gamma, target_matrix, 100000) # ~20%
+
+spectre::plot_energy(res2)
+spectre::plot_commonness(res2, target_matrix)
+
+res_spec <- c()
+SITES <- 100
+load("data/random_solution.rda")
+for (SPECIES in 20:139) {
+  
+  current_solution_15 <- current_solution[1:SPECIES,1:SITES]
+  alpha_15 <- vector()
+  for (i in 1:SITES) {
+    alpha_15[i] <- sum(current_solution_15[,i])
+  }
+  target_fake <- spectre:::calculate_solution_commonness_rcpp(current_solution_15)
+  # saveRDS(alpha_15, file = "data/alpha100x20.rds")
+  #  saveRDS(target_fake, file = "data/target100x20.rds")
+  #res_15 <- spectre:::optimizer(alpha_15, SPECIES, target_fake, 0) # Optimization finished after 1633000180 steps w 35 species
+  res_spec <- c(res_spec, spectre:::optimizer(alpha_15, SPECIES, target_fake, 1000000000)) # successful with 80 species
+}
+energy <- c()
+for (i in seq(2,240,2)) {
+  energy <- c(energy,min(res_spec[[i]]))
+}
+
+energy <- tibble(n_species = c(20:139),
+                 energy = energy)
+
+ggplot(energy, aes(x = n_species, y = energy)) +
+  geom_point()
+
+spectre::plot_commonness(res_15, target_fake)
+spectre::plot_commonness(res_mc, target_fake)
+grid15 <- res_15$optimized_grid
+
+big_grid <- cbind(res2$optimized_grid, res2$optimized_grid, res2$optimized_grid, res2$optimized_grid, res2$optimized_grid)
+big_alpha <- cbind(alpha_list,alpha_list,alpha_list,alpha_list,alpha_list)
+
+target_fake <- spectre:::calculate_solution_commonness_rcpp(big_grid)
+res2_fake <- spectre:::optimizer(big_alpha, estimated_gamma, target_fake, 600) # ~13%
+
+target_fake <- spectre:::calculate_solution_commonness_rcpp(res2$optimized_grid)
+res2_fake <- spectre:::optimizer(alpha_list, estimated_gamma, target_fake, 500)
+spectre::plot_energy(res2_fake)
+spectre::plot_commonness(res2_fake, target_fake)
+
+res_list <- list()
+
+seq <- seq(2,500,10)
+
+
+for (i in seq(2,500,10)) {
+  # smaller
+  smaller <- 1:i
+  alpha_list_small <- big_alpha[smaller]
+  target_small <- target_fake[smaller, smaller]
+  res_list[[i]] <- spectre:::optimizer(alpha_list_small, estimated_gamma, target_small, 600)
+}
+
+saveRDS(res_list, file = "results/res_big_list.rds")
+saveRDS(energy_data, file = "results/energy_fake_sorted.rds")
+
+energy_data <- tibble(n_sites = seq(2,500,10),
+                      energy = seq(2,500,10))
+
+for (i in 1:length(seq)) {
+  energy_data$energy[i] <- min(res_list[[seq[i]-1]]$energy)
+}
+
+energy_data <- rbind(energy_data, c(500, 0.12727))
+
+ggplot(energy_data, aes(x = n_sites, y = energy)) +
+  geom_point()
+
+spectre::plot_energy(res_fake_small)
+spectre::plot_commonness(res_fake_small, target_fake_small)
+
+res_old <- spectre::run_optimization(alpha_list, estimated_gamma, target_matrix, annealing = 0.01, max_runs = 200000, energy_threshold = 0.0, patience = 1000)
+# ~40%
+
+spectre::plot_energy(res_old)
+spectre::plot_commonness(res_old, target_matrix)
+
+# ~ 1.8 mins @ufom-p23
+bench::mark(
+  res2 <- spectre:::optimizer(alpha_list, estimated_gamma, target_matrix, 1000)
+)
+
+```
+
+# cluster_draft_MSP.R
+
+```{r, eval = FALSE}
+library(spectre)
+
+library(spectre)
+
+# create parameter combinations:
+# we evaluate all parameter combinations, so far without replicates
+# mean richness per site is implemented as fraction of gamma diversity
+# ======================================================================
+n_sites <- c(25, 50) # number of sites  
+gamma_vector <- c(40, 60, 80) # evaluated gamma diversities , 60, 80, 100, 120
+richness_vector <- c(0.3, 0.5, 0.7) # evaluated fractions of gamma diversity (mean richness) , 0.5, 0.6
+
+# parameter combinations are created here:
+total_gamma <- rep(gamma_vector, each = length(richness_vector))
+mean_alpha <- round(total_gamma * richness_vector) # average species per site 
+sd_sim <- rep(0, length(mean_alpha)) # mean_alpha / 10 # variation in per-site richness / change to 0 if all sites in a run should have similar richness 
+
+# we do not keep all calculated energy values, but the first, n_sample_points in between, and the last. 
+# [note: some runs stop after 1 iteration (usually if richness is a high fraction of gamma diversity),
+# thus a workaround to only keep one sampling point is found below...] 
+n_sample_points <- 22 # how many sample points to keep 
+
+# create lists to store results
+RES_RND_SWITCH_ALL <- list() # "random switching"
+RES_RND_SWITCH <- list()
+
+RES_MIN_CONF_ALL <- list() # "8 queens"
+RES_MIN_CONF <- list()
+
+RES_BACKTRACKING_ALL <- list() # backtracking
+RES_BACKTRACKING <- list()
+
+N_SITES <- 1 # for quick testing
+TOTAL_GAMMA <- 1
+
+for (N_SITES in 1:length(n_sites)){
+  for (TOTAL_GAMMA in 1:length(total_gamma)){
+    
+    alpha_list <- round(rnorm(n = n_sites[N_SITES], mean = mean_alpha[TOTAL_GAMMA], sd = sd_sim[TOTAL_GAMMA]))
+    
+    # check that richness per site is > 0 and <= gamma diversity. 
+    # critical variables are "sd_sim" (variation in per site richness) and richness_vector 
+    # (mean richness as fraction of gamma diversity)
+    alpha_list[alpha_list < 1] <- 1 # only positive species numbers allowed 
+    alpha_list[alpha_list > total_gamma[TOTAL_GAMMA]] <- total_gamma[TOTAL_GAMMA] #  
+    
+    # create target
+    target_matrix_sim <- spectre:::generate_data_simple(total_gamma = total_gamma[TOTAL_GAMMA], n_sites = n_sites[N_SITES], alpha_list = alpha_list)
+    
+    # ====================================
+    # solve / optimize using all algorithms
+    # =====================================
+    
+    # random switching  
+    # ================
+    
+    rd <- TRUE
+    if(rd){
+      max_run_rnd_switch <- 5000 # used also for result "sampling"
+      res_rnd_switch <- spectre::run_optimization_rnd_switch(alpha_list = alpha_list, 
+                                                             total_gamma = total_gamma[TOTAL_GAMMA], 
+                                                             target = target_matrix_sim, 
+                                                             max_runs = max_run_rnd_switch,
+                                                             energy_threshold = 0.1,
+                                                             patience = 500)
+      
+      # sample_points <- spectre:::get_sample_points(max_run_rnd_switch, n_sample_points)
+      # # results from rnd_switch algorithm
+      # sample_energy_rnd_switch <- res_rnd_switch$energy[[2]][sample_points]
+      # sample_i_rnd_switch <- res_rnd_switch$energy[[1]][sample_points]
+      
+      ### copy section
+      # only keep a fraction of results (first, sample_points in between , last)
+      successful_iterations <- sum(!is.na(res_rnd_switch$energy[2]))
+      print(paste0("Successful iterations of random_switching: ", successful_iterations))
+      
+      if(successful_iterations >= n_sample_points){
+        sample_points <- spectre:::get_sample_points(successful_iterations, n_sample_points)
+      } else {
+        sample_points <- c(1, successful_iterations)
+        print("Less successful iterations than sampling points. \n")
+      }
+      
+      
+      sites_tmp <- rep(n_sites[N_SITES], length(sample_points))
+      total_gamma_tmp <- rep(total_gamma[TOTAL_GAMMA], length(sample_points))
+      species_tmp <- rep(mean_alpha[TOTAL_GAMMA], length(sample_points))
+      energy_tmp <- res_rnd_switch$energy[[2]][sample_points]
+      iteration_tmp <- res_rnd_switch$energy[[1]][sample_points]
+      
+      RES_RND_SWITCH[[TOTAL_GAMMA]] <- cbind(sites_tmp,
+                                             total_gamma_tmp, 
+                                             species_tmp, 
+                                             energy_tmp, 
+                                             iteration_tmp)
+    }
+    
+    # min-conflict (8-Queens)
+    # =======================
+    
+    min_conf_iterations <- 5000 # used also for result "sampling" # 5000 default??? 
+    res_min_conf <- spectre::run_optimization_min_conf(alpha_list = alpha_list, 
+                                                       total_gamma = total_gamma[TOTAL_GAMMA], 
+                                                       target = target_matrix_sim, 
+                                                       max_runs = min_conf_iterations,
+                                                       energy_threshold = 0.1) 
+    
+    # only keep a fraction of results (first, sample_points in between , last)
+    successful_iterations <- sum(!is.na(res_min_conf$energy[2]))
+    print(paste0("Successful iterations: ", successful_iterations))
+    
+    if(successful_iterations >= n_sample_points){
+      sample_points <- spectre:::get_sample_points(successful_iterations, n_sample_points)
+    } else {
+      sample_points <- c(1, successful_iterations)
+    }
+    
+    sites_tmp <- rep(n_sites[N_SITES], length(sample_points))
+    total_gamma_tmp <- rep(total_gamma[TOTAL_GAMMA], length(sample_points))
+    species_tmp <- rep(mean_alpha[TOTAL_GAMMA], length(sample_points))
+    energy_tmp <- res_min_conf$energy[[2]][sample_points]
+    iteration_tmp <- res_min_conf$energy[[1]][sample_points]
+    
+    RES_MIN_CONF[[TOTAL_GAMMA]] <- cbind(sites_tmp,
+                                         total_gamma_tmp, 
+                                         species_tmp, 
+                                         energy_tmp, 
+                                         iteration_tmp)
+    
+    # backtracking
+    # ============
+    # backtracking, in contrast to random switching and min-conf, gives only the final energy as output
+    # furthermore, the number of iterations limits the optimization, thus we iterate over iterations, and 
+    # save the energy ~ iterations
+    bt <- TRUE
+    if (bt){
+      backtracking_iterations <- 10^(c(5, 10, 15)) # many zeros here :-) 
+      
+      RES_BACKTRACKING_TMP <- list()
+      for (BT_ITER in 1:length(backtracking_iterations)){
+        res_backtracking <- spectre:::run_optimization_backtracking(alpha_list = alpha_list,
+                                                                    total_gamma = total_gamma[TOTAL_GAMMA],
+                                                                    target = target_matrix_sim,
+                                                                    max_runs = backtracking_iterations[BT_ITER],
+                                                                    energy_threshold = 0.1)
+        
+        RES_BACKTRACKING_TMP[[BT_ITER]] <- cbind(n_sites[N_SITES],
+                                      total_gamma[TOTAL_GAMMA],
+                                      mean_alpha[TOTAL_GAMMA],
+                                      res_backtracking$energy,
+                                      backtracking_iterations[BT_ITER])
+        
+      }
+      RES_BACKTRACKING[[TOTAL_GAMMA]] <- RES_BACKTRACKING_TMP
+    }
+  } # end of TOTAL_GAMMA-loop 
+  # RES_MIN_CONF <-  RES_MIN_CONF 
+  RES_MIN_CONF_ALL[[N_SITES]] <- RES_MIN_CONF 
+  RES_RND_SWITCH_ALL[[N_SITES]] <- RES_RND_SWITCH
+  RES_BACKTRACKING_ALL[[N_SITES]] <- RES_BACKTRACKING
+} # end of N_SITES-loop
+
+save(RES_MIN_CONF_ALL, file = "./data/RES_MIN_CONF_ALL.rda")
+save(RES_RND_SWITCH_ALL, file = "./data/RES_RND_SWITCH_ALL.rda")
+save(RES_BACKTRACKING_ALL, file = "./data/RES_BACKTRACKING_ALL.rda")
+
+```
+
+# cluster_plot_MSP.R
+
+```{r, eval = FALSE}
+### Plot results of algorithm tests...
+library(ggplot2)
+
+# random switching
+# ================
+load("./data/RES_RND_SWITCH_ALL.rda")
+rnd_unlist <- unlist(RES_RND_SWITCH_ALL, recursive = FALSE, use.names = FALSE)
+rnd_rbind <- data.frame(do.call(rbind, rnd_unlist))
+names(rnd_rbind) <- c("sites", "gamma", "species", "energy", "iteration")
+
+rnd_rbind$species <- rnd_rbind$species / rnd_rbind$gamma
+rnd_rbind$gamma  <- as.factor(rnd_rbind$gamma)
+rnd_rbind$species  <- as.factor(rnd_rbind$species)
+
+ggplot(data = rnd_rbind, aes(x = iteration, y = energy, color = species))+
+   geom_point(size = .2)+
+  geom_smooth(method="loess", se=FALSE,span=0.3)+
+  facet_grid(scales="fixed", vars(gamma),vars(sites),labeller = label_both)+
+  labs(title = "random switching")+
+  scale_x_continuous(name ="iterations",
+                     breaks = seq(0, 5000, 2500))+
+  scale_y_continuous(name ="energy",
+                     limits = c(0,1),
+                     breaks = seq(0, 1, 0.5))+
+  theme_bw()
+
+# "min_conf"
+# ==========
+load("./data/RES_MIN_CONF_ALL.rda")
+min_unlist <- unlist(RES_MIN_CONF_ALL, recursive = FALSE, use.names = FALSE)
+min_rbind <- data.frame(do.call(rbind, min_unlist))
+names(min_rbind) <- c("sites", "gamma", "species", "energy", "iteration")
+
+min_rbind$species <- min_rbind$species / min_rbind$gamma
+min_rbind$gamma  <- as.factor(min_rbind$gamma)
+min_rbind$species  <- as.factor(min_rbind$species)
+
+ggplot(data = min_rbind, aes(x = iteration, y = energy, color = species))+
+  geom_point(size = .2)+
+  geom_smooth(method="loess", se=FALSE,span=0.3)+
+  facet_grid(scales="fixed", vars(gamma),vars(sites),labeller = label_both)+
+  labs(title = "min-conf")+
+  scale_x_continuous(name ="iterations",
+                     breaks = seq(0, 5000, 1000))+
+  scale_y_continuous(name ="energy",
+                     limits = c(0,1),
+                     breaks = seq(0, 1, 0.5))+
+  theme_bw()
+
+# "backtracking"
+# ==========
+load("./data/RES_BACKTRACKING_ALL.rda")
+back_unlist <- unlist(RES_BACKTRACKING_ALL, recursive = FALSE, use.names = FALSE)
+back_unlist_2 <- unlist(back_unlist, recursive = FALSE, use.names = FALSE)
+back_rbind <- data.frame(do.call(rbind, back_unlist_2))
+names(back_rbind) <- c("sites", "gamma", "species", "energy", "iteration")
+
+back_rbind$species <- back_rbind$species / back_rbind$gamma
+back_rbind$gamma  <- as.factor(back_rbind$gamma)
+back_rbind$species  <- as.factor(back_rbind$species)
+
+ggplot(data = back_rbind, aes(x = log(iteration, base = 10), y = energy, color = species))+
+  geom_point(size = 1.2)+
+  geom_smooth(method="loess", se=FALSE,span=0.3)+
+  facet_grid(scales="fixed", vars(gamma),vars(sites),labeller = label_both)+
+  labs(title = "backtracking")+
+  scale_x_continuous(name ="log(iterations, base=10)",
+                     # breaks = seq(0, 5000, 100)
+                     )+
+  scale_y_continuous(name ="energy",
+                     limits = c(0,max(back_rbind$energy)),
+                     breaks = seq(0, 2, 0.5))+
+  theme_bw()
+
+```
+
+
+# cluster_plots_rds_MSP.R
+
+```{r, eval = FALSE}
+### Plot results of min_conf_ algorithm tests...
+
+library(ggplot2)
+library(tidyverse)
+
+df<- list.files(path = "./results", pattern = "*.rds", full.names = TRUE) %>%
+  map(readRDS) %>%
+  bind_rows()
+
+df$species <- as.factor(df$species)
+
+tabu_activated <- FALSE # only if tabu was "activated" in the test run 
+if (tabu_activated){
+  df$tabu <- df$tabu / df$sites 
+  table(df$tabu)
+  head(df)
+  # filter by tabu value
+  df <- filter(df, tabu == 0.2)
+  names(df)
+  table(df$tabu)
+}
+
+# ggplot(data = df, aes(x = iteration, y = energy_scaled, color = species))+
+#   geom_point(size = .3, alpha = 0.4)+
+#   #geom_smooth(method="loess", se=FALSE,span=0.3)+
+#   facet_grid(scales="fixed", vars(gamma),vars(sites),labeller = label_both)+
+#   labs(title = "min-conf_1, tabu = 0%")+
+#   scale_x_continuous(name ="iterations") +
+#   scale_y_continuous(name ="energy", breaks = seq(0, 1, 0.2), limits = c(0, 1) ) +
+#   theme_bw()
+
+ggplot(data = df, aes(x = iteration, y = energy_before, color = species))+
+  geom_point(size = .3, alpha = 0.4)+
+  #geom_smooth(method="loess", se=FALSE,span=0.3)+
+  facet_grid(scales="fixed", vars(gamma),vars(sites),labeller = label_both)+
+  labs(title = "min-conf_x, energy_normalized(1000)")+
+  scale_x_continuous(name ="iterations") +
+ # scale_y_continuous(name ="energy") +
+  scale_y_continuous(name ="energy", breaks = seq(0, 1, 0.1), limits = c(0, .5) ) +
+  theme_bw()
+
+```
+
+# parameters_MSP.R
+
+```{r, eval = FALSE}
+
+# Generate parameter table... 
+# optimized for min_conf 
+replicate <- 1:25 # replicates per parameter combination
+n_sites <- c(20, 40, 60) # number of sites  c(20, 40, 60)
+total_gamma <- c(30, 60, 90) # evaluated gamma diversities  c(30, 60, 90) 
+richness_vector <- c(0.1, 0.2, 0.4) # evaluated fractions of gamma diversity (mean richness) c(0.2, 0.4, 0.6) 
+richness_sd <- 0 
+max_runs <- 15000
+energy_threshold <- 0.0
+n_sample_points <- 50 
+tabu_percent <- c(0) # percent! 
+
+p <- tidyr::crossing(replicate, 
+                     n_sites,
+                     total_gamma,
+                     richness_vector,
+                     richness_sd,
+                     max_runs,
+                     energy_threshold, 
+                     n_sample_points,
+                     tabu_percent
+)
+
+p$mean_alpha <- round(p$total_gamma * p$richness_vector)
+p$siminputrow <- 1:dim(p)[1]
+save(p, file = "vignettes/p.rda")
+print(paste0(dim(p)[1], " parameter combinations will be tested"))
+
+```
+
+# run_onecore_MSP.R
+
+```{r, eval = FALSE}
+
+# Test min_conf_algorithms 
+
+library("spectre")
+library("foreach")
+
+
+### 
+sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly stolen from Jan Salecker... 
+{
+  # Read and set parameters
+  p <- parameters[siminputrow, ]
+  n_sites <- p$n_sites
+  mean_alpha <- p$mean_alpha 
+  richness_vector <- p$richness_vector
+  richness_sd <- p$richness_sd 
+  total_gamma <- p$total_gamma
+  replicate <- p$replicate
+  max_runs <- p$max_runs
+  n_sample_points <- p$n_sample_points
+  energy_threshold <- p$energy_threshold 
+  tabu <- round(p$tabu_percent * p$n_sites / 100)
+  
+  # Set random seed
+  set.seed(replicate)
+  
+  # generate target matrix, used for all algorithms
+  alpha_list <- round(rnorm(n = n_sites, 
+                            mean = mean_alpha, 
+                            sd = richness_sd))
+  
+  # check that richness per site is > 0 and <= gamma diversity. 
+  alpha_list[alpha_list < 1] <- 1 # only positive species numbers allowed 
+  alpha_list[alpha_list > (total_gamma -2) ] <- (total_gamma -2)  
+  
+  target_matrix_sim <- spectre:::generate_data_simple(total_gamma = total_gamma, 
+                                                     n_sites = n_sites, 
+                                                     alpha_list = alpha_list)
+  
+  
+  
+  #print("start")
+  # Executing original algorithm:
+  
+  start_time <- Sys.time()
+  res_min_conf <- spectre::run_optimization_min_conf_0(alpha_list = alpha_list, 
+                                                     total_gamma = total_gamma, 
+                                                     target = target_matrix_sim, 
+                                                     max_iterations = max_runs,
+                                                     patience = 2500, 
+                                                     energy_threshold = energy_threshold,
+                                                     # tabu = tabu,
+                                                     verbose = verbose) # 
+  end_time <- Sys.time()
+  time_min_conf <- as.numeric(end_time - start_time)
+  
+  # only keep a fraction of results (first, sample_points in between , last)
+  successful_iterations <- sum(!is.na(res_min_conf$energy[2]))
+  # print(paste0("Successful iterations: ", successful_iterations))
+  
+  if(successful_iterations >= n_sample_points){
+    sample_points <- spectre:::get_sample_points(successful_iterations, n_sample_points)
+  } else {
+    sample_points <- c(1, successful_iterations)
+  }
+  
+  # standardize starting energy to "1" 
+  energy_tmp <- res_min_conf$energy[[2]][sample_points]
+  energy_before <- energy_tmp 
+  if (res_min_conf$energy[[2]][1] > 0){
+    energy_tmp <- res_min_conf$energy[[2]][sample_points] / res_min_conf$energy[[2]][1]
+  }
+  
+  iteration_tmp <- res_min_conf$energy[[1]][sample_points]
+  
+  result <- tibble::tibble(sites = n_sites,
+                           gamma = total_gamma,
+                           mean_alpha = mean_alpha,
+                           species = richness_vector,
+                           richness_sd = richness_sd,
+                           max_runs = max_runs,
+                           energy_threshold = energy_threshold, 
+                           energy_scaled = energy_tmp,
+                           iteration = iteration_tmp,
+                           energy_before = energy_before,
+                           min_conf_t = time_min_conf,
+                           #tabu = tabu,
+                           replicate = replicate)
+  
+  
+  # Write output
+  if(isTRUE(writeRDS)) {
+    saveRDS(result, file.path(paste0("results/spectre_", siminputrow, ".rds")))
+  }
+  
+  return(result)
+}
+
+### 
+
+
+load("vignettes/p.rda")
+
+x <- foreach(REPLICATE = 1:dim(p)[1], .export = c("p"), .packages = c("spectre")) %do% {
+  # library(spectre)
+  x <- sim_fun(REPLICATE,
+                       p,
+                       TRUE,
+                       TRUE)
+  return(1)
+  
+  
+} 
+
+```
+
+# run_partial_solutions_MSP.R
+
+```{r eval = FALSE}
+# Test min_conf_algorithms 
+
+library("spectre")
+library("foreach")
+
+
+### 
+sim_fun <- function(siminputrow, parameters, writeRDS, verbose)  # Code mostly stolen from Jan Salecker and Sebastian Hanss... 
+{
+  # Read and set parameters
+  p <- parameters[siminputrow, ]
+  n_sites <- p$n_sites
+  mean_alpha <- p$mean_alpha 
+  richness_vector <- p$richness_vector
+  richness_sd <- p$richness_sd 
+  total_gamma <- p$total_gamma
+  replicate <- p$replicate
+  max_runs <- p$max_runs
+  n_sample_points <- p$n_sample_points
+  energy_threshold <- p$energy_threshold 
+  tabu <- round(p$tabu_percent * p$n_sites / 100)
+  
+  # Set random seed
+  set.seed(replicate)
+  
+  # generate target matrix, used for all algorithms
+  alpha_list <- round(rnorm(n = n_sites, 
+                            mean = mean_alpha, 
+                            sd = richness_sd))
+  
+  # check that richness per site is > 0 and <= gamma diversity. 
+  alpha_list[alpha_list < 1] <- 1 # only positive species numbers allowed 
+  alpha_list[alpha_list > (total_gamma -2) ] <- (total_gamma -2)  
+  
+  target_matrix_sim <- spectre:::generate_data_simple(total_gamma = total_gamma, 
+                                                      n_sites = n_sites, 
+                                                      alpha_list = alpha_list)
+  
+  
+  
+  # Rund multiple algorithms in a row:
+  
+  start_time <- Sys.time()
+  
+  res_min_conf_max <- spectre::run_optimization_min_conf_0(alpha_list = alpha_list, 
+                                                           total_gamma = total_gamma, 
+                                                           target = target_matrix_sim, 
+                                                           fixed_species = NULL,
+                                                           partial_solution = NULL,
+                                                           max_iterations = max_runs,
+                                                           patience = 2500, 
+                                                           energy_threshold = energy_threshold,
+                                                           seed = 0,
+                                                           verbose = verbose,
+                                                           norm = "max") # 
+  
+  res_min_conf_euclid <- spectre::run_optimization_min_conf_0(alpha_list = alpha_list, 
+                                                              total_gamma = total_gamma, 
+                                                              target = target_matrix_sim, 
+                                                              fixed_species = NULL,
+                                                              partial_solution = res_min_conf_max$optimized_grid,
+                                                              max_iterations = max_runs,
+                                                              patience = 2500, 
+                                                              energy_threshold = energy_threshold,
+                                                              seed = 0,
+                                                              verbose = verbose,
+                                                              norm = "euclid") # 
+  
+  res_min_conf <- spectre::run_optimization_min_conf_0(alpha_list = alpha_list, 
+                                                       total_gamma = total_gamma, 
+                                                       target = target_matrix_sim, 
+                                                       fixed_species = NULL,
+                                                       partial_solution = res_min_conf_euclid$optimized_grid,
+                                                       max_iterations = max_runs,
+                                                       patience = 2500, 
+                                                       energy_threshold = energy_threshold,
+                                                       seed = 0,
+                                                       verbose = verbose,
+                                                       norm = "sum") # 
+  
+  
+  
+  
+  end_time <- Sys.time()
+  time_min_conf <- as.numeric(end_time - start_time)
+  
+  # only keep a fraction of results (first, sample_points in between , last)
+  successful_iterations <- sum(!is.na(res_min_conf$energy[2]))
+  # print(paste0("Successful iterations: ", successful_iterations))
+  
+  if(successful_iterations >= n_sample_points){
+    sample_points <- spectre:::get_sample_points(successful_iterations, n_sample_points)
+  } else {
+    sample_points <- c(1, successful_iterations)
+  }
+  
+  # standardize starting energy to "1" 
+  energy_tmp <- res_min_conf$energy[[2]][sample_points]
+  energy_before <- energy_tmp 
+  if (res_min_conf$energy[[2]][1] > 0){
+    energy_tmp <- res_min_conf$energy[[2]][sample_points] / res_min_conf$energy[[2]][1]
+  }
+  
+  iteration_tmp <- res_min_conf$energy[[1]][sample_points]
+  
+  result <- tibble::tibble(sites = n_sites,
+                           gamma = total_gamma,
+                           mean_alpha = mean_alpha,
+                           species = richness_vector,
+                           richness_sd = richness_sd,
+                           max_runs = max_runs,
+                           energy_threshold = energy_threshold, 
+                           energy_scaled = energy_tmp,
+                           iteration = iteration_tmp,
+                           energy_before = energy_before,
+                           min_conf_t = time_min_conf,
+                           #tabu = tabu,
+                           replicate = replicate)
+  
+  
+  # Write output
+  if(isTRUE(writeRDS)) {
+    saveRDS(result, file.path(paste0("results/spectre_", siminputrow, ".rds")))
+  }
+  
+  return(result)
+}
+
+### 
+
+
+load("vignettes/p.rda")
+
+x <- foreach(REPLICATE = 1:dim(p)[1], .export = c("p"), .packages = c("spectre")) %do% {
+  # library(spectre)
+  x <- sim_fun(REPLICATE,
+               p,
+               TRUE,
+               TRUE)
+  return(1)
+  
+  
+} 
+
+```

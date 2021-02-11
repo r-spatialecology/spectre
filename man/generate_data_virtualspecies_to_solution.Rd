@@ -7,7 +7,7 @@
 generate_data_virtualspecies_to_solution(spp)
 }
 \arguments{
-\item{species}{raster stack containing presence/absence maps}
+\item{spp}{raster stack containing presence/absence maps}
 }
 \value{
 matrix (species X sites)

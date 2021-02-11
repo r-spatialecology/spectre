@@ -2,7 +2,11 @@
 title: "BCI forest8 data: dataset description"
 author: ""
 date: "7/5/2020"
-output: html_document
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{BCI forest8 data: dataset description}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ```{r setup, include=FALSE}
@@ -13,7 +17,8 @@ knitr::opts_chunk$set(echo = TRUE)
 To test the spectre algorithm(s), we used data from the BCI.  
 
 ```{r, include = FALSE,echo=FALSE}
-data <- readRDS("~/spectre/data/BCI_tree8_MSP.rds")
+library(spectre)
+data <- bci.tree8
 data[1:10, 1:10]
 ```
 
