@@ -16,6 +16,7 @@ Imports:
     stats,
     RcppProgress
 Suggests: 
+    dplyr,
     testthat,
     knitr,
     rmarkdown,

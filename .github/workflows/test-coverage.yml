@@ -11,7 +11,7 @@ name: Test-coverage
 jobs:
   test-coverage:
     if: "!contains(github.event.commits[0].message, '[skip-ci]')"
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -19,14 +19,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r@v1
 
-      - uses: codecov/codecov-action@v1
-        with:
-          token: ${{ secrets.CODECOV }} # not required for public repos
-          files: ./coverage1.xml,./coverage2.xml # optional
-          flags: unittests # optional
-          name: codecov-umbrella # optional
-          fail_ci_if_error: true # optional (default = false)
-          verbose: true # optional (default = false)
+      - uses: r-lib/actions/setup-pandoc@v1
 
       - name: Query dependencies
         run: |

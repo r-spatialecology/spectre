@@ -1,24 +1,25 @@
 # tests whether the partial solution and fixed species parameters work
+context("fixed_species")
 
 library(dplyr)
 
-testdata <- tibble("1" = c(0,0,0,1,0,0),
-                   "2" = c(0,0,1,0,0,0),
-                   "3" = c(1,0,0,0,1,0),
-                   "4" = c(0,0,1,0,0,1),
-                   "5" = c(1,1,1,1,1,0))
+testdata <- data.frame("1" = c(0,0,0,1,0,0),
+                       "2" = c(0,0,1,0,0,0),
+                       "3" = c(1,0,0,0,1,0),
+                       "4" = c(0,0,1,0,0,1),
+                       "5" = c(1,1,1,1,1,0))
 
-partial_solution <- tibble("1" = c(0,0,0,0,0,0),
-                           "2" = c(0,0,0,0,0,0),
-                           "3" = c(0,0,0,0,0,0),
-                           "4" = c(0,0,0,0,0,0),
-                           "5" = c(1,1,1,1,1,1)) %>% as.matrix()
+partial_solution <- data.frame("1" = c(0,0,0,0,0,0),
+                               "2" = c(0,0,0,0,0,0),
+                               "3" = c(0,0,0,0,0,0),
+                               "4" = c(0,0,0,0,0,0),
+                               "5" = c(1,1,1,1,1,1)) %>% as.matrix()
 
-fixed_species <- tibble("1" = c(1,1,1,1,1,1),
-                        "2" = c(0,0,1,0,0,0),
-                        "3" = c(1,0,0,0,1,0),
-                        "4" = c(0,0,1,0,0,1),
-                        "5" = c(1,1,1,1,1,1)) %>% as.matrix()
+fixed_species <- data.frame("1" = c(1,1,1,1,1,1),
+                            "2" = c(0,0,1,0,0,0),
+                            "3" = c(1,0,0,0,1,0),
+                            "4" = c(0,0,1,0,0,1),
+                            "5" = c(1,1,1,1,1,1)) %>% as.matrix()
 
 alpha_list_test <- testdata %>% summarise_all(sum) %>% as.numeric()
 total_gamma_test <- testdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
@@ -32,9 +33,7 @@ res_sim <- run_optimization_min_conf(alpha_list = alpha_list_test,
                                      max_iterations = 200, 
                                      verbose = FALSE)
 
-suppressWarnings(
-  resultdata <- res_sim$optimized_grid %>% as_tibble()
-)
+resultdata <- res_sim$optimized_grid %>% as.data.frame()
 
 alpha_list_result <- resultdata %>% summarise_all(sum) %>% as.numeric()
 total_gamma_result <- resultdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()

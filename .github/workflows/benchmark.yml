@@ -2,14 +2,14 @@ name: benchmark
 on:
   push:
     branches:
-      - master
+      - main
       - dev
     paths:
       - 'src/**'
       - 'tests/benchmark/**'
   pull_request:
     branches: 
-      - master
+      - main
       - dev
     paths:
       - 'src/**'
