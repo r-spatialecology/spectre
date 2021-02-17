@@ -4,17 +4,40 @@
 \alias{generate_commonness_matrix_from_gdm}
 \title{generate_commonness_matrix_from_gdm}
 \usage{
-generate_commonness_matrix_from_gdm(gdm_predictions, n_sites, alpha_list)
+generate_commonness_matrix_from_gdm(gdm_predictions, alpha_list)
+}
+\arguments{
+\item{gdm_predictions}{a square pairwise \code{matrix} of Bray-Curtis
+dissimilarity estimates between site pairs. We recommend using the
+gdm-package (Fitzpatrick et al. 2020) to generate this matrix}
+
+\item{alpha_list}{a \code{vector} of species richness for every site in the
+study area. The length of this vector must be equivalent to one of the
+dimensions of the \code{gdm_predictions}}
 }
 \value{
-
+A pairwise site by site \code{matrix} of the number of species in
+common between each site pair, with dimensions equal to that of the
+provided dissimilarity matrix.
 }
 \description{
-Generate a commonness siteXsite matrix from sorensen gdm-package output
+Creates a pairwise site by site commonness matrix from
+estimates of species richness and Bray-Curtis dissimilarity.
 }
 \details{
-details
+\code{generate_commonness_matrix_from_gdm} uses a vector of
+estimated species richness per site and a pairwise matrix of site by site
+Bray-Curtis dissimilarity (we recommend using the gdm-package
+(Fitzpatrick et al. 2020) to generate this matrix) to produce a matrix of
+the estimated species in common between site pairs (referred to as a
+commonness matrix). The commonness between sites is  calculated using
+\deqn{C_{ij}=(1-\beta_{ij})(S_{i} + S_{j})/2}
+Where \eqn{\beta_{ij}} is the dissimilarity between sites, \eqn{C_{ij}} is
+the species in common between sites, and S is the number of species in
+each site. For more details see Mokany et al 2011.
 }
-\examples{
-example
+\references{
+Mokany, K., Harwood, T.D., Overton, J.M., Barker, G.M., &
+Ferrier, S. (2011). Combining \eqn{\alpha} and \eqn{\beta} diversity models to fill
+gaps in our knowledge of biodiversity. Ecology Letters, 14(10), 1043-1051.
 }

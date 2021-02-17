@@ -6,8 +6,13 @@
 \usage{
 generate_sorensen_matrix_from_gdm(gdm_predictions, n_sites)
 }
-\value{
+\arguments{
+\item{gdm_predictions}{Add information}
 
+\item{n_sites}{Add information}
+}
+\value{
+return
 }
 \description{
 Generate a sorensen siteXsite matrix from gdm-package output

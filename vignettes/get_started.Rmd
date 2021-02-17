@@ -1,8 +1,8 @@
 ---
-title: "get_started"
+title: "Get started"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{get_started}
+  %\VignetteIndexEntry{Get started}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -48,7 +48,6 @@ Algorithm:
 6. goto 2. until max_runs or solution <= energy_threshold 
 
 ```{r eval=FALSE}
-library(spectre)
  species_grid <- run_optimization_min_conf(alpha_list = alpha_list,
                                   total_gamma = estimated_gamma,
                                   target = target_matrix,
@@ -72,7 +71,6 @@ Algorithm:
 6. stop if max_steps reached or solution found in 4a
 
 ```{r eval=FALSE}
-library(spectre)
  species_grid <- run_optimization_min_conf(alpha_list = alpha_list,
                                   total_gamma = estimated_gamma,
                                   target = target_matrix,

@@ -1,12 +1,14 @@
 ^.*\.Rproj$
-^\.Rproj\.user$
-^\.travis\.yml$
 ^README\.Rmd$
 ^LICENSE\.md$
 ^\.spectre_rcpp_dev$
 ^vignettes\.R$
 ^spectre_rcpp_dev$
 ^results$
-^tests/testIdeas\.R$
 ^codecov\.yml$
 ^\.github$
+^MSP_tests/
+^bird_study_MSP/
+^data-raw$
+^bird_study_MSP$
+^MSP_tests$

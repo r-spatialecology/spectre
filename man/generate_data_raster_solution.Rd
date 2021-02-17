@@ -7,7 +7,8 @@
 generate_data_raster_solution(landscape, gamma)
 }
 \arguments{
-\item{landscape}{any raster that represents species richness as cell values (e.g. derived from generate_data_raster_rescale())}
+\item{landscape}{any raster that represents species richness as cell values
+(e.g. derived from generate_data_raster_rescale())}
 
 \item{gamma}{Total (estimated) species in the system.}
 }
@@ -19,11 +20,13 @@ Create a solution matrix from a species richness raster landscape
 }
 \details{
 This function takes a raster landscape which contains species richness as cell values.
-Then, an empty matrix is created with one row for each species (gamma) and one column for each site (ncol * nrow of landscape).
+Then, an empty matrix is created with one row for each species (gamma) and one
+column for each site (ncol * nrow of landscape).
 Then, on each cell, the raster value defines the number of present species IDs (rows).
 The selection of rows to be present, is chosen completely at random.
 
-Such a solution matrix can be used to calculate an optimization target matrix using the calculate_solution_commonness_rcpp() function (see extended examples).
+Such a solution matrix can be used to calculate an optimization target matrix
+using the calculate_solution_commonness_rcpp() function (see extended examples).
 }
 \examples{
 \dontrun{
@@ -39,7 +42,8 @@ solution <- generate_data_raster_solution(alpha, gamma)
 
 ### EXTENDED EXAMPLES:
 #
-# Here are some examples for a complete data generation workflow, using NLMR landscape generation functions:
+# Here are some examples for a complete data generation workflow, using 
+NLMR landscape generation functions:
 
 # Define landscape properties:
 landscape_size <- 50
@@ -62,9 +66,12 @@ solution <- generate_data_raster_solution(alpha, gamma)
 target <- calculate_solution_commonness_rcpp(solution)
 
 ## Example 3: Merge different landscape types:
-landscape_high_autocorrelation <- NLMR::nlm_edgegradient(ncol = landscape_size, nrow = landscape_size, direction = 80)
-landscape_low_autocorrelation <- NLMR::nlm_fbm(ncol = landscape_size, nrow = landscape_size, fract_dim = 0.5)
-landscape <- landscapetools::util_merge(landscape_low_autocorrelation, landscape_high_autocorrelation)
+landscape_high_autocorrelation <- NLMR::nlm_edgegradient(ncol = landscape_size, 
+nrow = landscape_size, direction = 80)
+landscape_low_autocorrelation <- NLMR::nlm_fbm(ncol = landscape_size, 
+nrow = landscape_size, fract_dim = 0.5)
+landscape <- landscapetools::util_merge(landscape_low_autocorrelation, 
+landscape_high_autocorrelation)
 alpha <- generate_data_raster_rescale(landscape, gamma, alpha.min, alpha.max)
 landscapetools::show_landscape(alpha)
 solution <- generate_data_raster_solution(alpha, gamma)

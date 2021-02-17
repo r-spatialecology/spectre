@@ -1,0 +1,57 @@
+name: benchmark
+on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - 'src/**'
+      - 'tests/benchmark/**'
+  pull_request:
+    branches: 
+      - main
+      - dev
+    paths:
+      - 'src/**'
+      - 'tests/benchmark/**'
+  workflow_dispatch:
+
+jobs:
+  benchmarks:
+    name: Run C++ benchmark
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: r-lib/actions/setup-r@master
+      with:
+        r-version: 4.0.2
+    - name: Install prerequisites
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y qt5-qmake
+        R -e 'install.packages(c("Rcpp", "RInside", "remotes"))'
+        # the R package of spectre works fine with RcppProgress from CRAN, but here we need some extra functionality
+        R -e 'remotes::install_github("bitbacchus/rcpp_progress")' 
+    - name: Build and run benchmarks with Catch2
+      run: |
+        export QT_SELECT=qt5
+        cd spectre_rcpp_dev/benchmark
+        qmake
+        make
+        ./benchmark | tee ~/benchmark_result.txt
+    - name: Store benchmark result
+      # uses: rhysd/github-action-benchmark@v1
+      uses: leoholz/github-action-benchmark@v1 # until PR #38 is merged
+      with:
+        # What benchmark tool the benchmark_result.txt came from
+        name: Spectre Benchmark
+        tool: "catch2"
+        output-file-path: ~/benchmark_result.txt
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        # Show alert with commit comment on detecting possible performance regression
+        alert-threshold: "200%"
+        comment-on-alert: true
+        fail-on-alert: true
+        alert-comment-cc-users: "@bitbacchus"
+        if: github.event_name == 'pull_request'
+        auto-push: true

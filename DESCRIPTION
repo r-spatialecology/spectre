@@ -1,12 +1,11 @@
 Package: spectre
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
+Title: Predict regional community composition 
 Version: 1.0
-Date: 2019-05-22
 Author: Your Name
 Maintainer: Your Name <your@email.com>
-Description: One paragraph description of what the package does as one
-        or more full sentences.
+Description:  Predict regional community composition at a fine spatial resolution 
+    using only sparse biological and environmental data.
 License: CC0
 Depends: 
     R (>= 3.5)
@@ -14,12 +13,19 @@ Imports:
     ggplot2,
     Rcpp (>= 1.0.1),
     stats,
-    RcppProgress
+    RcppProgress, 
+    raster,
+    NLMR, 
+    virtualspecies
 Suggests: 
+    dplyr,
     testthat,
     knitr,
     rmarkdown,
-    covr
+    covr, 
+    betapart,
+    viridis, 
+    viridisLite
 LinkingTo: 
     Rcpp,
     RcppProgress,
