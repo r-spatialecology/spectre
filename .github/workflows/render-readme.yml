@@ -16,7 +16,7 @@ jobs:
       - uses: r-lib/actions/setup-r@v1
       - uses: r-lib/actions/setup-pandoc@v1
       - name: Install system prerequisites
-        run: sudo apt update && sudo apt install -y libudunits2-dev
+        run: sudo apt update && sudo apt install -y libudunits2-dev libgdal-dev
       - name: Install rmarkdown, remotes, and the local package
         run: |
           install.packages("remotes")
