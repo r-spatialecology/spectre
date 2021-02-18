@@ -6,7 +6,7 @@ Author: Your Name
 Maintainer: Your Name <your@email.com>
 Description:  Predict regional community composition at a fine spatial resolution 
     using only sparse biological and environmental data.
-License: CC0
+License: GPL-3
 Depends: 
     R (>= 3.5)
 Imports: 
