@@ -12,7 +12,6 @@ Depends:
 Imports: 
     ggplot2,
     Rcpp (>= 1.0.1),
-    stats,
     RcppProgress, 
     raster,
     NLMR, 
@@ -21,11 +20,7 @@ Suggests:
     dplyr,
     testthat,
     knitr,
-    rmarkdown,
-    covr, 
-    betapart,
-    viridis, 
-    viridisLite
+    rmarkdown
 LinkingTo: 
     Rcpp,
     RcppProgress,
