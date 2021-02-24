@@ -10,3 +10,4 @@
 ^data-raw$
 ^\.Rproj\.user$
 
+^Doxyfile$
