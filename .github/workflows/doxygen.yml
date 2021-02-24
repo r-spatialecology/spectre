@@ -3,17 +3,9 @@ on:
   push:
     branches:
       - doxygen
-     # - main
-    #  - dev
-    paths:
-      - 'src/**'
   pull_request:
     branches: 
       - doxygen
-     # - main
-      #- dev
-    paths:
-      - 'src/**'
 
 jobs:
   doxygen:
