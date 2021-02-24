@@ -3,11 +3,7 @@
 \docType{data}
 \name{current_solution}
 \alias{current_solution}
-\title{#' Add information
-#'
-#' @format matrix
-"bci.tree8"
-Add information}
+\title{Add information}
 \format{
 matrix
 }
@@ -15,10 +11,6 @@ matrix
 current_solution
 }
 \description{
-#' Add information
-#'
-#' @format matrix
-"bci.tree8"
 Add information
 }
 \keyword{datasets}

@@ -13,11 +13,6 @@
 #' @format matrix
 "target_matrix"
 
-#' #' Add information
-#' #'
-#' #' @format matrix
-#' "bci.tree8"
-
 #' Add information
 #'
 #' @format matrix
