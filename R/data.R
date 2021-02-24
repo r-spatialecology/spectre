@@ -16,11 +16,6 @@
 #' Add information
 #'
 #' @format matrix
-"bci.tree8"
-
-#' Add information
-#'
-#' @format matrix
 "current_solution"
 
 #' Add information
