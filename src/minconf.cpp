@@ -27,21 +27,16 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
   solution.resize(n_sites);
   this->target.resize(n_sites);
   commonness.resize(n_sites);
+  bray_curtis.resize(n_sites);
 
   for (unsigned site = 0; site < n_sites; site++) {
     solution[site].resize(gamma_div);
-    commonness[site].resize(n_sites, na_val);
-
-    // convert target matrix to a more convenient format
-    this->target[site].resize(n_sites);
-    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-      if (target[other_site * n_sites + site] == NA) {
-        this->target[site][other_site] = NA;
-      } else {
-        this->target[site][other_site] = target[other_site * n_sites + site];
-      }
-    }
+    commonness[site].resize(n_sites, NA);
+    bray_curtis[site].resize(n_sites, NA_F);
+    this->target[site].resize(n_sites, NA_F);
   }
+  // calculate Bray-Curtis dissimilarity and store it in this->target
+  calc_target_bc(target);
 
   if (partial_solution.size() > 1) {
     if (partial_solution.size() != n_sites * gamma_div) {
@@ -96,8 +91,8 @@ int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
   auto iter = max_steps;
 
   // calculate and save the start values
-  update_solution_commonness();
-  unsigned error = calc_error();
+
+  auto error = calc_error();
   iteration_count.push_back(0);
   error_vector.push_back(error);
 
@@ -123,13 +118,12 @@ int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
     // add min conf species
     add_species_min_conf(site);
 
-    update_solution_commonness();
     error = calc_error();
 
     iteration_count.push_back(max_steps - iter);
     error_vector.push_back(error);
 
-    if (error == 0) {
+    if (error < epsilon) {
       return iter;
     }
   }
@@ -257,7 +251,7 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site) {
   std::vector<unsigned> absent_species_idx = absent_species_index(site);
 
   // makes sure that the first actual error_ is smaller
-  unsigned error = std::numeric_limits<unsigned>::max();
+  float error = std::numeric_limits<float>::max();
   std::vector<unsigned> min_conflict_species;
 
   // try for each species at this site where the enery would be minimal
@@ -265,14 +259,14 @@ std::vector<unsigned> MinConf::calc_min_conflict_species(const unsigned site) {
        species_idx++) {
     const unsigned species = absent_species_idx[species_idx];
     solution[site][species] = 1; // assign species (will be un-done later)
-    update_solution_commonness();
-    unsigned error_ = calc_error();
+
+    auto error_ = calc_error();
 
     if (error_ < error) {
       min_conflict_species.clear(); // found better fitting species delete other
       min_conflict_species.push_back(species);
       error = error_;
-    } else if (error_ == error) {
+    } else if ((error_ - error) < epsilon) {
       // as good as other species, add this species
       min_conflict_species.push_back(species);
     }
@@ -312,18 +306,66 @@ void MinConf::update_solution_commonness() {
 }
 
 /**
+ * @brief MinConf::update_solution_bc calculates a Bray-Curtis dissimilarity
+ * from alpha diversity and commonness matrix.
+ */
+void MinConf::update_solution_bc() {
+  for (unsigned site = 0; site < n_sites - 1; site++) {
+    for (unsigned other_site = site + 1; other_site < n_sites; other_site++) {
+      const auto common_spec = commonness[site][other_site];
+      if (common_spec == NA) {
+        continue;
+      }
+      bray_curtis[site][other_site] =
+          1 - 2 * static_cast<float>(common_spec) /
+                  (alpha_list[site] + alpha_list[other_site]);
+    }
+  }
+}
+
+/**
+ * @brief MinConf::calc_bc is just to convert a commonness target matrix to a
+ * Bray-curtis dissimilarity target matrix
+ * @param target_mat
+ * @return
+ */
+void MinConf::calc_target_bc(std::vector<int> target_mat) {
+  auto commonness_bak = commonness;
+  auto bc_bak = bray_curtis;
+
+  for (unsigned site = 0; site < n_sites; site++) {
+    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+      if (target_mat[other_site * n_sites + site] == NA) {
+        commonness[site][other_site] = NA;
+      } else {
+        commonness[site][other_site] = target_mat[other_site * n_sites + site];
+      }
+    }
+  }
+  update_solution_bc();
+  target = bray_curtis;
+
+  bray_curtis = bc_bak;
+  commonness = commonness_bak;
+}
+
+/**
  * @brief MinConf::calc_error the error is the Hamming distance between the
  * commonness and the target
  */
-unsigned MinConf::calc_error() {
-  unsigned sum_diff = 0;
+float MinConf::calc_error() {
+  update_solution_commonness();
+  update_solution_bc();
+
+  // Calculate the difference in commonness
+  float sum_diff = 0.0;
   for (unsigned site = 0; site < n_sites; site++) {
     for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-      if (target[site][other_site] == NA) {
+      if (target[site][other_site] == NA_F) {
         continue;
       }
       sum_diff +=
-          std::abs(commonness[site][other_site] - target[site][other_site]);
+          std::fabs(bray_curtis[site][other_site] - target[site][other_site]);
     }
   }
   return sum_diff;

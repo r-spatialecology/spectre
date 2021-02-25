@@ -37,9 +37,9 @@ List optimizer_min_conf(const IntegerVector alpha_list,
   List results = List::create(Rcpp::Named("optimized_grid") = solution,
                               Rcpp::Named("error") = measures_df);
   if (verbose) {
-    double best_error =
+    float best_error =
         *std::min_element(mc.error_vector.begin(), mc.error_vector.end());
-    double worst_error =
+    float worst_error =
         *std::max_element(mc.error_vector.begin(), mc.error_vector.end());
     Rcout << "\n > Optimization finished with lowest absolute error = "
           << best_error << " (highest absolute error was: " << worst_error

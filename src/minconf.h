@@ -15,15 +15,20 @@ public:
 
   std::vector<std::vector<int>> solution;
   std::vector<std::vector<int>> commonness;
+  std::vector<std::vector<float>> bray_curtis;
   std::vector<int> iteration_count;
-  std::vector<unsigned> error_vector;
+  std::vector<float> error_vector;
   const int RET_ABORT = -999;
   const int NA;
+  const float NA_F = static_cast<float>(NA);
+float calc_error();
+std::vector<unsigned> calc_min_conflict_species(const unsigned site);
+std::vector<std::vector<float>> target;
 
 protected:
+  const float epsilon = 0.0001;
   std::mt19937 rng;
 
-  std::vector<std::vector<int>> target;
   const std::vector<unsigned> alpha_list;
   std::vector<std::vector<int>> fixed_species;
   const unsigned gamma_div;
@@ -35,10 +40,12 @@ protected:
   std::vector<unsigned> absent_species_index(unsigned site);
   bool remove_random_species(const unsigned site);
   void add_species_min_conf(unsigned site);
-  std::vector<unsigned> calc_min_conflict_species(const unsigned site);
+
   void gen_init_solution();
   void update_solution_commonness();
-  unsigned calc_error();
+  void update_solution_bc();
+  void calc_target_bc(std::vector<int> target_mat);
+
 };
 
 #endif // MINCONF_H

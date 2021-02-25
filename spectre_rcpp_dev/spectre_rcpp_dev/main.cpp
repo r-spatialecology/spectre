@@ -11,16 +11,24 @@ int main()
 {
     std::random_device rd;
     long long seed = rd();
+//    std::vector<unsigned> alpha_list = {2, 1, 2};
+//    unsigned gamma = 3;
+//    std::vector<int> target = {  -10, 0, 2 ,
+//                                 0, -10, 0 ,
+//                                 2, 0, -10  };
+
     std::vector<unsigned> alpha_list = {2, 1, 2};
     unsigned gamma = 3;
-    std::vector<int> target = {  -10, 0, 2 ,
-                                 0, -10, 0 ,
-                                 2, 0, -10  };
-    MinConf mc(alpha_list, gamma, target, std::vector<int>(), std::vector<int>(), seed);
-
+    std::vector<int> target = {-10, 0, 0, 0, -10, 0, 0, 0, -10};
+    MinConf mc(alpha_list, gamma, target, std::vector<int>(), std::vector<int>(), 0, -10);
+    mc.target[0][1] = 0.667;
+    mc.target[0][2] = 0;
+    mc.target[1][2] = 0;
+    mc.solution = {{0, 1, 1}, {0, 1, 0}, {0, 1, 1}};
+    mc.calc_min_conflict_species(1);
     // now let's benchmark:
     //    BENCHMARK("MinConf") {
-    mc.optimize(5000, false, false); // will be finished after <<5k steps
+   // mc.optimize(5000, false, false); // will be finished after <<5k steps
     //    };
 
 
