@@ -5,7 +5,9 @@
 # Since siteXsite order in upcoming versions of the gdm package could change, we test whether orders match. 
 
 library("gdm")
-set.seed(42)
+
+set.seed(42) # use seed to ensure the gdm package will converge with a given random species composition and arbitrary set predictors
+
 # Create random siteXspecies data
 nspecies <- 50
 nsites <- 40
@@ -29,14 +31,13 @@ get_objective_matrix <- function(nspecies, nsites, presence_prob)
   return(m)
 }
 
-# Create 
-(obj_matrix <- get_objective_matrix(nspecies = nspecies, nsites = nsites, presence_prob = presence_prob))
-# obj_matrix[1:2, ] <- 1
+# Create random species composition 
+obj_matrix <- get_objective_matrix(nspecies = nspecies, nsites = nsites, presence_prob = presence_prob)
 
 alpha_list <- rowSums(obj_matrix) # richness per site 
 
 # Commonness matrix of the random siteXspecies matrix, used for evaluation later
-(obj_commonness <- spectre:::calculate_solution_commonness_rcpp( t(obj_matrix) ))
+obj_commonness <- spectre:::calculate_solution_commonness_rcpp( t(obj_matrix) )
 
 # Bray-Curtis dissimilarity is calculated using the gdm package
 bioData <- data.frame(site_id = 1:nsites, x_coords = rep(13, nsites), y_coords = rep(10, nsites))
