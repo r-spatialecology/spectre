@@ -69,5 +69,5 @@ generate_commonness_matrix_from_gdm <- function(gdm_predictions, alpha_list){
     }
   }
   
-  return(target_commonness) 
+  return(t(target_commonness)) # spectre uses the upper triangle of commonness matrices
 }
