@@ -49,8 +49,9 @@ sitepairs <- gdm::formatsitepair(bioData = bioData, bioFormat = 1, abundance = F
                                  siteColumn = "site_id",
                                  XColumn="x_coords", YColumn="y_coords", 
                                  predData = predData)
-gdm_result <- gdm::gdm(sitepairs, geo = FALSE)
+gdm_result <- gdm::gdm(sitepairs, geo = TRUE)
 
 # Re-calculate commonness from observed siteXsite Bray-Curtis values and per site richness 
 rec_commonness <- spectre:::generate_commonness_matrix_from_gdm(gdm_result$observed, alpha_list = alpha_list)
+
 testthat::expect_equal(obj_commonness, rec_commonness)
