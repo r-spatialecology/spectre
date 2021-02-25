@@ -15,13 +15,13 @@ Imports:
     RcppProgress, 
     raster,
     NLMR, 
-    virtualspecies
+    virtualspecies,
+    gdm
 Suggests: 
     dplyr,
     testthat,
     knitr,
-    rmarkdown,
-    gdm
+    rmarkdown
 LinkingTo: 
     Rcpp,
     RcppProgress,
