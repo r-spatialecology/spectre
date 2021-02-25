@@ -1,18 +1,22 @@
-# tests whether the generate_commonness_matrix_from_gdm function works
+# Tests  
+# 1. that generate_commonness_matrix_from_gdm() correctly calculates a commonness matrix given siteXsite values for 
+# Bray-Curtis dissimilarity and per site richness
+# 2. that siteXsite order used in the gdm package is the same as assumed by generate_commonness_matrix_from_gdm(). 
+# Since siteXsite order in upcoming versions of the gdm package could change, we test whether orders match. 
+
 library("gdm")
+set.seed(42)
 # Create random siteXspecies data
-nspecies <- 15
-nsites <- 10
+nspecies <- 50
+nsites <- 40
 presence_prob <- 0.3 # probability for each species to be present at each site
 
 get_objective_matrix <- function(nspecies, nsites, presence_prob)
 {
   # generate a random matrix with n species and n sites
-  # presence_prob is the probability for each species to appear on a site
-  # It's only a quick and dirty approach here :-)
-  m <- matrix(nrow = nsites, ncol = nspecies, data = 0)
-  
   # fill matrix with random species presences
+  
+  m <- matrix(nrow = nsites, ncol = nspecies, data = 0)
   
   for (row in 1:ncol(m)){
     for (col in 1:nrow(m)){
@@ -25,29 +29,28 @@ get_objective_matrix <- function(nspecies, nsites, presence_prob)
   return(m)
 }
 
-
+# Create 
 (obj_matrix <- get_objective_matrix(nspecies = nspecies, nsites = nsites, presence_prob = presence_prob))
-obj_matrix[1:2, ] <- 1
+# obj_matrix[1:2, ] <- 1
 
-alpha_list <- rowSums(obj_matrix)
+alpha_list <- rowSums(obj_matrix) # richness per site 
 
-m <- as.data.frame(obj_matrix)
-names(obj_matrix) <- paste0("spec_", 1:nspecies)
+# Commonness matrix of the random siteXspecies matrix, used for evaluation later
+(obj_commonness <- spectre:::calculate_solution_commonness_rcpp( t(obj_matrix) ))
 
-(obj_commonness <- spectre:::calculate_solution_commonness_rcpp(t(obj_matrix)))
-
+# Bray-Curtis dissimilarity is calculated using the gdm package
 bioData <- data.frame(site_id = 1:nsites, x_coords = rep(13, nsites), y_coords = rep(10, nsites))
-
 bioData <- cbind(bioData, obj_matrix)
 
 predData <- data.frame(site_id = 1:nsites, preds = runif(nsites))
 
 
 sitepairs <- gdm::formatsitepair(bioData = bioData, bioFormat = 1, abundance = FALSE, 
-                    siteColumn = "site_id",
-                    XColumn="x_coords", YColumn="y_coords", 
-                    predData = predData)
-haha <- gdm::gdm(sitepairs, geo = TRUE)
-haha$observed
+                                 siteColumn = "site_id",
+                                 XColumn="x_coords", YColumn="y_coords", 
+                                 predData = predData)
+gdm_result <- gdm::gdm(sitepairs, geo = FALSE)
 
-spectre:::generate_commonness_matrix_from_gdm(haha$observed, alpha_list = alpha_list)
+# Re-calculate commonness from observed siteXsite Bray-Curtis values and per site richness 
+rec_commonness <- spectre:::generate_commonness_matrix_from_gdm(gdm_result$observed, alpha_list = alpha_list)
+testthat::expect_equal(obj_commonness, rec_commonness)
