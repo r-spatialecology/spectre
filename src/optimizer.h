@@ -16,4 +16,8 @@ List optimizer_min_conf(const IntegerVector alpha_list,
 // [[Rcpp::export]]
 IntegerMatrix
 calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix);
+
+// [[Rcpp::export]]
+NumericMatrix
+calculate_solution_bc_rcpp(const IntegerMatrix solution_matrix, IntegerVector alpha_vector);
 #endif // MH_OPTIMIZER_H

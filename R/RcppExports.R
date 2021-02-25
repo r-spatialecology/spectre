@@ -9,3 +9,7 @@ calculate_solution_commonness_rcpp <- function(solution_matrix) {
     .Call(`_spectre_calculate_solution_commonness_rcpp`, solution_matrix)
 }
 
+calculate_solution_bc_rcpp <- function(solution_matrix, alpha_vector) {
+    .Call(`_spectre_calculate_solution_bc_rcpp`, solution_matrix, alpha_vector)
+}
+

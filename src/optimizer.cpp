@@ -77,3 +77,31 @@ calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix) {
 
   return result;
 }
+
+NumericMatrix
+calculate_solution_bc_rcpp(const IntegerMatrix solution_matrix, IntegerVector alpha_vector) {
+    auto commonness = calculate_solution_commonness_rcpp(solution_matrix);
+    const unsigned n_sites = solution_matrix.ncol();
+    const unsigned gamma_div = solution_matrix.nrow();
+    std::vector<int> fixed_mat(n_sites * gamma_div, 1); // all fixed
+
+    MinConf mc(as<std::vector<unsigned>>(alpha_vector), gamma_div,
+               std::vector<int>(n_sites * n_sites),
+               as<std::vector<int>>(solution_matrix), fixed_mat, 0, NA_INTEGER);
+
+    // zero iterations, just to calculate the commonness
+    mc.optimize(0, false, false);
+
+    NumericMatrix result(n_sites, n_sites);
+    std::fill(result.begin(), result.end(), NA_REAL);
+
+    for (unsigned site = 0; site < n_sites; site++) {
+        for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+            if (mc.bray_curtis[site][other_site] != NA_INTEGER) {
+                result(site, other_site) = mc.bray_curtis[site][other_site];
+            }
+        }
+    }
+
+    return result;
+}

@@ -35,12 +35,25 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// calculate_solution_bc_rcpp
+NumericMatrix calculate_solution_bc_rcpp(const IntegerMatrix solution_matrix, IntegerVector alpha_vector);
+RcppExport SEXP _spectre_calculate_solution_bc_rcpp(SEXP solution_matrixSEXP, SEXP alpha_vectorSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const IntegerMatrix >::type solution_matrix(solution_matrixSEXP);
+    Rcpp::traits::input_parameter< IntegerVector >::type alpha_vector(alpha_vectorSEXP);
+    rcpp_result_gen = Rcpp::wrap(calculate_solution_bc_rcpp(solution_matrix, alpha_vector));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 RcppExport SEXP run_testthat_tests();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spectre_optimizer_min_conf", (DL_FUNC) &_spectre_optimizer_min_conf, 9},
     {"_spectre_calculate_solution_commonness_rcpp", (DL_FUNC) &_spectre_calculate_solution_commonness_rcpp, 1},
+    {"_spectre_calculate_solution_bc_rcpp", (DL_FUNC) &_spectre_calculate_solution_bc_rcpp, 2},
     {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 0},
     {NULL, NULL, 0}
 };
