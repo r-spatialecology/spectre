@@ -14,16 +14,19 @@ public:
   int optimize(const long max_steps, bool verbose, bool interruptible);
 
   std::vector<std::vector<int>> solution;
+  std::vector<std::vector<float>> bray_curtis;
   std::vector<std::vector<int>> commonness;
   std::vector<int> iteration_count;
-  std::vector<unsigned> error_vector;
+  std::vector<float> error_vector;
   const int RET_ABORT = -999;
   const int NA;
+  const float NA_F = static_cast<float>(NA);
 
 protected:
   std::mt19937 rng;
 
   std::vector<std::vector<int>> target;
+  std::vector<std::vector<float>> target_bc;
   const std::vector<unsigned> alpha_list;
   std::vector<std::vector<int>> fixed_species;
   const unsigned gamma_div;
@@ -39,6 +42,9 @@ protected:
   void gen_init_solution();
   void update_solution_commonness();
   unsigned calc_error();
+  void update_solution_bc();
+  void calc_target_bc(std::vector<int> target_mat);
+  float calc_error_bc();
 };
 
 #endif // MINCONF_H

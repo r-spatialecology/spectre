@@ -26,7 +26,9 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
 
   solution.resize(n_sites);
   this->target.resize(n_sites);
+  target_bc.resize(n_sites);
   commonness.resize(n_sites);
+  bray_curtis.resize(n_sites);
 
   for (unsigned site = 0; site < n_sites; site++) {
     solution[site].resize(gamma_div);
@@ -34,6 +36,8 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
 
     // convert target matrix to a more convenient format
     this->target[site].resize(n_sites);
+    target_bc[site].resize(n_sites, NA_F);
+    bray_curtis[site].resize(n_sites, NA_F);
     for (unsigned other_site = 0; other_site < n_sites; other_site++) {
       if (target[other_site * n_sites + site] == NA) {
         this->target[site][other_site] = NA;
@@ -42,6 +46,8 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
       }
     }
   }
+  // calculate Bray-Curtis dissimilarity and store it in this->target
+  calc_target_bc(target);
 
   if (partial_solution.size() > 1) {
     if (partial_solution.size() != n_sites * gamma_div) {
@@ -98,8 +104,9 @@ int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
   // calculate and save the start values
   update_solution_commonness();
   unsigned error = calc_error();
+  float error_f = calc_error_bc();
   iteration_count.push_back(0);
-  error_vector.push_back(error);
+  error_vector.push_back(error_f);
 
   // optimize
   while (iter-- > 0) {
@@ -125,9 +132,10 @@ int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
 
     update_solution_commonness();
     error = calc_error();
+    error_f = calc_error_bc();
 
     iteration_count.push_back(max_steps - iter);
-    error_vector.push_back(error);
+    error_vector.push_back(error_f);
 
     if (error == 0) {
       return iter;
@@ -324,6 +332,58 @@ unsigned MinConf::calc_error() {
       }
       sum_diff +=
           std::abs(commonness[site][other_site] - target[site][other_site]);
+    }
+  }
+  return sum_diff;
+}
+
+void MinConf::update_solution_bc() {
+  for (unsigned site = 0; site < n_sites - 1; site++) {
+    for (unsigned other_site = site + 1; other_site < n_sites; other_site++) {
+      const auto common_spec = commonness[site][other_site];
+      if (common_spec == NA) {
+        continue;
+      }
+      bray_curtis[site][other_site] =
+          1 - 2 * static_cast<float>(common_spec) /
+                  (alpha_list[site] + alpha_list[other_site]);
+    }
+  }
+}
+
+void MinConf::calc_target_bc(std::vector<int> target_mat) {
+  auto commonness_bak = commonness;
+  auto bc_bak = bray_curtis;
+
+  for (unsigned site = 0; site < n_sites; site++) {
+    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+      if (target_mat[other_site * n_sites + site] == NA) {
+        commonness[site][other_site] = NA;
+      } else {
+        commonness[site][other_site] = target_mat[other_site * n_sites + site];
+      }
+    }
+  }
+  update_solution_bc();
+  target_bc = bray_curtis;
+
+  bray_curtis = bc_bak;
+  commonness = commonness_bak;
+}
+
+float MinConf::calc_error_bc() {
+  update_solution_commonness();
+  update_solution_bc();
+
+  // Calculate the difference in commonness
+  float sum_diff = 0.0;
+  for (unsigned site = 0; site < n_sites; site++) {
+    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+      if (target_bc[site][other_site] == NA_F) {
+        continue;
+      }
+      sum_diff += std::fabs(bray_curtis[site][other_site] -
+                            target_bc[site][other_site]);
     }
   }
   return sum_diff;
