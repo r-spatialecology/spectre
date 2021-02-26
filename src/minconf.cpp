@@ -30,7 +30,7 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
 
   for (unsigned site = 0; site < n_sites; site++) {
     solution[site].resize(gamma_div);
-    commonness[site].resize(n_sites, na_val);
+    commonness[site].resize(n_sites, NA);
 
     // convert target matrix to a more convenient format
     this->target[site].resize(n_sites);

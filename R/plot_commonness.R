@@ -2,26 +2,24 @@
 #' 
 #' @description Plot commonness
 #' 
-#' @param species_grid Optimized grid using run_optimization.
+#' @param x Results object of run_optimization_min_conf()
 #' @param target Pairwise matrix of species in common.
 #' 
 #' @details 
-#' Plot a heatmap of commonnes between observed data and optimized data.
+#' Plot a heatmap of commonness between observed data and optimized data.
 #' 
 #' @return ggplot
 #' @references xxx
 
 #' @export
-plot_commonness <- function(species_grid, target) {
-  
-  commonness_species_grid <- calculate_solution_commonness_rcpp(species_grid[[1]])
+plot_commonness <- function(x, target) {
+  species_grid <- x$optimized_grid
+  commonness_species_grid <- calculate_solution_commonness_rcpp(species_grid)
   
   n_row <- nrow(commonness_species_grid)
   n_col <- ncol(commonness_species_grid)
   
-  commonness_species_grid[upper.tri(commonness_species_grid, diag = TRUE)] <- NA
-  
-  commonness_difference_grid <- commonness_species_grid - target
+  commonness_difference_grid <- t(commonness_species_grid - target)
   
   commonness_difference <- expand.grid(x = seq_len(n_row), 
                                        y = seq_len(n_col))
