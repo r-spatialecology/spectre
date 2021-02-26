@@ -69,9 +69,7 @@ calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix) {
 
   for (unsigned site = 0; site < n_sites; site++) {
     for (unsigned other_site = 0; other_site < n_sites; other_site++) {
-      if (mc.commonness[site][other_site] != NA_INTEGER) {
-        result(site, other_site) = mc.commonness[site][other_site];
-      }
+      result(site, other_site) = mc.commonness[site][other_site];
     }
   }
 

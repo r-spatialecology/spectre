@@ -4,10 +4,10 @@
 \alias{plot_commonness}
 \title{plot_commonness}
 \usage{
-plot_commonness(species_grid, target)
+plot_commonness(x, target)
 }
 \arguments{
-\item{species_grid}{Optimized grid using run_optimization.}
+\item{x}{Results object of run_optimization_min_conf()}
 
 \item{target}{Pairwise matrix of species in common.}
 }
@@ -18,7 +18,7 @@ ggplot
 Plot commonness
 }
 \details{
-Plot a heatmap of commonnes between observed data and optimized data.
+Plot a heatmap of commonness between observed data and optimized data.
 }
 \references{
 xxx
