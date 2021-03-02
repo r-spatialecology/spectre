@@ -10,7 +10,7 @@ library("spectre")
 library("foreach")
 
 # set parameters 
-replicate <- 1:25 # replicates per parameter combination
+replicate <- 1:15 # replicates per parameter combination
 max_runs <-100000 # 50000 
 energy_threshold <- 0.0
 verbose = TRUE
