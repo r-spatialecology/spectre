@@ -8,6 +8,7 @@
 
 library("spectre")
 library("foreach")
+doParallel::registerDoParallel(12)
 
 # set parameters 
 replicate <- 1:15 # replicates per parameter combination
@@ -114,7 +115,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)
   saveRDS(r_1, file = paste0("./test_bc_MSP/res_bc/comm", siminputrow, ".rds")) # change this later! 
 }
 
-foreach(REPLICATE = 1:dim(p)[1], .export = c("p"), .packages = c("spectre")) %do% {
+foreach(REPLICATE = 1:dim(p)[1], .export = c("p"), .packages = c("spectre")) %dopar% {
   print(paste0("Replicate: ", REPLICATE))
   
   sim_fun(REPLICATE,
