@@ -94,6 +94,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)
   
   
   solution_commonness <- spectre:::calculate_solution_commonness_rcpp(res_min_conf$optimized_grid)
+  bray_error <- res_min_conf$error$error[length(res_min_conf$error$error)]
   
   # save error between solution and (1) predicted commonness and (2) observed commonness in tibble
   # same for sorensen... 
@@ -111,8 +112,9 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)
                         MAE_sol_obs = MAE_sol_obs,
                         RCE_sol_obs = RCE_sol_obs,
                         MAE_sol_pred = MAE_sol_pred, 
-                        RCE_sol_pred = RCE_sol_pred)
-  saveRDS(r_1, file = paste0("./test_bc_MSP/res/comm", siminputrow, ".rds")) # change this later! 
+                        RCE_sol_pred = RCE_sol_pred, 
+                        bray_error = bray_error)
+  saveRDS(r_1, file = paste0("./test_bc_MSP/res_bc_test/comm", siminputrow, ".rds")) # change this later! 
 }
 
 foreach(REPLICATE = 1:dim(p)[1], .export = c("p"), .packages = c("spectre")) %dopar% {
