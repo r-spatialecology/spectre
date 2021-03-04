@@ -27,7 +27,7 @@ ggplot(data = df) +
   #            linetype = "dotted", 
   #           size = 1.6, 
   #          color = "blue" ) + 
-  scale_y_continuous(name = expression(BC_error) ) + #, breaks = seq(3.9, 4.0, 0.02 ), limits = c(3.91, 3.98)) + 
+  scale_y_continuous(name = expression(BC_error[bc]) ) + #, breaks = seq(3.9, 4.0, 0.02 ), limits = c(3.91, 3.98)) + 
   scale_x_discrete(name ="" )+
   theme_bw(base_size = 18)
 
@@ -36,7 +36,7 @@ ggsave(paste0(getwd(), "/test_bc_MSP/bc.png"), width = 8, height = 6, units = "i
 
 ### Bray curtis 
 
-df<- list.files(path = paste0(getwd(), "/test_bc_MSP/res_bc_test"), pattern = "*.rds", full.names = TRUE) %>%
+df<- list.files(path = paste0(getwd(), "/test_bc_MSP/res_dev_bc"), pattern = "*.rds", full.names = TRUE) %>%
   map(readRDS) %>%
   bind_rows()
 
@@ -58,10 +58,10 @@ ggplot(data = df) +
   #            linetype = "dotted", 
   #           size = 1.6, 
   #          color = "blue" ) + 
-  scale_y_continuous(name = expression(BC_error) ) + #, breaks = seq(3.9, 4.0, 0.02 ), limits = c(3.91, 3.98)) + 
+  scale_y_continuous(name = expression(BC_error[dev_bc]) ) + #, breaks = seq(3.9, 4.0, 0.02 ), limits = c(3.91, 3.98)) + 
   scale_x_discrete(name ="" )+
   theme_bw(base_size = 18)
 
-ggsave(paste0(getwd(), "/test_bc_MSP/bc_test.png"), width = 8, height = 6, units = "in")
+ggsave(paste0(getwd(), "/test_bc_MSP/dev_bc.png"), width = 8, height = 6, units = "in")
 
 

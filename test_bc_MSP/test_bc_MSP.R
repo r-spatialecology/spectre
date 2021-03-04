@@ -12,7 +12,7 @@ doParallel::registerDoParallel(15)
 
 # set parameters 
 replicate <- 1:15 # replicates per parameter combination
-max_runs <-50000 # 50000 
+max_runs <-100000 # 50000 
 energy_threshold <- 0.0
 verbose = TRUE
 
@@ -114,7 +114,7 @@ sim_fun <- function(siminputrow, parameters, writeRDS, verbose)
                         MAE_sol_pred = MAE_sol_pred, 
                         RCE_sol_pred = RCE_sol_pred, 
                         bray_error = bray_error)
-  saveRDS(r_1, file = paste0("./test_bc_MSP/res_bc/comm", siminputrow, ".rds")) # change this later! 
+  saveRDS(r_1, file = paste0("./test_bc_MSP/res_dev_bc/comm", siminputrow, ".rds")) # change this later! 
 }
 
 foreach(REPLICATE = 1:dim(p)[1], .export = c("p"), .packages = c("spectre")) %dopar% {
