@@ -16,7 +16,7 @@ ggplot
 Plot the absolute error
 }
 \details{
-Plot energy over time
+Plot error over time
 }
 \references{
 xxx

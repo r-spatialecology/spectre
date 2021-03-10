@@ -5,7 +5,7 @@
 #' @param x Results object from run_optimization_min_conf
 #' 
 #' @details 
-#' Plot energy over time
+#' Plot error over time
 #' 
 #' @return ggplot
 #' @references xxx
