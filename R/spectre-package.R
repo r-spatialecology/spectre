@@ -10,7 +10,7 @@
 
 "_PACKAGE"
 
-globalVariables(c("energy",
+globalVariables(c("error",
                   "i",
                   "value",
                   "x", 
