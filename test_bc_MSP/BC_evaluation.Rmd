@@ -1,0 +1,82 @@
+---
+title: "Bray-Curtis Optimization"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(tidyverse)
+```
+
+## Using Bray-Curtis dissimilarity, rather than Commonness, for Optimization in spectre
+
+As Sebastian pointed out, Bray-Curtis dissimilarity (BC), derived from commonness and per site richness, contains more information than commonness alone, thus using BC rather than commonness for optimization may allow *spectre* i) to find solutions with higher biological relevance and ii) could change local and global minima of the solution space. 
+
+We used the Bangalore bird data set (36 sites, 126 species) and run 15 replicates each using the BC and the commonness optimization approach. Both, Bray-Curtis error (BC_error) and relative commonness error (RCE) were evaluated. If I am right, the BC optimization is in branch **bc**, and the commonness optimization is in branch **dev_bc**, thus BC is shown in the left figures below.  
+
+```{r bray_curtis_error, fig.show = "hold", out.width = "50%", echo = FALSE, warning = FALSE, message = FALSE}
+
+### Bray-Curtis
+df<- list.files(path = paste0(getwd(), "/res_bc"), pattern = "*.rds", full.names = TRUE) %>%
+  map(readRDS) %>%
+  bind_rows()
+
+df$replicate <- as.factor(df$replicate)
+
+ggplot(data = df) + 
+  geom_boxplot(aes(y = bray_error))+ 
+  scale_y_continuous(name = expression(BC_error(bc)) , limits = c(1.8, 2.8)) + 
+  scale_x_discrete(name ="" )+
+  theme_bw(base_size = 18)
+
+
+### Commonness 
+df<- list.files(path = paste0(getwd(), "/res_dev_bc"), pattern = "*.rds", full.names = TRUE) %>%
+  map(readRDS) %>%
+  bind_rows()
+
+df$replicate <- as.factor(df$replicate)
+
+ggplot(data = df) + 
+  geom_boxplot(aes(y = bray_error))+ 
+  scale_y_continuous(name = expression(BC_error(dev_bc)), limits = c(1.8, 2.8 ) )+ #, breaks = seq(3.9, 4.0, 0.02 ), limits = c(3.91, 3.98)) + 
+  scale_x_discrete(name ="" )+
+  theme_bw(base_size = 18)
+
+```
+
+
+```{r commonness_error, fig.show = "hold", out.width = "50%", echo = FALSE, warning = FALSE, message = FALSE}
+
+### Bray-Curtis
+df<- list.files(path = paste0(getwd(), "/res_bc"), pattern = "*.rds", full.names = TRUE) %>%
+  map(readRDS) %>%
+  bind_rows()
+
+df$replicate <- as.factor(df$replicate)
+
+ggplot(data = df) + 
+  geom_boxplot(aes(y = RCE_sol_obs))+ 
+  scale_y_continuous(name = expression(RCE(bc)), limits = c(13.35, 13.6) ) + #, breaks = seq(3.9, 4.0, 0.02 ), limits = c(3.91, 3.98)) + 
+  scale_x_discrete(name ="" )+
+  theme_bw(base_size = 18)
+
+
+### Commonness 
+df<- list.files(path = paste0(getwd(), "/res_dev_bc"), pattern = "*.rds", full.names = TRUE) %>%
+  map(readRDS) %>%
+  bind_rows()
+
+df$replicate <- as.factor(df$replicate)
+
+ggplot(data = df) + 
+  geom_boxplot(aes(y = RCE_sol_obs))+ 
+   scale_y_continuous(name = expression(RCE(bc_dev)), limits = c(13.35, 13.6) ) + #, breaks = seq(3.9, 4.0, 0.02 ), limits = c(3.91, 3.98)) + 
+  scale_x_discrete(name ="" )+
+  theme_bw(base_size = 18)
+```
+
+## Discussion
+For the Bangalore data, using BC optimization resulted in worse solutions, both for Bray-Curtis error and (median) commonness error (RCE). In my opinion, this was caused by differences in the solution space. Since *spectre* so far gets stuck in local minima, implementation of BC had no benefits. Anyway, if we would reconsider implementing simulated annealing, BC could potentially provide benefits. Just as a reminder, simulated annealing improved solutions by between 10-20 %, but complicated the optimization. Thus we should discuss how to proceed. 
+
+Thanks for reading! 
