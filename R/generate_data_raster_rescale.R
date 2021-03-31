@@ -4,8 +4,8 @@
 #' 
 #' @param landscape any raster, for example generated with the NLMR package
 #' @param gamma Total (estimated) species in the system.
-#' @param alpha.min Minimum nunmber of species in a cell (defined as a fraction of gamma, e.g. 0.1 represents 10% of gamma)
-#' @param alpha.max Maximum nunmber of species in a cell (defined as a fraction of gamma, e.g. 0.5 represents 50% of gamma)
+#' @param alpha.min Minimum number of species in a cell (defined as a fraction of gamma, e.g. 0.1 represents 10% of gamma)
+#' @param alpha.max Maximum number of species in a cell (defined as a fraction of gamma, e.g. 0.5 represents 50% of gamma)
 #' 
 #' @details 
 #' This function rescales any raster landscape with numerical values to the desired biodiversity indicators.
