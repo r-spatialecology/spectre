@@ -20,9 +20,9 @@ get_objective_matrix <- function(nspecies, nsites, presence_prob)
   
   m <- matrix(nrow = nsites, ncol = nspecies, data = 0)
   
-  for (row in 1:ncol(m)){
-    for (col in 1:nrow(m)){
-      if (runif(1) < presence_prob){
+  for (row in 1:ncol(m)) {
+    for (col in 1:nrow(m)) {
+      if (runif(1) < presence_prob) {
         m[col, row] <- 1
       }
     }
@@ -45,14 +45,13 @@ bioData <- cbind(bioData, obj_matrix)
 
 predData <- data.frame(site_id = 1:nsites, preds = runif(nsites))
 
-
 sitepairs <- gdm::formatsitepair(bioData = bioData, bioFormat = 1, abundance = FALSE, 
                                  siteColumn = "site_id",
-                                 XColumn="x_coords", YColumn="y_coords", 
+                                 XColumn = "x_coords", YColumn = "y_coords", 
                                  predData = predData)
 gdm_result <- gdm::gdm(sitepairs, geo = TRUE)
 
 # Re-calculate commonness from observed siteXsite Bray-Curtis values and per site richness 
 rec_commonness <- spectre:::generate_commonness_matrix_from_gdm(gdm_result$observed, alpha_list = alpha_list)
 
-testthat::expect_equal(obj_commonness, rec_commonness)
+expect_equal(obj_commonness, rec_commonness)
