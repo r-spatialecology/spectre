@@ -66,8 +66,10 @@ jobs:
 
       - name: Install dependencies
         run: |
+          install.packages("remotes")
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
+          remotes::install_github(repo = "ropensci/NLMR")
         shell: Rscript {0}
 
       - name: Check
