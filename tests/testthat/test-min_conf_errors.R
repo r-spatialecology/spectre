@@ -31,7 +31,7 @@ alpha_list_test <- testdata %>% summarise_all(sum) %>% as.numeric()
 total_gamma_test <- testdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
 target_matrix_test <- testdata %>% as.matrix() %>% calculate_solution_commonness_rcpp()
 
-testthat::expect_error(
+expect_error(
   run_optimization_min_conf(alpha_list = alpha_list_test, 
                             total_gamma = total_gamma_test, 
                             target = target_matrix_test,
@@ -41,7 +41,7 @@ testthat::expect_error(
   regexp = "The size of the partial_solution vector does not match n_sites * gamma_div. partial_solution ignored.", 
   fixed = TRUE)
 
-testthat::expect_error(
+expect_error(
   run_optimization_min_conf(alpha_list = alpha_list_test, 
                             total_gamma = total_gamma_test, 
                             target = target_matrix_test,
