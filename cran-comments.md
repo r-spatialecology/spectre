@@ -1,6 +1,7 @@
 ## Test environments
 * Local
   * macOS BigSur, R 4.0.5
+  * Windows 10 Home, R 4.0.3
 * GitHub Actions 
   * windows-latest, R: 'release'
   * macOS-latest, R: 'release'}
