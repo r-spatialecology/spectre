@@ -4,6 +4,7 @@ Title: Predict regional community composition
 Version: 0.0.0
 Authors@R: c(person("Craig", "Simpkins", email = "simpkinscraig063@gmail.com", role = c("aut", "cre")),
          person("Sebastian", "Hanss", role = c("aut")),
+         person("Maximilian", "Hesselbarth", role = c("aut")),
          person("Matthias", "Spangenberg", role = c("aut")),
          person("Jan", "Salecker", role = c("aut")))
 Description:  Predict regional community composition at a fine spatial resolution 
