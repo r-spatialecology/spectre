@@ -14,8 +14,7 @@ Imports:
     Rcpp (>= 1.0.1),
     RcppProgress, 
     raster,
-    NLMR, 
-    virtualspecies
+    NLMR
 Suggests: 
     dplyr,
     testthat,
