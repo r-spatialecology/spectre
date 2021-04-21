@@ -8,3 +8,14 @@
 \description{
 lalalalaalal
 }
+\author{
+\strong{Maintainer}: Craig Simpkins \email{simpkinscraig063@gmail.com}
+
+Authors:
+\itemize{
+  \item Sebastian Hanss
+  \item Matthias Spangenberg
+  \item Jan Salecker
+}
+
+}
