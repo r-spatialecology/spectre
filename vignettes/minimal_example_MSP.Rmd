@@ -1,9 +1,10 @@
 ---
 title: "spectre minimal example"
-output:
-  word_document: default
-  pdf_document: default
-  html_notebook: default
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{spectre minimal example}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 ## Getting started
