@@ -1,0 +1,104 @@
+---
+title: "spectre minimal example"
+output:
+  word_document: default
+  pdf_document: default
+  html_notebook: default
+---
+
+## Getting started
+
+Before we illustrate how the *objective matrix* is derived from modelled $\alpha$-diversity and Bray-Curtis dissimilarity, we do a detour first. If you already have modelled $\alpha$- and Bray-Curtis dissimilarity estimates at hand, please skip ahead. In the detour, we just use a random species composition to i) get an $\alpha$- diversity estimate and to ii) generate a Bray-Curtis dissimilarity estimate in the output format of the $gdm$-package (Fitzpatrick et al., 2020). 
+
+### Get $\alpha$-diversity and Bray-Curtis dissimilarity from a random species composition (detour)
+
+```{r, echo = TRUE, include = TRUE, message=FALSE}
+library("gdm")
+
+# create random species composition
+set.seed(42) 
+nspecies <- 20
+nsites <- 15
+presence_prob <- 0.3 # probability for each species to be present at each site
+
+get_species_list <- function(nspecies, nsites, presence_prob)
+{
+  # generate a siteXspecies list with a random set of species presences/absences
+  # fill list with random species presences
+  m <- matrix(nrow = nspecies, ncol = nsites, data = 0)
+  for (row in 1:ncol(m)){
+    for (col in 1:nrow(m)){
+      if (runif(1) < presence_prob){
+        m[col, row] <- 1
+      }
+    }
+  }
+  mode(m) <- "integer"
+  return(m)
+}
+
+# random species composition
+species_list <- get_species_list(nspecies = nspecies, nsites = nsites, 
+                                 presence_prob = presence_prob) 
+
+# calculation of Bray-Curtis dissimilarity with the gdm package: 
+# bioData is required by the gdm package, but does not affect 
+# the observed Bray-Curtis dissimilarity we will use later
+bioData <- data.frame(site_id = 1:nsites, x_coords = rep(13, nsites), 
+                      y_coords = rep(10, nsites)) 
+bioData <- cbind(bioData, t(species_list)) 
+predData <- data.frame(site_id = 1:nsites, preds = runif(nsites))
+sitepairs <- gdm::formatsitepair(bioData = bioData, bioFormat = 1, abundance = FALSE, 
+                                 siteColumn = "site_id",
+                                 XColumn="x_coords", YColumn="y_coords", 
+                                 predData = predData)
+
+gdm_result <- gdm::gdm(sitepairs, geo = TRUE) 
+```
+
+### Solve species composition using *spectre*
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+library("spectre")
+
+# Calculate objective_matrix from (modelled) alpha-diversity and Bray-Curtis dissimilarity
+alpha_list <- colSums(species_list) # alpha-diversity of random species community
+
+objective_matrix <- 
+  spectre::generate_commonness_matrix_from_gdm(gdm_predictions=gdm_result$observed, 
+                                                                  alpha_list = alpha_list)
+
+# Solve composition 
+res <- spectre::run_optimization_min_conf(alpha_list = alpha_list,
+                                          total_gamma = nspecies,
+                                          target = objective_matrix,
+                                          max_iterations = 200) # n iterations
+```
+
+\newpage
+### Result evaluation
+
+```{r, echo = TRUE, include = TRUE, massage = FALSE}
+solution_matrix <- spectre:::calculate_solution_commonness_rcpp(res$optimized_grid)
+# mean absolute commonness error
+MAE_c <- mean(abs(solution_matrix - objective_matrix), na.rm = TRUE) 
+# relative commonness error [%]
+RCE <- MAE_c / mean(abs(objective_matrix), na.rm = TRUE) * 100 
+```
+
+The objective_matrix had a mean commonness of `r round(mean(abs(objective_matrix), na.rm = TRUE), 2)`. The mean absolute error between the *objective matrix* and the solved *solution matrix* was `r round(MAE_c, 2)`. The solution matrix had an relative commonness error (RCE) of `r round(RCE, 1)`%.
+
+```{r, echo = TRUE, include = TRUE, out.width="50%"}
+# With an increasing number of iterations, the solution matrix improved
+plot(res$error[[1]] ,res$error[[2]], xlab = "Iteration", ylab = "Error")
+
+# Plot commonness error between objective matrix and solution matrix
+spectre::plot_commonness(x = res, 
+                          target = objective_matrix)
+
+```
+
+## References
+Matthew C. Fitzpatrick, Karel Mokany, Glenn Manion, Matthew Lisk, Simon Ferrier and Diego Nieto-Lugilde (2020). gdm: Generalized Dissimilarity Modeling. R package
+  version 1.4.2.
+
