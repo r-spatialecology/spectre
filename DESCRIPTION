@@ -15,13 +15,13 @@ Depends:
 Imports: 
     ggplot2,
     Rcpp (>= 1.0.1),
-    RcppProgress, 
-    raster,
-    NLMR
+    RcppProgress
 Suggests: 
     dplyr,
     testthat,
     knitr,
+    NLMR,
+    raster,
     rmarkdown,
     gdm
 LinkingTo: 

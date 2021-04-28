@@ -42,7 +42,7 @@ as given. Those species are not going to be changed during optimization.}
 \item{verbose}{If \code{TRUE} (default), a progress report is printed during
 the optimization run.}
 
-\item{interruptible}{Allow to interrupt...dough!}
+\item{interruptible}{Allow a run to be interrupted before completion.}
 }
 \value{
 A species presence/absence \code{matrix} of the study landscape.
