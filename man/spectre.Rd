@@ -14,6 +14,7 @@ lalalalaalal
 Authors:
 \itemize{
   \item Sebastian Hanss
+  \item Maximilian Hesselbarth
   \item Matthias Spangenberg
   \item Jan Salecker
 }

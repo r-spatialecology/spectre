@@ -20,7 +20,7 @@
 #'   \code{seed = NA} means that a random integer is used as seed. 
 #' @param verbose If \code{TRUE} (default), a progress report is printed during
 #'  the optimization run. 
-#' @param interruptible Allow to interrupt...dough!
+#' @param interruptible Allow a run to be interrupted before completion.
 #' 
 #' @details \code{run_optimization_min_conf} is the core function of the 
 #'  \code{spectre} package. The underlying algorithm of this function is
