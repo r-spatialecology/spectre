@@ -72,7 +72,7 @@ gdm_result <- gdm::gdm(sitepairs, geo = TRUE)
 
 Running the optimization is straightforward in `spectre` and only includes one function call.
 However, first we need to generate to commonness matrix from the `gdm` predictions to generate the object matrix. 
-Then, we simply rum the optimization using the alpha list, the $gamma$-diversity, the objective matrix (or target), and finally the number of maximum iterations
+Then, we simply run the optimization using the alpha list, the $gamma$-diversity, the objective matrix (or target), and finally the number of maximum iterations.
 
 ```{r, message = FALSE, warning = FALSE}
 library("spectre")
@@ -92,14 +92,14 @@ res <- spectre::run_optimization_min_conf(alpha_list = alpha_list,
 
 ### Result evaluation
 
-`spectre` allows to easily calculate some error measures, namely the mean absolute commonness error (MAE_c) and the relative commonness error [%] (RCE). 
+`spectre` allows to easily calculate some error measures, namely the mean absolute commonness error ($MAE_c$) and the relative commonness error [%] (RCE). 
 The error is calculated between the solved species composition and the objective matrix.
 
 ```{r, message = FALSE}
 error_c <- spectre::calc_commonness_error(x = res, objective_matrix = objective_matrix)
 ```
 
-The objective_matrix had a mean commonness of `r round(mean(abs(objective_matrix), na.rm = TRUE), 2)`. 
+The *objective matrix* had a mean commonness of `r round(mean(abs(objective_matrix), na.rm = TRUE), 2)`. 
 The mean absolute error between the *objective matrix* and the solved *solution matrix* was `r round(error_c[[1]], 2)`. 
 The solution matrix had an relative commonness error (RCE) of `r round(error_c[[2]], 1)`%.
 
