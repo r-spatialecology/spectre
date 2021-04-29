@@ -12,12 +12,11 @@
 
 #' @export
 plot_error <- function(x) {
-  error_df <- x$error
-
-  plot <- ggplot2::ggplot(data = error_df) + 
+  
+  plot <- ggplot2::ggplot(data = x$error) + 
     ggplot2::geom_line(ggplot2::aes(x = i, y = error)) + 
     ggplot2::labs(x = "Iterations", y = "Error") +
-    ggplot2::theme_bw()
+    ggplot2::theme_classic()
   
   return(plot)
 }
