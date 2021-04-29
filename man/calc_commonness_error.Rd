@@ -15,8 +15,8 @@ calc_commonness_error(x, objective_matrix)
 vector
 }
 \description{
-Calcualte commonness error
+Calculate commonness error
 }
 \details{
-Calculate mean absolute commonness error (MAE_c) and and relative commonness error \link{\%} (RCE).
+Calculate mean absolute commonness error (MAE_c) and and relative commonness error in percentage (RCE).
 }

@@ -1,12 +1,12 @@
 #' @title calc_commonness_error
 #' 
-#' @description Calcualte commonness error
+#' @description Calculate commonness error
 #' 
 #' @param x Results object from run_optimization_min_conf.
 #' @param objective_matrix Matrix from (modelled) alpha-diversity and Bray-Curtis dissimilarity
 #' 
 #' @details 
-#' Calculate mean absolute commonness error (MAE_c) and and relative commonness error [%] (RCE).
+#' Calculate mean absolute commonness error (MAE_c) and and relative commonness error in percentage (RCE).
 #' 
 #' @return vector
 #' 
