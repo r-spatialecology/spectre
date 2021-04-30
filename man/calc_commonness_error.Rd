@@ -9,7 +9,7 @@ calc_commonness_error(x, objective_matrix)
 \arguments{
 \item{x}{Results object from run_optimization_min_conf.}
 
-\item{objective_matrix}{Matrix from (modelled) alpha-diversity and Bray-Curtis dissimilarity}
+\item{objective_matrix}{Matrix from (modeled) alpha-diversity and Bray-Curtis dissimilarity}
 }
 \value{
 vector
@@ -18,5 +18,5 @@ vector
 Calculate commonness error
 }
 \details{
-Calculate mean absolute commonness error (MAE_c) and and relative commonness error in percentage (RCE).
+Calculate mean absolute commonness error (MAE_c) and relative commonness error in percentage (RCE).
 }
