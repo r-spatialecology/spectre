@@ -20,8 +20,6 @@ Suggests:
     dplyr,
     testthat,
     knitr,
-    NLMR,
-    raster,
     rmarkdown,
     gdm
 LinkingTo: 

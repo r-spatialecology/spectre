@@ -11,6 +11,21 @@ editor_options:
 
 ## Getting started
 
+### Installation
+Install the release version from CRAN:
+
+```{r, message = FALSE}
+# install.packages("spectre")
+```
+
+To install the developmental version of `spectre`, use:
+```{r, message = FALSE}
+# install.packages("devtools")
+# devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
+```
+
+## Example
+
 Before we illustrate how the *objective matrix* is derived from modelled $\alpha$-diversity and Bray-Curtis dissimilarity, we do a detour first. 
 If you already have modelled $\alpha$- and Bray-Curtis dissimilarity estimates at hand, please skip ahead. 
 In the detour, we just use a random species composition to i) get an $\alpha$- diversity estimate and to ii) generate a Bray-Curtis dissimilarity estimate in the output format of the `gdm` package (Fitzpatrick et al., 2020). 
