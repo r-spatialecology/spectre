@@ -7,7 +7,8 @@ Authors@R: c(person("Craig", "Simpkins", email = "simpkinscraig063@gmail.com", r
          person("Maximilian", "Hesselbarth", role = c("aut")),
          person("Matthias", "Spangenberg", role = c("aut")),
          person("Jan", "Salecker", role = c("aut")))
-Description:  Predict regional community composition at a fine spatial resolution 
+Maintainer: Craig Simpkins <simpkinscraig063@gmail.com>
+Description: Predict regional community composition at a fine spatial resolution 
     using only sparse biological and environmental data.
 License: GPL-3
 Depends: 
