@@ -3,6 +3,8 @@
 
 # spectre
 
+<img src="man/figures/logo.png" align="right" width="150" />
+
 <!-- badges: start -->
 
 [![Project
@@ -15,20 +17,32 @@ v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/li
 
 <!-- badges: end -->
 
-The goal of spectre is to …
+The goal of `spectre` is to provide an open source tool capable of
+predicting regional community composition at fine spatial resolutions
+using only sparse biological and environmental data.
 
 ## Installation
 
-You can install the released version of spectre from
-[CRAN](https://CRAN.R-project.org) with:
+Install the release version from CRAN:
 
 ``` r
-install.packages("spectre")
+# install.packages("spectre") #Uncomment when package is on CRAN
 ```
 
-And the development version from [GitHub](https://github.com/) with:
+To install the developmental version of `spectre`, use:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("r-spatialecology/spectre")
+# devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
 ```
+
+## Example
+
+TODO after discussion
+
+## Meta
+
+-   Please [report any issues or
+    bugs](https://github.com/r-spatialecology/spectre/issues/new).
+-   Get citation information for `NLMR` in R doing
+    `citation(package = 'NLMR')`
