@@ -4,7 +4,7 @@
   * Windows 10 Home, R 4.0.3
 * GitHub Actions 
   * windows-latest, R: 'release'
-  * macOS-latest, R: 'release'}
+  * macOS-latest, R: 'release'
   * ubuntu-20.04, R: 'release'
 * win-builder (release, devel)
 
