@@ -29,7 +29,7 @@ fixed_species <- data.frame("1" = c(0,0,0,0,0,0),
 
 alpha_list_test <- testdata %>% summarise_all(sum) %>% as.numeric()
 total_gamma_test <- testdata %>% filter_all(any_vars(sum(.) != 0)) %>% nrow()
-target_matrix_test <- testdata %>% as.matrix() %>% calculate_solution_commonness_rcpp()
+target_matrix_test <- testdata %>% as.matrix() %>% spectre:::calculate_solution_commonness_rcpp()
 
 expect_error(
   run_optimization_min_conf(alpha_list = alpha_list_test, 
@@ -51,3 +51,4 @@ expect_error(
                             verbose = FALSE),
   "The size of the fixed_species vector does not match n_sites * gamma_div. fixed_species ignored.", 
   fixed = TRUE)
+
