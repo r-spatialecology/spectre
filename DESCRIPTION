@@ -1,6 +1,6 @@
 Package: spectre
 Type: Package
-Title: Predict regional community composition 
+Title: Predict Regional Community Composition 
 Version: 1.0
 Authors@R: c(person("Craig", "Simpkins", email = "simpkinscraig063@gmail.com", role = c("aut", "cre")),
          person("Sebastian", "Hanss", role = c("aut")),
