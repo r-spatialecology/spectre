@@ -3,10 +3,12 @@
 on:
   push:
     branches:
+      - CRAN
       - main
       - dev
   pull_request:
     branches:
+      - CRAN
       - main
       - dev
 

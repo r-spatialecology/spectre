@@ -6,12 +6,16 @@ name: Doxygen Action
 on:
   push:
     branches:
+      - CRAN
       - main
+      - dev
     paths:
       - 'src/**'
   pull_request:
     branches: 
+      - CRAN
       - main
+      - dev
     paths:
       - 'src/**'
   workflow_dispatch:

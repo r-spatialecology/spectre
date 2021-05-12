@@ -2,6 +2,7 @@ name: benchmark
 on:
   push:
     branches:
+      - CRAN
       - main
       - dev
     paths:
@@ -9,6 +10,7 @@ on:
       - 'tests/benchmark/**'
   pull_request:
     branches: 
+      - CRAN
       - main
       - dev
     paths:
