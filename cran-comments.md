@@ -2,6 +2,7 @@
 * Local
   * macOS BigSur, R 4.0.5
   * Windows 10 Home, R 4.0.3
+  * Ubuntu 20.04 LTS, R 4.0.5
 * GitHub Actions 
   * windows-latest, R: 'release'
   * macOS-latest, R: 'release'
