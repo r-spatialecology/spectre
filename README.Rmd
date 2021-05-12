@@ -22,10 +22,15 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Lifecycle: maturing](https://img.shields.io/badge/lifecycle-maturing-blue.svg)](https://www.tidyverse.org/lifecycle/#maturing)
-![R-CMD-check](https://github.com/r-spatialecology/spectre/workflows/R-CMD-check/badge.svg)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) 
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
+![R-CMD-check](https://github.com/r-spatialecology/spectre/workflows/R-CMD-check/badge.svg)
+[![codecov](https://codecov.io/gh/r-spatialecology/spectre/branch/main/graph/badge.svg?token=6xoTj9a1ci)](https://codecov.io/gh/r-spatialecology/spectre)
+
+<!-- [![CRAN status](https://www.r-pkg.org/badges/version/spectre)](https://CRAN.R-project.org/package=spectre) -->
+<!-- [![CRAN logs](http://cranlogs.r-pkg.org/badges/grand-total/spectre)](http://cran.rstudio.com/web/packages/spectre/index.html) -->
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0) 
 <!-- badges: end -->
 
 The goal of `spectre` is to provide an open source tool capable of predicting regional community composition at fine spatial resolutions using only sparse biological and environmental data. 
