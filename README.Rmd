@@ -39,14 +39,14 @@ The goal of `spectre` is to provide an open source tool capable of predicting re
 
 Install the release version from CRAN:
 
-```{r, message = FALSE}
-# install.packages("spectre") #Uncomment when package is on CRAN
+```{r, eval=FALSE}
+install.packages("spectre") #Uncomment when package is on CRAN
 ```
 
 To install the developmental version of `spectre`, use:
-```{r, message = FALSE}
-# install.packages("devtools")
-# devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
+```{r, eval=FALSE}
+install.packages("remotes")
+remotes::install_github("r-spatialecology/spectre")
 ```
 
 ## Example
