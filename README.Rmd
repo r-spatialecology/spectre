@@ -53,7 +53,7 @@ remotes::install_github("r-spatialecology/spectre")
 
 ## Example
 
-TODO after discussion
+TODO after discussion...
 
 ## Meta
 - Please [report any issues or bugs](https://github.com/r-spatialecology/spectre/issues/new).
