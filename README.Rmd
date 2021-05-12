@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
 
 ![R-CMD-check](https://github.com/r-spatialecology/spectre/workflows/R-CMD-check/badge.svg)
-[![codecov](https://codecov.io/gh/r-spatialecology/spectre/branch/main/graph/badge.svg?token=6xoTj9a1ci)](https://codecov.io/gh/r-spatialecology/spectre)
+[![Codecov](https://codecov.io/gh/r-spatialecology/spectre/branch/main/graph/badge.svg)](https://codecov.io/gh/r-spatialecology/spectre?branch=main)
 
 <!-- [![CRAN status](https://www.r-pkg.org/badges/version/spectre)](https://CRAN.R-project.org/package=spectre) -->
 <!-- [![CRAN logs](http://cranlogs.r-pkg.org/badges/grand-total/spectre)](http://cran.rstudio.com/web/packages/spectre/index.html) -->
