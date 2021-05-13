@@ -51,9 +51,7 @@ install.packages("remotes")
 remotes::install_github("r-spatialecology/spectre")
 ```
 
-## Example
-
-TODO after discussion...
+A full use case example is included in the "Getting started with spectre" vignette associated with the package.
 
 ## Meta
 - Please [report any issues or bugs](https://github.com/r-spatialecology/spectre/issues/new).
