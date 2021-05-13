@@ -1,15 +1,14 @@
 #' @title plot_commonness
 #' 
-#' @description Plot commonness
+#' @description Plot commonness between observed and optimized data
 #' 
 #' @param x Results object of run_optimization_min_conf()
 #' @param target Pairwise matrix of species in common.
 #' 
 #' @details 
-#' Plot a heatmap of commonness between observed data and optimized data.
+#' Plot a heatmap of commonness between observed data and optimized data. This visual style allows for easier spatial understanding of commonness differences to be ascertained.
 #' 
 #' @return ggplot
-#' @references xxx
 
 #' @export
 plot_commonness <- function(x, target) {
