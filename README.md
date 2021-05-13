@@ -1,7 +1,7 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# spectre
+spectre
+=======
 
 <img src="man/figures/spectre.png" align="right" width="150" />
 
@@ -26,32 +26,31 @@ The goal of `spectre` is to provide an open source tool capable of
 predicting regional community composition at fine spatial resolutions
 using only sparse biological and environmental data.
 
-## Installation
+Installation
+------------
 
 Install the release version from CRAN:
 
-``` r
-install.packages("spectre") #Uncomment when package is on CRAN
-```
+    install.packages("spectre") #Uncomment when package is on CRAN
 
 To install the developmental version of `spectre`, use:
 
-``` r
-install.packages("remotes")
-remotes::install_github("r-spatialecology/spectre")
-```
+    install.packages("remotes")
+    remotes::install_github("r-spatialecology/spectre")
 
 A full use case example is included in the “Getting started with
 spectre” vignette associated with the package.
 
-## Meta
+Meta
+----
 
 -   Please [report any issues or
     bugs](https://github.com/r-spatialecology/spectre/issues/new).
 -   Get citation information for `NLMR` in R doing
     `citation(package = 'NLMR')`
 
-## Code of Conduct
+Code of Conduct
+---------------
 
 Please note that the spectre project is released with a [Contributor
 Code of
