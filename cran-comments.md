@@ -1,4 +1,7 @@
-# spectre v1.0
+# spectre v1.0.0
+
+## Resubmission
+This is a resubmission. Below is a list of changes made to address each comment:
 
 Found the following (possibly) invalid URLs: URL: https://www.tidyverse.org/lifecycle/#stable (moved to https://lifecycle.r-lib.org/articles/stages.html)
 From: README.md
