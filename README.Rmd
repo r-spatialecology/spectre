@@ -42,7 +42,7 @@ The goal of `spectre` is to provide an open source tool capable of predicting re
 Install the release version from CRAN:
 
 ```{r, eval=FALSE}
-install.packages("spectre") #Uncomment when package is on CRAN
+install.packages("spectre")
 ```
 
 To install the developmental version of `spectre`, use:
