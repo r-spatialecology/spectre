@@ -31,7 +31,7 @@ Installation
 
 Install the release version from CRAN:
 
-    install.packages("spectre") #Uncomment when package is on CRAN
+    install.packages("spectre")
 
 To install the developmental version of `spectre`, use:
 
