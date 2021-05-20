@@ -1,6 +1,6 @@
 ---
 title: "Getting started with `spectre`"
-author: "C.E. Simpkins"
+author: "C.E. Simpkins, S. Hanss, M. Hesselbarth, M. Spangenberg and J. Salecker"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 bibliography: bibliography.bib

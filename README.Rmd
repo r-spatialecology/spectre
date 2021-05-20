@@ -1,5 +1,7 @@
 ---
-output: github_document
+output: 
+    github_document:
+      html_preview: false
 editor_options: 
   chunk_output_type: console
 ---
@@ -22,7 +24,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 
 [![Project Status](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
-[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://www.tidyverse.org/lifecycle/#stable)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 
 ![R-CMD-check](https://github.com/r-spatialecology/spectre/workflows/R-CMD-check/badge.svg)
 [![Codecov](https://codecov.io/gh/r-spatialecology/spectre/branch/main/graph/badge.svg)](https://codecov.io/gh/r-spatialecology/spectre?branch=main)
@@ -39,19 +41,17 @@ The goal of `spectre` is to provide an open source tool capable of predicting re
 
 Install the release version from CRAN:
 
-```{r, message = FALSE}
-# install.packages("spectre") #Uncomment when package is on CRAN
+```{r, eval=FALSE}
+install.packages("spectre")
 ```
 
 To install the developmental version of `spectre`, use:
-```{r, message = FALSE}
-# install.packages("devtools")
-# devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
+```{r, eval=FALSE}
+install.packages("remotes")
+remotes::install_github("r-spatialecology/spectre")
 ```
 
-## Example
-
-TODO after discussion
+A full use case example is included in the "Getting started with spectre" vignette associated with the package.
 
 ## Meta
 - Please [report any issues or bugs](https://github.com/r-spatialecology/spectre/issues/new).

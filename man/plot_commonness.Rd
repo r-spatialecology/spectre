@@ -15,11 +15,8 @@ plot_commonness(x, target)
 ggplot
 }
 \description{
-Plot commonness
+Plot commonness between observed and optimized data
 }
 \details{
-Plot a heatmap of commonness between observed data and optimized data.
-}
-\references{
-xxx
+Plot a heatmap of commonness between observed data and optimized data. This visual style allows for easier spatial understanding of commonness differences to be ascertained.
 }
