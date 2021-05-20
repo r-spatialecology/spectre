@@ -6,7 +6,7 @@
 \alias{spectre-package}
 \title{spectre}
 \description{
-lalalalaalal
+The goal of \code{spectre} is to provide an open source tool capable of predicting regional community composition at fine spatial resolutions using only sparse biological and environmental data.
 }
 \author{
 \strong{Maintainer}: Craig Simpkins \email{simpkinscraig063@gmail.com}

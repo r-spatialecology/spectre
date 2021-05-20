@@ -24,3 +24,11 @@ test_that("plot_error returns ggplot", {
 
   expect_is(object = plot_e, class = "ggplot")
 })
+
+test_that("plot_commonness returns ggplot", {
+  
+  plot_c <- plot_commonness(x = res_sim, target = target_matrix_test)
+  
+  expect_is(object = plot_c, class = "ggplot")
+})
+

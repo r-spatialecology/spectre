@@ -3,7 +3,7 @@
 spectre
 =======
 
-<img src="man/figures/logo.png" align="right" width="150" />
+<img src="man/figures/spectre.png" align="right" width="150" />
 
 <!-- badges: start -->
 
@@ -38,10 +38,8 @@ To install the developmental version of `spectre`, use:
     install.packages("remotes")
     remotes::install_github("r-spatialecology/spectre")
 
-Example
--------
-
-TODO after discussion…
+A full use case example is included in the “Getting started with
+spectre” vignette associated with the package.
 
 Meta
 ----
