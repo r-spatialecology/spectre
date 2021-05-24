@@ -9,7 +9,7 @@
 ^\.github$
 ^data-raw$
 ^\.Rproj\.user$
-
 ^Doxyfile$
 ^cran-comments\.md$
 ^CODE_OF_CONDUCT\.md$
+^CRAN-RELEASE$
