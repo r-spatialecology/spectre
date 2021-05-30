@@ -48,8 +48,8 @@ Meta
 
 -   Please [report any issues or
     bugs](https://github.com/r-spatialecology/spectre/issues/new).
--   Get citation information for `NLMR` in R doing
-    `citation(package = 'NLMR')`
+-   Get citation information for `spectre` in R doing
+    `citation(package = 'spectre')`
 
 Code of Conduct
 ---------------
