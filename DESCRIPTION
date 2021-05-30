@@ -21,7 +21,7 @@ Imports:
     RcppProgress
 Suggests: 
     dplyr,
-    testthat,
+    testthat (>= 3.0.2),
     knitr,
     rmarkdown,
     gdm,
