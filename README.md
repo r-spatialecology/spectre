@@ -15,8 +15,10 @@ stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://
 ![R-CMD-check](https://github.com/r-spatialecology/spectre/workflows/R-CMD-check/badge.svg)
 [![Codecov](https://codecov.io/gh/r-spatialecology/spectre/branch/main/graph/badge.svg)](https://codecov.io/gh/r-spatialecology/spectre?branch=main)
 
-<!-- [![CRAN status](https://www.r-pkg.org/badges/version/spectre)](https://CRAN.R-project.org/package=spectre) -->
-<!-- [![CRAN logs](http://cranlogs.r-pkg.org/badges/grand-total/spectre)](http://cran.rstudio.com/web/packages/spectre/index.html) -->
+[![CRAN
+status](https://www.r-pkg.org/badges/version/spectre)](https://CRAN.R-project.org/package=spectre)
+[![CRAN
+logs](http://cranlogs.r-pkg.org/badges/grand-total/spectre)](http://cran.rstudio.com/web/packages/spectre/index.html)
 
 [![License: GPL
 v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)

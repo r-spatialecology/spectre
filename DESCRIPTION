@@ -17,15 +17,15 @@ Depends:
     R (>= 3.5)
 Imports: 
     ggplot2,
-    Rcpp (>= 1.0.1),
-    RcppProgress
+    Rcpp (>= 1.0.1)
 Suggests: 
     dplyr,
     testthat (>= 3.0.2),
     knitr,
     rmarkdown,
     gdm,
-    covr
+    covr,
+    RcppProgress
 LinkingTo: 
     Rcpp,
     RcppProgress,
