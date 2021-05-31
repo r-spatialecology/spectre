@@ -1,3 +1,24 @@
+# spectre 1.0.1 
+
+## Resubmission
+This is a resubmission. Below is a list of changes made to address each comment:
+
+Found the following (possibly) invalid URLs:
+URL: http://cran.rstudio.com/web/packages/spectre/index.html (moved to https://cran.rstudio.com/web/packages/spectre/index.html)
+From: README.md
+Status: 200
+Message: OK
+CRAN URL not in canonical form
+
+Canonical: https://CRAN.R-project.org/package=spectre
+
+Please fix and resubmit.
+
+
+* The link was updated
+
+---
+
 Update Version: 1.0.1
 
 Update addresses 2 notes and 1 error discovered by CRAN package check run 2021-05-30 23:49:52 CEST. Solutions to points brought up are listed below:
