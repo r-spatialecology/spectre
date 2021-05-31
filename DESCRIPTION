@@ -1,7 +1,7 @@
 Package: spectre
 Type: Package
 Title: Predict Regional Community Composition 
-Version: 1.0.0
+Version: 1.0.1
 Authors@R: c(person("Craig", "Simpkins", email = "simpkinscraig063@gmail.com", role = c("aut", "cre")),
          person("Sebastian", "Hanss", role = c("aut")),
          person("Maximilian", "Hesselbarth", role = c("aut")),
@@ -20,7 +20,7 @@ Imports:
     Rcpp (>= 1.0.1)
 Suggests: 
     dplyr,
-    testthat,
+    testthat (>= 3.0.2),
     knitr,
     rmarkdown,
     gdm,
