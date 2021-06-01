@@ -1,6 +1,25 @@
 # spectre 1.0.1 
 
 ## Resubmission
+This is a second resubmission. Below is a list of changes made to address each comment:
+
+   Found the following (possibly) invalid URLs:
+     URL: https://cran.rstudio.com/web/packages/spectre/index.html
+       From: README.md
+       Status: 200
+       Message: OK
+       CRAN URL not in canonical form
+
+Please fix and resubmit.
+
+
+* The link was updated, to the https canonical form 
+
+---
+
+# spectre 1.0.1 
+
+## Resubmission
 This is a resubmission. Below is a list of changes made to address each comment:
 
 Found the following (possibly) invalid URLs:
