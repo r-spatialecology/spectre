@@ -2,6 +2,8 @@
 #ifndef __sun // exclude solaris (https://github.com/r-lib/testthat/issues/1257)
 #include "test-minconf.h"
 
+const int TestMinConf::NA; //Definition
+
 void TestMinConf::test_add_species_min_conf(
     unsigned site, const std::vector<std::vector<int>> &target) {
   this->target = target;
