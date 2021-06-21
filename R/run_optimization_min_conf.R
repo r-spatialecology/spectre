@@ -8,7 +8,7 @@
 #' @param total_gamma Total number of species present throughout the entire
 #'  landscape.
 #' @param target Pairwise matrix of species in common between each site by site 
-#'  pair.
+#'  pair. Only the upper triangle of the matrix is actually needed.
 #' @param fixed_species Fixed partial solution with species that are considered 
 #'  as given. Those species are not going to be changed during optimization.
 #' @param partial_solution An initial \code{matrix} of species presences and 
