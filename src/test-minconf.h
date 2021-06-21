@@ -17,6 +17,8 @@ public:
   double test_calc_error(const std::vector<std::vector<int>> &commonness,
                          const std::vector<std::vector<int>> &target);
   std::vector<std::vector<int>> getTarget() const;
+  void setTarget(const std::vector<std::vector<int>> new_target);
+  void setCommonness(const std::vector<std::vector<int>> new_commonness);
   std::vector<unsigned> test_calc_missing_species();
   static const int NA = -2147483648; // Rcpp NA_INTEGER == R_NaInt
 };
