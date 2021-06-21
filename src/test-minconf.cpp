@@ -59,6 +59,25 @@ context("MinConf does not skrew up the target") {
   expect_true(calc_target == expected_target);
 }
 
+context("MinConf does use the upper triangle of the target matrix, only") {
+  std::random_device rd;
+  long long seed = 0;
+  std::vector<unsigned> alpha_list = {14, 12, 8};
+  unsigned gamma = 30;
+
+  std::vector<int> target = {0, 0, 0, 5, 0, 0, 3, 4, 0};
+
+  std::vector<std::vector<int>> expected_target = {
+      {TestMinConf::NA, 5, 3},
+      {TestMinConf::NA, TestMinConf::NA, 4},
+      {TestMinConf::NA, TestMinConf::NA, TestMinConf::NA}};
+
+  TestMinConf min_conf(alpha_list, gamma, target, std::vector<int>(),
+                       std::vector<int>(), seed);
+  auto calc_target = min_conf.getTarget();
+  expect_true(calc_target == expected_target);
+}
+
 context("Tests for the MinConf class") {
   std::random_device rd;
   long long seed = rd();
