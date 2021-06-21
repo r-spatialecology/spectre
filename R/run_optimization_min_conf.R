@@ -68,8 +68,7 @@ run_optimization_min_conf <- function(alpha_list,
   }
   
   # we need the upper triangle of the target matrix, only
-  target[lower.tri(target, diag = TRUE)] <- NA
-  
+  # the lower triangle including the diagonal is set NA in the optimizer.
   result = optimizer_min_conf(alpha_list = alpha_list, 
                               total_gamma = total_gamma, 
                               target = target, 
