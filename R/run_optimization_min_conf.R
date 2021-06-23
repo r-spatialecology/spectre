@@ -64,7 +64,7 @@ run_optimization_min_conf <- function(alpha_list,
   }
   
   if (is.na(seed)) {
-    seed <- Sys.getpid() # sample(0:.Machine$integer.max, 1)
+    seed <- sample.int(.Machine$integer.max, 1)
   }
   
   # we need the upper triangle of the target matrix, only
