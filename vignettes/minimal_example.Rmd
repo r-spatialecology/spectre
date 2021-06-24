@@ -102,7 +102,8 @@ objective_matrix <- spectre::generate_commonness_matrix_from_gdm(gdm_predictions
 res <- spectre::run_optimization_min_conf(alpha_list = alpha_list,
                                           total_gamma = nspecies,
                                           target = objective_matrix,
-                                          max_iterations = 1000) # n iterations
+                                          max_iterations = 1000, # n iterations
+                                          seed = 123) # use a random seed for reproducibility
 ```
 
 ### Result evaluation
@@ -116,13 +117,13 @@ error_c <- spectre::calc_commonness_error(x = res, objective_matrix = objective_
 
 The *objective matrix* had a mean commonness of `r round(mean(abs(objective_matrix), na.rm = TRUE), 2)`. 
 The mean absolute error between the *objective matrix* and the solved *solution matrix* was `r round(error_c[[1]], 2)`. 
-The solution matrix had an relative commonness error (RCE) of `r round(error_c[[2]], 1)`%.
+The solution matrix had an relative commonness error (RCE) of `r round(error_c[[2]], 1)` %.
 
 There are also two functions to visualize the optimization. 
 First you can plot the error of the solution matrix over time. 
 Second, you can plot the commonness error between the solution matrix and the objective matrix.
 
-```{r, echo = TRUE, include = TRUE, out.width="50%"}
+```{r, echo = TRUE, include = TRUE, out.width="50%", fig.align="center"}
 # With an increasing number of iterations, the solution matrix improved
 spectre::plot_error(x = res)
 
