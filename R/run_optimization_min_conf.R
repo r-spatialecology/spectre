@@ -8,7 +8,7 @@
 #' @param total_gamma Total number of species present throughout the entire
 #'  landscape.
 #' @param target Pairwise matrix of species in common between each site by site 
-#'  pair.
+#'  pair. Only the upper triangle of the matrix is actually needed.
 #' @param fixed_species Fixed partial solution with species that are considered 
 #'  as given. Those species are not going to be changed during optimization.
 #' @param partial_solution An initial \code{matrix} of species presences and 
@@ -64,12 +64,11 @@ run_optimization_min_conf <- function(alpha_list,
   }
   
   if (is.na(seed)) {
-    seed <- Sys.getpid() # sample(0:.Machine$integer.max, 1)
+    seed <- sample.int(.Machine$integer.max, 1)
   }
   
   # we need the upper triangle of the target matrix, only
-  target[lower.tri(target, diag = TRUE)] <- NA
-  
+  # the lower triangle including the diagonal is set NA in the optimizer.
   result = optimizer_min_conf(alpha_list = alpha_list, 
                               total_gamma = total_gamma, 
                               target = target, 

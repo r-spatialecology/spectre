@@ -24,7 +24,7 @@ each cell.}
 landscape.}
 
 \item{target}{Pairwise matrix of species in common between each site by site
-pair.}
+pair. Only the upper triangle of the matrix is actually needed.}
 
 \item{max_iterations}{The maximum number of iterations that the optimization
 algorithm may run through before stopping.}
