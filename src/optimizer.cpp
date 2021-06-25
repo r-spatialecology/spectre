@@ -68,7 +68,7 @@ calculate_solution_commonness_rcpp(const IntegerMatrix solution_matrix) {
   std::fill(result.begin(), result.end(), NA_INTEGER);
 
   for (unsigned site = 0; site < n_sites; site++) {
-    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+    for (unsigned other_site = site + 1; other_site < n_sites; other_site++) {
       result(site, other_site) = mc.commonness[site][other_site];
     }
   }

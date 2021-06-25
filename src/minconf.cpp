@@ -319,7 +319,7 @@ void MinConf::update_solution_commonness() {
 unsigned MinConf::calc_error() {
   unsigned sum_diff = 0;
   for (unsigned site = 0; site < n_sites; site++) {
-    for (unsigned other_site = 0; other_site < n_sites; other_site++) {
+    for (unsigned other_site = site + 1; other_site < n_sites; other_site++) {
       if (target[site][other_site] == NA) {
         continue;
       }
