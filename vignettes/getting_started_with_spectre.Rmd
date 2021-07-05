@@ -1,6 +1,6 @@
 ---
 title: "Getting started with `spectre`"
-author: "C.E. Simpkins, S. Hanss, M. Hesselbarth, M. Spangenberg and J. Salecker"
+author: "C.E. Simpkins, S. Hanss, M. Hesselbarth, M.C. Spangenberg, J. Salecker and K. Wiegand"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 bibliography: bibliography.bib
@@ -130,13 +130,14 @@ The solution matrix had an relative commonness error (RCE) of `r round(error_c[[
 
 These results can be visualized in two ways using functions built into the package. First, one can plot the error of the solved *solution matrix* over time. Second, the commonness error between the final solved *solution matrix* and the *objective function* for each patch can be plotted
 
-```{r, echo = TRUE, include = TRUE, out.width="50%", fig.align="cente"}
+```{r, echo = TRUE, include = TRUE, out.width="50%", fig.align = "center"}
 # With an increasing number of iterations, the solution matrix improved
 spectre::plot_error(x = res)
 
 # Plot commonness error between objective function and solution matrix
 spectre::plot_commonness(x = res, target = objective_matrix)
 ```
+
 ---
 
 # References
