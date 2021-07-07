@@ -30,7 +30,7 @@ For this example, we created a random species composition (15 sites, gamma diver
 
 ```{r, echo = TRUE}
 # load "observed" alpha-, beta- and gamma-diversity values of the random species composition
-d <- readRDS("../data/minimal_example_data.rds")
+d <-spectre:::minimal_example_data
 alpha_list <- d$alpha_list # richness
 beta_list <- d$beta_list # Bray-Curtis dissimilarity
 total_gamma <- dim(d$species_list)[1] # 20 species

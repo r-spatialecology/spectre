@@ -50,7 +50,6 @@ sitepairs <- gdm::formatsitepair(bioData = bioData, bioFormat = 1, abundance = F
 alpha_div <- colSums(species_list) 
 gdm_result <- gdm::gdm(sitepairs, geo = TRUE) 
 
-res <- list(species_list = species_list, alpha_list = alpha_div, beta_list = gdm_result$observed)
+minimal_example_data <- list(species_list = species_list, alpha_list = alpha_div, beta_list = gdm_result$observed)
 
-saveRDS(res, "./data/minimal_example_data.rds")
-
+usethis::use_data(minimal_example_data, internal = TRUE)

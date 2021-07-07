@@ -9,7 +9,7 @@
 # (please see `R/generate_minimal_example_data.R` for details). 
 
 # load random species composition data
-d <- readRDS("../data/minimal_example_data.rds")
+d <-spectre:::minimal_example_data
 
 # calculate commonness matrix directly from the random species list
 obj_commonness <- spectre:::calculate_solution_commonness_rcpp( d$species_list )
