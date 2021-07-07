@@ -11,7 +11,6 @@ vignette: >
 ---
 
 ```{r global_options, include=FALSE}
-library(gdm)
 library(spectre)
 ```
 
@@ -40,57 +39,18 @@ To install the developmental version of `spectre`, use:
 This example acts as a minimal working case and uses simple "simulated" data matching the structure of that needed by the relevant functions. This simple example is used to minimize the time and data storage requirements needed to run this vignette.
 
 ### Generating input data
-The first step in using the `spectre` package is to gather a estimates for $\alpha$-biodiversity and $\beta$-biodiversity (in the form of Bray-Curtis dissimilarity) for the area of interest at the desired outcome resolution. 
-In this example we use a random species composition to i) get an $\alpha$-diversity estimate and ii) to generate a Bray-Curtis dissimilarity estimate in the output format of the `gdm` package [@Fitzpatrick2021]
+The first step in using the `spectre` package is to gather estimates for $\alpha$-biodiversity and $\beta$-biodiversity (in the form of Bray-Curtis dissimilarity) for the area of interest at the desired outcome resolution. 
 
-```{r, message = FALSE}
-# create random species composition
-set.seed(42) 
+For this example, we created a random species composition (15 sites, gamma diversity = 20) and calculated 1. an $\alpha$-diversity estimate and 2. a Bray-Curtis dissimilarity estimate in the output format of the `gdm` package [@Fitzpatrick2021]. Both are used as input for the `spectre` algorithm, please see `R/generate_minimal_example_data.R` for details. 
 
-nspecies <- 20
-nsites <- 15
-presence_prob <- 0.3 # probability for each species to be present at each site
-
-get_species_list <- function(nspecies, nsites, presence_prob)
-{
-  # generate a siteXspecies list with a random set of species presences/absences
-  # fill list with random species presences
-  m <- matrix(nrow = nspecies, ncol = nsites, data = 0)
-  
-  for (row in 1:ncol(m)) {
-    for (col in 1:nrow(m)) {
-      if (runif(1) < presence_prob) {
-        m[col, row] <- 1
-      }
-    }
-  }
-  
-  mode(m) <- "integer"
-  
-  return(m)
-}
-
-# random species composition
-species_list <- get_species_list(nspecies = nspecies, nsites = nsites, 
-                                 presence_prob = presence_prob) 
-
-# calculation of Bray-Curtis dissimilarity with the gdm package: 
-# bioData is required by the gdm package, but does not affect 
-# the observed Bray-Curtis dissimilarity we will use later
-bioData <- data.frame(site_id = 1:nsites, x_coords = rep(13, nsites), 
-                      y_coords = rep(10, nsites)) 
-
-bioData <- cbind(bioData, t(species_list)) 
-
-predData <- data.frame(site_id = 1:nsites, preds = runif(nsites))
-
-sitepairs <- gdm::formatsitepair(bioData = bioData, bioFormat = 1, abundance = FALSE, 
-                                 siteColumn = "site_id",
-                                 XColumn = "x_coords", YColumn = "y_coords", 
-                                 predData = predData)
-
-gdm_result <- gdm::gdm(sitepairs, geo = TRUE) 
+```{r, echo = TRUE}
+# load "observed" alpha-, beta- and gamma-diversity values of the random species composition
+d <- readRDS("../data/minimal_example_data.rds")
+alpha_list <- d$alpha_list # richness
+beta_list <- d$beta_list # Bray-Curtis dissimilarity
+total_gamma <- dim(d$species_list)[1] # 20 species
 ```
+
 
 ### Running the optimization
 
@@ -99,10 +59,9 @@ This commonness matrix acts as the objective function (i.e. target) for the opti
 
 ```{r, message = FALSE, warning = FALSE}
 # Calculate objective_matrix from (modelled) alpha-diversity and Bray-Curtis dissimilarity
-alpha_list <- colSums(species_list) # alpha-diversity of random species community
 
 objective_matrix <- spectre::generate_commonness_matrix_from_gdm(
-  gdm_predictions = gdm_result$observed, 
+  gdm_predictions = beta_list, 
   alpha_list = alpha_list)
 ```
 
@@ -112,7 +71,7 @@ Note though that the run time for this function may be high especially for large
 ```{r, message=FALSE, warning=FALSE}
 res <- spectre::run_optimization_min_conf(
   alpha_list = alpha_list,
-  total_gamma = nspecies,
+  total_gamma = total_gamma,
   target = objective_matrix,
   max_iterations = 1000) # n iterations
 ```
