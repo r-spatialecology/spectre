@@ -52,4 +52,4 @@ gdm_result <- gdm::gdm(sitepairs, geo = TRUE)
 
 minimal_example_data <- list(species_list = species_list, alpha_list = alpha_div, beta_list = gdm_result$observed)
 
-usethis::use_data(minimal_example_data, internal = TRUE)
+usethis::use_data(minimal_example_data)

@@ -10,10 +10,6 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r global_options, include=FALSE}
-library(spectre)
-```
-
 `spectre` is an `R` package which easily implements an advanced optimization algorithm capable of predicting regional community composition at fine spatial resolutions using only sparse biological and environmental data. 
 The algorithm underlying `spectre` utilizes estimates of $\alpha$-diversity (i.e. species richness) and $\beta$-diversity (i.e. species dissimilarity) to come up with community composition estimates for all patches within a target region. 
 The method used in `spectre` is an adapted version of that presented by Mokany et al. [-@Mokany2011].  
@@ -23,17 +19,21 @@ The method used in `spectre` is an adapted version of that presented by Mokany e
 # Installation
 Install the release version from CRAN:
 
-```{r, message = FALSE}
-# install.packages("spectre") #Uncomment when package is on CRAN
+```{r, eval = FALSE}
+install.packages("spectre") #Uncomment when package is on CRAN
 ```
 
 To install the developmental version of `spectre`, use:
-```{r, message = FALSE}
-# install.packages("devtools")
-# devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
+```{r, eval = FALSE}
+install.packages("devtools")
+devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
 ```
 
 ---
+
+```{r}
+library(spectre)
+```
 
 # Use case example
 This example acts as a minimal working case and uses simple "simulated" data matching the structure of that needed by the relevant functions. This simple example is used to minimize the time and data storage requirements needed to run this vignette.
@@ -43,12 +43,11 @@ The first step in using the `spectre` package is to gather estimates for $\alpha
 
 For this example, we created a random species composition (15 sites, gamma diversity = 20) and calculated 1. an $\alpha$-diversity estimate and 2. a Bray-Curtis dissimilarity estimate in the output format of the `gdm` package [@Fitzpatrick2021]. Both are used as input for the `spectre` algorithm, please see `R/generate_minimal_example_data.R` for details. 
 
-```{r, echo = TRUE}
+```{r}
 # load "observed" alpha-, beta- and gamma-diversity values of the random species composition
-d <-spectre:::minimal_example_data
-alpha_list <- d$alpha_list # richness
-beta_list <- d$beta_list # Bray-Curtis dissimilarity
-total_gamma <- dim(d$species_list)[1] # 20 species
+alpha_list <- minimal_example_data$alpha_list # richness
+beta_list <- minimal_example_data$beta_list # Bray-Curtis dissimilarity
+total_gamma <- dim(minimal_example_data$species_list)[1] # 20 species
 ```
 
 
@@ -68,7 +67,7 @@ objective_matrix <- spectre::generate_commonness_matrix_from_gdm(
 Once the input estimates and objective function have been obtained the optimization algorithm is straightforward in `spectre`, requiring only one function call. 
 Note though that the run time for this function may be high especially for large landscapes with high species diversity and if `max_iterations` is high.
 
-```{r, message=FALSE, warning=FALSE}
+```{r, message = FALSE, warning = FALSE}
 res <- spectre::run_optimization_min_conf(
   alpha_list = alpha_list,
   total_gamma = total_gamma,
@@ -89,7 +88,7 @@ The solution matrix had an relative commonness error (RCE) of `r round(error_c[[
 
 These results can be visualized in two ways using functions built into the package. First, one can plot the error of the solved *solution matrix* over time. Second, the commonness error between the final solved *solution matrix* and the *objective function* for each patch can be plotted
 
-```{r, echo = TRUE, include = TRUE, out.width="50%", fig.align = "center"}
+```{r, include = TRUE, out.width="50%", fig.align = "center"}
 # With an increasing number of iterations, the solution matrix improved
 spectre::plot_error(x = res)
 

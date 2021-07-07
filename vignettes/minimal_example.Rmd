@@ -14,26 +14,29 @@ editor_options:
 ### Installation
 Install the release version from CRAN:
 
-```{r, message = FALSE}
-# install.packages("spectre")
+```{r, eval = FALSE}
+install.packages("spectre")
 ```
 
 To install the developmental version of `spectre`, use:
-```{r, message = FALSE}
-# install.packages("devtools")
-# devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
+```{r, eval = FALSE}
+install.packages("devtools")
+devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
 ```
 
 ## Example
 
+```{r}
+library(spectre)
+```
+
 For this example, we created a random species composition (15 sites, gamma diversity = 20) and calculated $\alpha$-diversity and Bray-Curtis dissimilarity to be used as input for the `spectre` algorithm (please see `R/generate_minimal_example_data.R` for details). 
 
-```{r, echo = TRUE}
+```{r}
 # load "observed" alpha-, beta- and gamma-diversity values of the random species composition
-d <-spectre:::minimal_example_data
-alpha_list <- d$alpha_list # richness
-beta_list <- d$beta_list # Bray-Curtis dissimilarity
-total_gamma <- dim(d$species_list)[1] # 20 species
+alpha_list <- minimal_example_data$alpha_list # richness
+beta_list <- minimal_example_data$beta_list # Bray-Curtis dissimilarity
+total_gamma <- dim(minimal_example_data$species_list)[1] # 20 species
 ```
 
 ### Solve species composition using `spectre`
@@ -73,7 +76,7 @@ There are also two functions to visualize the optimization.
 First you can plot the error of the solution matrix over time. 
 Second, you can plot the commonness error between the solution matrix and the objective matrix.
 
-```{r, echo = TRUE, include = TRUE, out.width="50%", fig.align="center"}
+```{r, include = TRUE, out.width="50%", fig.align="center"}
 # With an increasing number of iterations, the solution matrix improved
 spectre::plot_error(x = res)
 

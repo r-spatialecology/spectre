@@ -12,3 +12,8 @@
 #'
 #' @format matrix
 "target_matrix"
+
+#' List with example data created using the \code{gdm} package
+#'
+#' @format list
+"minimal_example_data"
