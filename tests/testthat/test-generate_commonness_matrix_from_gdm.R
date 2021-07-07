@@ -9,7 +9,7 @@
 # (please see `R/generate_minimal_example_data.R` for details). 
 
 # load random species composition data
-d <- readRDS("./data/minimal_example_data.rds")
+d <- readRDS("../data/minimal_example_data.rds")
 
 # calculate commonness matrix directly from the random species list
 obj_commonness <- spectre:::calculate_solution_commonness_rcpp( d$species_list )
@@ -18,4 +18,5 @@ obj_commonness <- spectre:::calculate_solution_commonness_rcpp( d$species_list )
 rec_commonness <- spectre:::generate_commonness_matrix_from_gdm(gdm_predictions = d$beta_list, 
                                                                 alpha_list = d$alpha_list)
 expect_equal(obj_commonness, rec_commonness)
+
 
