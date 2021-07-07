@@ -1,9 +1,15 @@
+## ---- include = FALSE---------------------------------------------------------
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
 ## ---- eval = FALSE------------------------------------------------------------
-#  install.packages("spectre") #Uncomment when package is on CRAN
+#  install.packages("spectre")
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  install.packages("devtools")
-#  devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
+#  devtools::install_github("r-spatialecology/spectre")
 
 ## -----------------------------------------------------------------------------
 library(spectre)

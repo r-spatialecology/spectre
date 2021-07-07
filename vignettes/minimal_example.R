@@ -1,12 +1,18 @@
+## ---- include = FALSE---------------------------------------------------------
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+
 ## ---- eval = FALSE------------------------------------------------------------
 #  install.packages("spectre")
 
 ## ---- eval = FALSE------------------------------------------------------------
 #  install.packages("devtools")
-#  devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
+#  devtools::install_github("r-spatialecology/spectre")
 
 ## -----------------------------------------------------------------------------
-library(spectre)
+library("spectre")
 
 ## -----------------------------------------------------------------------------
 # load "observed" alpha-, beta- and gamma-diversity values of the random species composition

@@ -36,7 +36,7 @@ devtools::install_github("r-spatialecology/spectre")
 ## Example
 
 ```{r}
-library(spectre)
+library("spectre")
 ```
 
 For this example, we created a random species composition (15 sites, gamma diversity = 20) and calculated $\alpha$-diversity and Bray-Curtis dissimilarity to be used as input for the `spectre` algorithm (please see `R/generate_minimal_example_data.R` for details). 
