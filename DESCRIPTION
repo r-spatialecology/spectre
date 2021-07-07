@@ -23,7 +23,6 @@ Suggests:
     testthat (>= 3.0.2),
     knitr,
     rmarkdown,
-    gdm,
     covr,
     RcppProgress
 LinkingTo: 

@@ -1,6 +1,6 @@
 ### Here we generate data for the minimal example and for test_generate_commonness_matrix_from_gdm.R 
 
-library("gdm")
+# library("gdm")
 
 # create random species composition
 set.seed(42) 
