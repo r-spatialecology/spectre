@@ -3,45 +3,54 @@ title: "Getting started with `spectre`"
 author: "C.E. Simpkins, S. Hanss, M. Hesselbarth, M.C. Spangenberg, J. Salecker and K. Wiegand"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
-bibliography: bibliography.bib
 vignette: >
   %\VignetteIndexEntry{Getting started with `spectre`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## General background
+
 `spectre` is an `R` package which easily implements an advanced optimization algorithm capable of predicting regional community composition at fine spatial resolutions using only sparse biological and environmental data. 
 The algorithm underlying `spectre` utilizes estimates of $\alpha$-diversity (i.e. species richness) and $\beta$-diversity (i.e. species dissimilarity) to come up with community composition estimates for all patches within a target region. 
-The method used in `spectre` is an adapted version of that presented by Mokany et al. [-@Mokany2011].  
+The method used in `spectre` is an adapted version of that presented by Mokany et al. (2011).  
 
----
+## Installation
 
-# Installation
 Install the release version from CRAN:
 
 ```{r, eval = FALSE}
-install.packages("spectre") #Uncomment when package is on CRAN
+install.packages("spectre")
 ```
 
 To install the developmental version of `spectre`, use:
 ```{r, eval = FALSE}
 install.packages("devtools")
-devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
+devtools::install_github("r-spatialecology/spectre")
 ```
 
----
+## Use case example
 
 ```{r}
 library(spectre)
 ```
 
-# Use case example
-This example acts as a minimal working case and uses simple "simulated" data matching the structure of that needed by the relevant functions. This simple example is used to minimize the time and data storage requirements needed to run this vignette.
+This example acts as a minimal working case and uses simple "simulated" data matching the structure of that needed by the relevant functions. 
+This simple example is used to minimize the time and data storage requirements needed to run this vignette.
 
 ### Generating input data
+
 The first step in using the `spectre` package is to gather estimates for $\alpha$-biodiversity and $\beta$-biodiversity (in the form of Bray-Curtis dissimilarity) for the area of interest at the desired outcome resolution. 
 
-For this example, we created a random species composition (15 sites, gamma diversity = 20) and calculated 1. an $\alpha$-diversity estimate and 2. a Bray-Curtis dissimilarity estimate in the output format of the `gdm` package [@Fitzpatrick2021]. Both are used as input for the `spectre` algorithm, please see `R/generate_minimal_example_data.R` for details. 
+For this example, we created a random species composition (15 sites, gamma diversity = 20) and calculated i) an $\alpha$-diversity estimate and ii) a Bray-Curtis dissimilarity estimate in the output format of the `gdm` package (Fitzpatrick et al. 2021). 
+Both are used as input for the `spectre` algorithm, please see `R/generate_minimal_example_data.R` for details. 
 
 ```{r}
 # load "observed" alpha-, beta- and gamma-diversity values of the random species composition
@@ -76,6 +85,7 @@ res <- spectre::run_optimization_min_conf(
 ```
 
 ### Result analysis
+
 `spectre` incorporates functions to allow for easy calculation of certain error metrics, namely the mean absolute commonness error ($MAE_c$) and the relative commonness error ($\% RCE$). $MAE_c$ is the mean of the absolute difference between the solved *solution matrix* and the *objective function*, whereas $\% RCE$ is the $MAE_c$ over the absolute commonness from the *objective function* represented as a percentage.
 
 ```{r, message = FALSE}
@@ -96,6 +106,7 @@ spectre::plot_error(x = res)
 spectre::plot_commonness(x = res, target = objective_matrix)
 ```
 
----
+## References
+Fitzpatrick, M.C., Mokany, K., Manion, G., Lisk, M., Ferrier, S., Nieto-Lugilde, D., 2021. gdm: Generalized Dissimilarity Modeling. R package version 1.4.2.2. https://CRAN.R-project.org/package=gdm
 
-# References
+Mokany, K., Harwood, T.D., Overton, J.M.C., Barker, G.M., Ferrier, S., 2011. Combining α - and β -diversity models to fill gaps in our knowledge of biodiversity: Filling gaps in biodiversity knowledge. Ecology Letters 14, 1043–1051. https://doi.org/10.1111/j.1461-0248.2011.01675.x

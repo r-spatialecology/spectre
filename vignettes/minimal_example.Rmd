@@ -1,17 +1,25 @@
 ---
 title: "Minimal example"
+author: "C.E. Simpkins, S. Hanss, M. Hesselbarth, M.C. Spangenberg, J. Salecker and K. Wiegand"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Minimal example}
-  %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-editor_options: 
-  chunk_output_type: console
+  %\VignetteEncoding{UTF-8}
 ---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
 
 ## Getting started
 
 ### Installation
+
 Install the release version from CRAN:
 
 ```{r, eval = FALSE}
@@ -19,9 +27,10 @@ install.packages("spectre")
 ```
 
 To install the developmental version of `spectre`, use:
+
 ```{r, eval = FALSE}
 install.packages("devtools")
-devtools::install_github("r-spatialecology/spectre") #Uncomment when repo is public
+devtools::install_github("r-spatialecology/spectre")
 ```
 
 ## Example
@@ -83,8 +92,3 @@ spectre::plot_error(x = res)
 # Plot commonness error between objective matrix and solution matrix
 spectre::plot_commonness(x = res, target = objective_matrix)
 ```
-
---- 
-
-## References
-Matthew C. Fitzpatrick, Karel Mokany, Glenn Manion, Matthew Lisk, Simon Ferrier and Diego Nieto-Lugilde (2021). gdm: Generalized Dissimilarity Modeling. R package version 1.4.2.2. https://CRAN.R-project.org/package=gdm
