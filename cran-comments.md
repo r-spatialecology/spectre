@@ -1,3 +1,44 @@
+# spectre 1.0.2 
+
+## Resubmission and update
+This is a resubmission of the spectre package in an updated form. Below is a list of changes made to address each issues from the previous submission:
+
+Issue 1: "memtest"
+The problem occurred because at one point in the code only the upper triangular matrix was calculated, not the complete matrix. Since the diagonal and the lower triangular matrix have values of "NA", the unsigned integer overflowed.
+The problem was solved in two places
+- the lower triangular matrix and diagonal are now set in the constructor of the C++ class "NA" instead of in the R function.
+- the loops in the C++ code iterate only over the upper triangular matrix instead of iterating over the complete matrix and skipping "NA".
+
+We also added a new unit test for this issue.
+
+# Issue 2: LTO
+The problem occurred because we use the Catch2 framework with testthat to test the C++ code (https://github.com/r-lib/testthat/issues/1230). This was fixed as described in the issue by manually adjusting the RcppExports.cpp.
+
+Beyond addressing these issues we have also removed the `gdm` package dependency by creating a .RDS file of data to be used in tests and vignettes.
+
+We have retested the package as follows:
+
+## Test environments
+* Local
+  * macOS BigSur, R 4.0.5
+  * Windows 10 Home, R 4.0.3
+  * Ubuntu 20.04 LTS, R 4.0.5
+* GitHub Actions 
+  * windows-latest, R: 'release'
+  * macOS-latest, R: 'release'
+  * ubuntu-20.04, R: 'release'
+* win-builder (release, devel)
+
+## R CMD check results
+
+0 errors | 0 warnings | 0 note
+
+* This is an updated resubmission.
+
+## Reverse dependencies
+There are currently no reverse dependencies.
+---
+
 # spectre 1.0.1 
 
 ## Resubmission
