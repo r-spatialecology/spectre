@@ -1,6 +1,14 @@
 # spectre 1.0.2 
 
 ## Resubmission and update
+This is a resubmission of the spectre package.
+
+# LTO Issue:
+We have manually rewritten RcppExports.cpp to account for the Catch2 framework.
+
+# spectre 1.0.2 
+
+## Resubmission and update
 This is a resubmission of the spectre package in an updated form. Below is a list of changes made to address each issues from the previous submission:
 
 Issue 1: "memtest"
