@@ -57,5 +57,5 @@ find_solutions_min_conf <- function(alpha_list,
     }
   }
   
-  return(list(seed = seed[1:length(error[-1])], best_error = error[-1], error = error, results = results))
+  return(list(seed = seed[1:length(error)], best_error = best_error[-1], error = error, results = results))
 }
