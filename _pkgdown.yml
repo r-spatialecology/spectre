@@ -22,7 +22,7 @@ reference:
       - minimal_example_data
 
 navbar:
-  title: shar
+  title: spectre
   left:
     - text: "Get Started"
       icon: fa fa-magic
