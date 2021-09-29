@@ -1,8 +1,8 @@
-title: spectre | Predict Regional Community Composition 
+title: spectre
 
 template:
   params:
-    bootswatch: sandstone
+    bootswatch: cerulean
 
 reference:
   - title: Core
@@ -22,17 +22,16 @@ reference:
       - minimal_example_data
 
 navbar:
-  title: spectre
   left:
-    - text: "Get Started"
-      icon: fa fa-magic
-      href: vignettes/getting_started_with_spectre.html
     - icon: fa-gears
       text: "Functions"
       href: reference/index.html
+    - text: "Get Started"
+      icon: fa fa-magic
+      href: articles/getting_started_with_spectre.html
     - text: "Minimal example"
       icon: fa-graduation-cap
-      href: vignettes/minimal_example.html
+      href: articles/minimal_example.html
   right:
     - icon: fa-newspaper-o
       text: "News"
