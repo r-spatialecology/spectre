@@ -12,3 +12,4 @@ build-*
 /Rplot.png
 results/*.rds
 CRAN-RELEASE
+docs

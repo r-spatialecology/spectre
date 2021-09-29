@@ -1,0 +1,45 @@
+title: spectre | Predict Regional Community Composition 
+
+template:
+  params:
+    bootswatch: sandstone
+
+reference:
+  - title: Core
+    contents:
+      - generate_commonness_matrix_from_gdm
+      - run_optimization_min_conf
+      - calc_commonness_error
+  - title: Utility
+    contents:
+      - plot_error
+      - plot_commonness
+  - title: Datasets
+    contents:
+      - alpha_list
+      - estimated_gamma
+      - target_matrix
+      - minimal_example_data
+
+navbar:
+  title: shar
+  left:
+    - text: "Get Started"
+      icon: fa fa-magic
+      href: vignettes/getting_started_with_spectre.html
+    - icon: fa-gears
+      text: "Functions"
+      href: reference/index.html
+    - text: "Minimal example"
+      icon: fa-graduation-cap
+      href: vignettes/minimal_example.html
+  right:
+    - icon: fa-newspaper-o
+      text: "News"
+      href: news/index.html
+    - icon: fa-github fa-lg
+      text: "Github"
+      href: https://github.com/r-spatialecology/spectre
+    - icon: fa-user
+      text: "Contact"
+      hreft: mailto:simpkinscraig063@gmail.com

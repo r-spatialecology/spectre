@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // optimizer_min_conf
 List optimizer_min_conf(const IntegerVector alpha_list, const unsigned total_gamma, const IntegerMatrix target, const unsigned max_iterations, const IntegerMatrix partial_solution, const IntegerMatrix fixed_species, const unsigned long seed, const bool verbose, const bool interruptible);
 RcppExport SEXP _spectre_optimizer_min_conf(SEXP alpha_listSEXP, SEXP total_gammaSEXP, SEXP targetSEXP, SEXP max_iterationsSEXP, SEXP partial_solutionSEXP, SEXP fixed_speciesSEXP, SEXP seedSEXP, SEXP verboseSEXP, SEXP interruptibleSEXP) {
@@ -36,12 +41,12 @@ BEGIN_RCPP
 END_RCPP
 }
 
-RcppExport SEXP run_testthat_tests(SEXP use_xml_sxp);
+RcppExport SEXP run_testthat_tests();
 
 static const R_CallMethodDef CallEntries[] = {
     {"_spectre_optimizer_min_conf", (DL_FUNC) &_spectre_optimizer_min_conf, 9},
     {"_spectre_calculate_solution_commonness_rcpp", (DL_FUNC) &_spectre_calculate_solution_commonness_rcpp, 1},
-    {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 1},
+    {"run_testthat_tests", (DL_FUNC) &run_testthat_tests, 0},
     {NULL, NULL, 0}
 };
 
