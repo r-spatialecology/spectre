@@ -1,0 +1,8 @@
+pandoc: 2.7.3
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  getting_started_with_spectre: getting_started_with_spectre.html
+  minimal_example: minimal_example.html
+last_built: 2021-09-29T15:26Z
+
