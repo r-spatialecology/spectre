@@ -58,6 +58,24 @@
     Minimal example
   </a>
 </li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    <span class="fa fa-plus-square"></span>
+     
+    More
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="../articles/benchmark.html">
+        <span class="fa fa-clock"></span>
+         
+        Benchmark
+      </a>
+    </li>
+  </ul>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -158,7 +176,7 @@
   target <span class="op">=</span> <span class="va">objective_matrix</span>,
   max_iterations <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="co"># n iterations</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;  &gt; Optimization finished with lowest absolute error = 9 (highest absolute error was: 110 improved by: 101)</span></code></pre></div>
+<span class="co">#&gt;  &gt; Optimization finished with lowest absolute error = 7 (highest absolute error was: 111 improved by: 104)</span></code></pre></div>
 </div>
 <div id="result-analysis" class="section level3">
 <h3 class="hasAnchor">
@@ -166,7 +184,7 @@
 <p><code>spectre</code> incorporates functions to allow for easy calculation of certain error metrics, namely the mean absolute commonness error (<span class="math inline">\(MAE_c\)</span>) and the relative commonness error (<span class="math inline">\(\% RCE\)</span>). <span class="math inline">\(MAE_c\)</span> is the mean of the absolute difference between the solved <em>solution matrix</em> and the <em>objective function</em>, whereas <span class="math inline">\(\% RCE\)</span> is the <span class="math inline">\(MAE_c\)</span> over the absolute commonness from the <em>objective function</em> represented as a percentage.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">error_c</span> <span class="op">&lt;-</span> <span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/calc_commonness_error.html">calc_commonness_error</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span>, objective_matrix <span class="op">=</span> <span class="va">objective_matrix</span><span class="op">)</span></code></pre></div>
-<p>The <em>objective function</em> had a mean commonness of 1.75. The mean absolute error between the <em>objective function</em> and the solved <em>solution matrix</em> was 0.09. The solution matrix had an relative commonness error (RCE) of 4.9%.</p>
+<p>The <em>objective function</em> had a mean commonness of 1.75. The mean absolute error between the <em>objective function</em> and the solved <em>solution matrix</em> was 0.07. The solution matrix had an relative commonness error (RCE) of 3.8%.</p>
 <p>These results can be visualized in two ways using functions built into the package. First, one can plot the error of the solved <em>solution matrix</em> over time. Second, the commonness error between the final solved <em>solution matrix</em> and the <em>objective function</em> for each patch can be plotted</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># With an increasing number of iterations, the solution matrix improved</span>
