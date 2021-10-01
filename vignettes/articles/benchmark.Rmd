@@ -9,8 +9,4 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
-library(spectre)
-```
-
-This is a test at this point.
+This is a test.
