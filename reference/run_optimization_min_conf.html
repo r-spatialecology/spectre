@@ -183,9 +183,12 @@ algorithm may run through before stopping.</p></td>
     </tr>
     <tr>
       <th>partial_solution</th>
-      <td><p>An initial <code>matrix</code> of species presences and
+      <td><p>Can be either the result of a previous optimization
+run (see <code>value</code>) or an (initial) <code>matrix</code> of species presences and
 absences for each site in the landscape. The total number of presences must
-match the estimated species richness of each site.</p></td>
+match the estimated species richness of each site. If a result of a previous
+optimization is used, its <code>optimized_grid</code> is used as initial matrix and
+its <code>error</code> data frame will be extended with the new iterations.</p></td>
     </tr>
     <tr>
       <th>fixed_species</th>
@@ -204,7 +207,8 @@ the optimization run.</p></td>
     </tr>
     <tr>
       <th>interruptible</th>
-      <td><p>Allow a run to be interrupted before completion.</p></td>
+      <td><p>Allow a run to be interrupted before completion.
+<code>FALSE</code> increases the performance.#'</p></td>
     </tr>
     </table>
 
