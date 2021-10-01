@@ -1,0 +1,16 @@
+---
+title: "benchmark"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(spectre)
+```
+
+This is a test at this point.

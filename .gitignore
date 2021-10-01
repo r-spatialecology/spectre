@@ -13,3 +13,5 @@ build-*
 results/*.rds
 CRAN-RELEASE
 docs
+/doc/
+/Meta/
