@@ -20,7 +20,7 @@
 #' @param max_iterations The maximum number of iterations that the optimization
 #'  algorithm may run through before stopping.
 #' @param autostop The optimizer will stop after this number of iterations with no
-#'  improvement. Default: \code{0} meand auto stop is disabled.
+#'  improvement. Default: \code{0} means auto stop is disabled.
 #' @param seed Seed for random number generator. Seed must be a positive integer value.
 #'   \code{seed = NA} means that a random integer is used as seed. 
 #' @param verbose If \code{TRUE} (default), a progress report is printed during
