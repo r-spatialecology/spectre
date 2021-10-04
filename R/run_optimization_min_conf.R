@@ -19,6 +19,8 @@
 #'  its \code{error} data frame will be extended with the new iterations.
 #' @param max_iterations The maximum number of iterations that the optimization
 #'  algorithm may run through before stopping.
+#' @param autostop The optimizer will stop after this number of iterations with no
+#'  improvement. Default: \code{0} meand auto stop is disabled.
 #' @param seed Seed for random number generator. Seed must be a positive integer value.
 #'   \code{seed = NA} means that a random integer is used as seed. 
 #' @param verbose If \code{TRUE} (default), a progress report is printed during
@@ -55,6 +57,7 @@ run_optimization_min_conf <- function(alpha_list,
                                       max_iterations,
                                       partial_solution = NULL,
                                       fixed_species = NULL,
+                                      autostop = 0,
                                       seed = NA,
                                       verbose = TRUE,
                                       interruptible = TRUE) {
@@ -83,6 +86,7 @@ run_optimization_min_conf <- function(alpha_list,
                               max_iterations = max_iterations,
                               partial_solution = partial_solution,
                               fixed_species = fixed_species,
+                              autostop = autostop,
                               seed = seed, 
                               verbose = verbose,
                               interruptible = interruptible)

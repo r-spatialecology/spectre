@@ -6,12 +6,12 @@ List optimizer_min_conf(const IntegerVector alpha_list,
                         const unsigned max_iterations,
                         const IntegerMatrix partial_solution,
                         const IntegerMatrix fixed_species,
-                        const unsigned long seed, const bool verbose,
-                        const bool interruptible) {
+                        const unsigned autostop, const unsigned long seed,
+                        const bool verbose, const bool interruptible) {
   MinConf mc(as<std::vector<unsigned>>(alpha_list), total_gamma,
              as<std::vector<int>>(target),
              as<std::vector<int>>(partial_solution),
-             as<std::vector<int>>(fixed_species), seed, NA_INTEGER);
+             as<std::vector<int>>(fixed_species), autostop, seed, NA_INTEGER);
 
   const long iter =
       max_iterations - mc.optimize(max_iterations, verbose, interruptible);
