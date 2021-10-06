@@ -9,7 +9,7 @@ public:
           const std::vector<int> &target,
           const std::vector<int> &partial_solution,
           const std::vector<int> &fixed_species, const unsigned long seed,
-          const int na_val = -2147483648);
+          const unsigned autostop = 0, const int na_val = -2147483648);
 
   int optimize(const long max_steps, bool verbose, bool interruptible);
 
@@ -18,6 +18,7 @@ public:
   std::vector<int> iteration_count;
   std::vector<unsigned> error_vector;
   const int RET_ABORT = -999;
+  unsigned autostop;
   const int NA;
 
 protected:

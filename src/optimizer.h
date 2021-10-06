@@ -11,6 +11,7 @@ List optimizer_min_conf(const IntegerVector alpha_list,
                         const unsigned max_iterations,
                         const IntegerMatrix partial_solution,
                         const IntegerMatrix fixed_species,
+                        const unsigned autostop = 0,
                         const unsigned long seed = 0, const bool verbose = true,
                         const bool interruptible = true);
 // [[Rcpp::export]]

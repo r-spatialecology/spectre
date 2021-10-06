@@ -11,6 +11,8 @@
  * optimization. Species are added to fit the alpha diveristy of each site
  * @param fixed_species matrix to fix specific species presences/absences (0:
  * not fixed, !=0 fixed)
+ * @param autostop optimizer will stop after this number of iterations with no
+ * improvement. Default: 0 (no auto stopping)
  * @param seed random seed
  * @param na_val NA value (default: Rcpp's NA -2147483648)
  */
@@ -18,9 +20,10 @@ MinConf::MinConf(const std::vector<unsigned> &alpha_list,
                  const unsigned gamma_div, const std::vector<int> &target,
                  const std::vector<int> &partial_solution,
                  const std::vector<int> &fixed_species,
-                 const unsigned long seed, const int na_val)
-    : NA(na_val), alpha_list(alpha_list), gamma_div(gamma_div),
-      n_sites(alpha_list.size()) {
+                 const unsigned long seed, const unsigned autostop,
+                 const int na_val)
+    : autostop(autostop), NA(na_val), alpha_list(alpha_list),
+      gamma_div(gamma_div), n_sites(alpha_list.size()) {
   // Random number generator
   rng = std::mt19937(seed);
 
@@ -101,6 +104,10 @@ int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
   unsigned error = calc_error();
   iteration_count.push_back(0);
   error_vector.push_back(error);
+  unsigned n_iterations_not_improved = 0;
+  if (autostop == 0) {
+    autostop = std::numeric_limits<unsigned>::max(); // disables autostop
+  }
 
   // optimize
   while (iter-- > 0) {
@@ -127,10 +134,16 @@ int MinConf::optimize(const long max_steps, bool verbose, bool interruptible) {
     update_solution_commonness();
     error = calc_error();
 
+    if (error == error_vector.back()) {
+      n_iterations_not_improved++;
+    } else {
+      n_iterations_not_improved = 0;
+    }
+
     iteration_count.push_back(max_steps - iter);
     error_vector.push_back(error);
 
-    if (error == 0) {
+    if (error == 0 || n_iterations_not_improved == autostop) {
       return iter;
     }
   }
