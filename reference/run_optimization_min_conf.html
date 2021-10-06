@@ -171,6 +171,7 @@
   <span class='va'>max_iterations</span>,
   partial_solution <span class='op'>=</span> <span class='cn'>NULL</span>,
   fixed_species <span class='op'>=</span> <span class='cn'>NULL</span>,
+  autostop <span class='op'>=</span> <span class='fl'>0</span>,
   seed <span class='op'>=</span> <span class='cn'>NA</span>,
   verbose <span class='op'>=</span> <span class='cn'>TRUE</span>,
   interruptible <span class='op'>=</span> <span class='cn'>TRUE</span>
@@ -212,6 +213,11 @@ its <code>error</code> data frame will be extended with the new iterations.</p><
       <th>fixed_species</th>
       <td><p>Fixed partial solution with species that are considered
 as given. Those species are not going to be changed during optimization.</p></td>
+    </tr>
+    <tr>
+      <th>autostop</th>
+      <td><p>The optimizer will stop after this number of iterations with no
+improvement. Default: <code>0</code> meand auto stop is disabled.</p></td>
     </tr>
     <tr>
       <th>seed</th>
