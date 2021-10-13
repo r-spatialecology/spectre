@@ -92,5 +92,7 @@ run_optimization_min_conf <- function(alpha_list,
     result$error$i <- 0:(nrow(result$error) - 1)
   }
   
+  class(result) <- "optim_sol"
+  
   return(result)
 }

@@ -1,3 +1,7 @@
+# spectre 1.0.3
+
+- Adding printing function and S3 class
+
 # spectre 1.0.2
 
 - Minor bug fixes related to Cpp testthat functions ensuring all CRAN build checks work
