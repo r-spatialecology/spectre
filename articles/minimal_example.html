@@ -115,7 +115,7 @@
       <h1 data-toc-skip>Minimal example</h1>
                         <h4 class="author">C.E. Simpkins, S. Hanss, M. Hesselbarth, M.C. Spangenberg, J. Salecker and K. Wiegand</h4>
             
-            <h4 class="date">2021-10-21</h4>
+            <h4 class="date">2021-11-19</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/r-spatialecology/spectre/blob/master/vignettes/minimal_example.Rmd"><code>vignettes/minimal_example.Rmd</code></a></small>
       <div class="hidden name"><code>minimal_example.Rmd</code></div>
@@ -168,7 +168,7 @@
                                           max_iterations <span class="op">=</span> <span class="fl">1000</span>, <span class="co"># n iterations</span>
                                           seed <span class="op">=</span> <span class="fl">123</span><span class="op">)</span> <span class="co"># use a random seed for reproducibility</span>
 <span class="co">#&gt; </span>
-<span class="co">#&gt;  &gt; Optimization finished with lowest absolute error = 14 (highest absolute error was: 102 improved by: 88)</span></code></pre></div>
+<span class="co">#&gt;  &gt; Optimization finished with lowest absolute error = 11 (highest absolute error was: 102 improved by: 91)</span></code></pre></div>
 </div>
 <div id="result-evaluation" class="section level3">
 <h3 class="hasAnchor">
@@ -176,7 +176,7 @@
 <p><code>spectre</code> allows to easily calculate some error measures, namely the mean absolute commonness error (<span class="math inline">\(MAE_c\)</span>) and the relative commonness error [%] (RCE). The error is calculated between the solved species composition and the objective matrix.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">error_c</span> <span class="op">&lt;-</span> <span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/calc_commonness_error.html">calc_commonness_error</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span>, objective_matrix <span class="op">=</span> <span class="va">objective_matrix</span><span class="op">)</span></code></pre></div>
-<p>The <em>objective matrix</em> had a mean commonness of 1.75. The mean absolute error between the <em>objective matrix</em> and the solved <em>solution matrix</em> was 0.13. The solution matrix had an relative commonness error (RCE) of 7.6 %.</p>
+<p>The <em>objective matrix</em> had a mean commonness of 1.75. The mean absolute error between the <em>objective matrix</em> and the solved <em>solution matrix</em> was 0.1. The solution matrix had an relative commonness error (RCE) of 6 %.</p>
 <p>There are also two functions to visualize the optimization. First you can plot the error of the solution matrix over time. Second, you can plot the commonness error between the solution matrix and the objective matrix.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># With an increasing number of iterations, the solution matrix improved</span>
