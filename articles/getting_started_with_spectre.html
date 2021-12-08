@@ -4,96 +4,94 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="spectre">
 <title>Getting started with `spectre` • spectre</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/cerulean/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
-<script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="Getting started with `spectre`">
+<!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Getting started with `spectre`">
 <meta property="og:description" content="spectre">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
-<body data-spy="scroll" data-target="#toc">
-    <div class="container template-article">
-      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">spectre</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.3</span>
-      </span>
-    </div>
+<body>
+    <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
+    
 
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav">
-<li>
-  <a href="../reference/index.html">
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
+    
+    <a class="navbar-brand me-2" href="../index.html">spectre</a>
+
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.3</small>
+
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbar" class="collapse navbar-collapse ms-2">
+      <ul class="navbar-nav me-auto">
+<li class="nav-item">
+  <a class="nav-link" href="../reference/index.html">
     <span class="fa fa-gears"></span>
      
     Functions
   </a>
 </li>
-<li>
-  <a href="../articles/getting_started_with_spectre.html">
-    <span class="fa fa-magic"></span>
+<li class="active nav-item">
+  <a class="nav-link" href="../articles/getting_started_with_spectre.html">
+    <span class="fa fa fa fa-magic"></span>
      
     Get Started
   </a>
 </li>
-<li>
-  <a href="../articles/minimal_example.html">
+<li class="nav-item">
+  <a class="nav-link" href="../articles/minimal_example.html">
     <span class="fa fa-graduation-cap"></span>
      
     Minimal example
   </a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown--more">
     <span class="fa fa-plus-square"></span>
      
     More
-     
-    <span class="caret"></span>
   </a>
-  <ul class="dropdown-menu" role="menu">
-<li>
-      <a href="../articles/benchmark.html">
-        <span class="fa fa-clock"></span>
-         
-        Benchmark
-      </a>
-    </li>
-  </ul>
+  <div class="dropdown-menu" aria-labelledby="dropdown--more">
+    <a class="dropdown-item" href="../articles/benchmark.html">
+      <span class="fa fa-clock"></span>
+       
+      Benchmark
+    </a>
+  </div>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right">
-<li>
-  <a href="../news/index.html">
+<form class="form-inline my-2 my-lg-0" role="search">
+        <input type="search" class="form-control me-sm-2" aria-label="Toggle navigation" name="search-input" data-search-index="../search.json" id="search-input" placeholder="Search for" autocomplete="off">
+</form>
+
+      <ul class="navbar-nav">
+<li class="nav-item">
+  <a class="nav-link" href="../news/index.html">
     <span class="fa fa-newspaper-o"></span>
      
     News
   </a>
 </li>
-<li>
-  <a href="https://github.com/r-spatialecology/spectre">
+<li class="nav-item">
+  <a class="external-link nav-link" href="https://github.com/r-spatialecology/spectre">
     <span class="fa fa-github fa-lg"></span>
      
     Github
   </a>
 </li>
-<li>
-  <a href="../mailto:simpkinscraig063@gmail.com">
+<li class="nav-item">
+  <a class="nav-link" href="../mailto:simpkinscraig063@gmail.com">
     <span class="fa fa-user"></span>
      
     Contact
@@ -101,66 +99,59 @@
 </li>
       </ul>
 </div>
-<!--/.nav-collapse -->
+
+    
   </div>
-<!--/.container -->
-</div>
-<!--/.navbar -->
-
-      
-
-      </header><script src="getting_started_with_spectre_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <div class="col-md-9 contents">
-    <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Getting started with <code>spectre</code>
-</h1>
-                        <h4 class="author">C.E. Simpkins, S. Hanss, M. Hesselbarth, M.C. Spangenberg, J. Salecker and K. Wiegand</h4>
+</nav><div class="container template-article">
+<script src="getting_started_with_spectre_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+  <main id="main"><div class="page-header">
+      <img src="" class="logo" alt=""><h1>Getting started with `spectre`</h1>
+                        <h4 data-toc-skip class="author">C.E. Simpkins, S. Hanss, M. Hesselbarth, M.C. Spangenberg, J. Salecker and K. Wiegand</h4>
             
-            <h4 class="date">2021-11-19</h4>
+            <h4 data-toc-skip class="date">2021-12-08</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/r-spatialecology/spectre/blob/master/vignettes/getting_started_with_spectre.Rmd"><code>vignettes/getting_started_with_spectre.Rmd</code></a></small>
-      <div class="hidden name"><code>getting_started_with_spectre.Rmd</code></div>
-
+      <small class="dont-index">Source: <a href="https://github.com/r-spatialecology/spectre/blob/HEAD/vignettes/getting_started_with_spectre.Rmd" class="external-link"><code>vignettes/getting_started_with_spectre.Rmd</code></a></small>
+      <div class="d-none name"><code>getting_started_with_spectre.Rmd</code></div>
     </div>
 
     
     
-<div id="general-background" class="section level2">
-<h2 class="hasAnchor">
-<a href="#general-background" class="anchor"></a>General background</h2>
+<div class="section level2">
+<h2 id="general-background">General background<a class="anchor" aria-label="anchor" href="#general-background"></a>
+</h2>
 <p><code>spectre</code> is an <code>R</code> package which easily implements an advanced optimization algorithm capable of predicting regional community composition at fine spatial resolutions using only sparse biological and environmental data. The algorithm underlying <code>spectre</code> utilizes estimates of <span class="math inline">\(\alpha\)</span>-diversity (i.e. species richness) and <span class="math inline">\(\beta\)</span>-diversity (i.e. species dissimilarity) to come up with community composition estimates for all patches within a target region. The method used in <code>spectre</code> is an adapted version of that presented by Mokany et al. (2011).</p>
 </div>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>Install the release version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"spectre"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"spectre"</span><span class="op">)</span></code></pre></div>
 <p>To install the developmental version of <code>spectre</code>, use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-spatialecology/spectre"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="use-case-example" class="section level2">
-<h2 class="hasAnchor">
-<a href="#use-case-example" class="anchor"></a>Use case example</h2>
+<div class="section level2">
+<h2 id="use-case-example">Use case example<a class="anchor" aria-label="anchor" href="#use-case-example"></a>
+</h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatialecology/spectre/">spectre</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatialecology/spectre/" class="external-link">spectre</a></span><span class="op">)</span></code></pre></div>
 <p>This example acts as a minimal working case and uses simple “simulated” data matching the structure of that needed by the relevant functions. This simple example is used to minimize the time and data storage requirements needed to run this vignette.</p>
-<div id="generating-input-data" class="section level3">
-<h3 class="hasAnchor">
-<a href="#generating-input-data" class="anchor"></a>Generating input data</h3>
+<div class="section level3">
+<h3 id="generating-input-data">Generating input data<a class="anchor" aria-label="anchor" href="#generating-input-data"></a>
+</h3>
 <p>The first step in using the <code>spectre</code> package is to gather estimates for <span class="math inline">\(\alpha\)</span>-biodiversity and <span class="math inline">\(\beta\)</span>-biodiversity (in the form of Bray-Curtis dissimilarity) for the area of interest at the desired outcome resolution.</p>
 <p>For this example, we created a random species composition (15 sites, gamma diversity = 20) and calculated i) an <span class="math inline">\(\alpha\)</span>-diversity estimate and ii) a Bray-Curtis dissimilarity estimate in the output format of the <code>gdm</code> package (Fitzpatrick et al. 2021). Both are used as input for the <code>spectre</code> algorithm, please see <code>R/generate_minimal_example_data.R</code> for details.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># load "observed" alpha-, beta- and gamma-diversity values of the random species composition</span>
 <span class="va">alpha_list</span> <span class="op">&lt;-</span> <span class="va">minimal_example_data</span><span class="op">$</span><span class="va">alpha_list</span> <span class="co"># richness</span>
 <span class="va">beta_list</span> <span class="op">&lt;-</span> <span class="va">minimal_example_data</span><span class="op">$</span><span class="va">beta_list</span> <span class="co"># Bray-Curtis dissimilarity</span>
-<span class="va">total_gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">minimal_example_data</span><span class="op">$</span><span class="va">species_list</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="co"># 20 species</span></code></pre></div>
+<span class="va">total_gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">minimal_example_data</span><span class="op">$</span><span class="va">species_list</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="co"># 20 species</span></code></pre></div>
 </div>
-<div id="running-the-optimization" class="section level3">
-<h3 class="hasAnchor">
-<a href="#running-the-optimization" class="anchor"></a>Running the optimization</h3>
+<div class="section level3">
+<h3 id="running-the-optimization">Running the optimization<a class="anchor" aria-label="anchor" href="#running-the-optimization"></a>
+</h3>
 <p>We use the input estimates (<span class="math inline">\(\alpha\)</span>-diversity and Bray-Curtis dissimilarity) to generate a commonness matrix (i.e. species in common between each site by site pair) using the <code><a href="../reference/generate_commonness_matrix_from_gdm.html">generate_commonness_matrix_from_gdm()</a></code> function. This commonness matrix acts as the objective function (i.e. target) for the optimization algorithm.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Calculate objective_matrix from (modelled) alpha-diversity and Bray-Curtis dissimilarity</span>
@@ -178,9 +169,9 @@
 <span class="co">#&gt; </span>
 <span class="co">#&gt;  &gt; Optimization finished with lowest absolute error = 9 (highest absolute error was: 102 improved by: 93)</span></code></pre></div>
 </div>
-<div id="result-analysis" class="section level3">
-<h3 class="hasAnchor">
-<a href="#result-analysis" class="anchor"></a>Result analysis</h3>
+<div class="section level3">
+<h3 id="result-analysis">Result analysis<a class="anchor" aria-label="anchor" href="#result-analysis"></a>
+</h3>
 <p><code>spectre</code> incorporates functions to allow for easy calculation of certain error metrics, namely the mean absolute commonness error (<span class="math inline">\(MAE_c\)</span>) and the relative commonness error (<span class="math inline">\(\% RCE\)</span>). <span class="math inline">\(MAE_c\)</span> is the mean of the absolute difference between the solved <em>solution matrix</em> and the <em>objective function</em>, whereas <span class="math inline">\(\% RCE\)</span> is the <span class="math inline">\(MAE_c\)</span> over the absolute commonness from the <em>objective function</em> represented as a percentage.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">error_c</span> <span class="op">&lt;-</span> <span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/calc_commonness_error.html">calc_commonness_error</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span>, objective_matrix <span class="op">=</span> <span class="va">objective_matrix</span><span class="op">)</span></code></pre></div>
@@ -197,37 +188,34 @@
 <p><img src="getting_started_with_spectre_files/figure-html/unnamed-chunk-9-2.png" width="50%" style="display: block; margin: auto;"></p>
 </div>
 </div>
-<div id="references" class="section level2">
-<h2 class="hasAnchor">
-<a href="#references" class="anchor"></a>References</h2>
-<p>Fitzpatrick, M.C., Mokany, K., Manion, G., Lisk, M., Ferrier, S., Nieto-Lugilde, D., 2021. gdm: Generalized Dissimilarity Modeling. R package version 1.4.2.2. <a href="https://CRAN.R-project.org/package=gdm" class="uri">https://CRAN.R-project.org/package=gdm</a></p>
-<p>Mokany, K., Harwood, T.D., Overton, J.M.C., Barker, G.M., Ferrier, S., 2011. Combining α - and β -diversity models to fill gaps in our knowledge of biodiversity: Filling gaps in biodiversity knowledge. Ecology Letters 14, 1043–1051. <a href="https://doi.org/10.1111/j.1461-0248.2011.01675.x" class="uri">https://doi.org/10.1111/j.1461-0248.2011.01675.x</a></p>
+<div class="section level2">
+<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<p>Fitzpatrick, M.C., Mokany, K., Manion, G., Lisk, M., Ferrier, S., Nieto-Lugilde, D., 2021. gdm: Generalized Dissimilarity Modeling. R package version 1.4.2.2. <a href="https://CRAN.R-project.org/package=gdm" class="external-link uri">https://CRAN.R-project.org/package=gdm</a></p>
+<p>Mokany, K., Harwood, T.D., Overton, J.M.C., Barker, G.M., Ferrier, S., 2011. Combining α - and β -diversity models to fill gaps in our knowledge of biodiversity: Filling gaps in biodiversity knowledge. Ecology Letters 14, 1043–1051. <a href="https://doi.org/10.1111/j.1461-0248.2011.01675.x" class="external-link uri">https://doi.org/10.1111/j.1461-0248.2011.01675.x</a></p>
 </div>
-  </div>
-
-  <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
-
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
-
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside>
 </div>
 
 
 
-      <footer><div class="copyright">
-  <p>Developed by Craig Simpkins, Sebastian Hanss, Maximilian Hesselbarth, Matthias Spangenberg, Jan Salecker.</p>
+    <footer><div class="pkgdown-footer-left">
+  <p></p>
+<p>Developed by Craig Simpkins, Sebastian Hanss, Maximilian Hesselbarth, Matthias Spangenberg, Jan Salecker.</p>
 </div>
 
-<div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+<div class="pkgdown-footer-right">
+  <p></p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
-      </footer>
+    </footer>
 </div>
 
   
 
+  
 
   </body>
 </html>
