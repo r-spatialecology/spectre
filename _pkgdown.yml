@@ -1,8 +1,8 @@
-title: spectre
+url: https://r-spatialecology.github.io/spectre/
 
 template:
-  params:
-    bootswatch: cerulean
+  bootstrap: 5
+  bootswatch: cerulean
 
 reference:
   - title: Core

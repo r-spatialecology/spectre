@@ -9,9 +9,7 @@ src/*.dll
 inst/doc
 spectre_rcpp_dev/spectre_rcpp_dev.pro.user
 build-*
-/Rplot.png
-results/*.rds
+Rplot.png
+Rplots.pdf
 CRAN-RELEASE
 docs
-/doc/
-/Meta/
