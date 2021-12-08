@@ -5,6 +5,8 @@ template:
   bootswatch: cerulean
 
 reference:
+  - contents:
+      - spectre
   - title: Core
     contents:
       - generate_commonness_matrix_from_gdm
@@ -14,6 +16,7 @@ reference:
     contents:
       - plot_error
       - plot_commonness
+      - print.optim_sol
   - title: Datasets
     contents:
       - alpha_list
