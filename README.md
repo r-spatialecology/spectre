@@ -1,9 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# spectre
-
-<a href='https://r-spatialecology.github.io/spectre/'><img src='man/figures/logo.png' align="right" width="150" /></a>
+# spectre <img src='man/figures/logo.png' align="right" width="150" /></a>
 
 <!-- badges: start -->
 
