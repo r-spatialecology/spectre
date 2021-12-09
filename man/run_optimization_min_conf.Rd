@@ -41,7 +41,7 @@ its \code{error} data frame will be extended with the new iterations.}
 as given. Those species are not going to be changed during optimization.}
 
 \item{autostop}{The optimizer will stop after this number of iterations with no
-improvement. Default: \code{0} meand auto stop is disabled.}
+improvement. Default: \code{0} means auto stop is disabled.}
 
 \item{seed}{Seed for random number generator. Seed must be a positive integer value.
 \code{seed = NA} means that a random integer is used as seed.}

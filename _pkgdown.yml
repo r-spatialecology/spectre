@@ -5,8 +5,6 @@ template:
   bootswatch: cerulean
 
 reference:
-  - contents:
-      - spectre
   - title: Core
     contents:
       - generate_commonness_matrix_from_gdm
@@ -23,32 +21,45 @@ reference:
       - estimated_gamma
       - target_matrix
       - minimal_example_data
-
+      
 navbar:
-  left:
-    - icon: fa-gears
+  structure:
+    left:  [reference, getstarted, example, articles, news]
+    right: [github, contact, search]
+  components:
+    reference:
+      icon: fa-gears
       text: "Functions"
       href: reference/index.html
-    - text: "Get Started"
+      
+    getstarted:
+      text: "Get Started"
       icon: fa fa-magic
       href: articles/getting_started_with_spectre.html
-    - text: "Minimal example"
+      
+    example:
+      text: "Minimal example"
       icon: fa-graduation-cap
       href: articles/minimal_example.html
-    - text: "More"
+    
+    articles:
+      text: "More"
       icon: fa-plus-square
       menu:
        - text: "Benchmark"
          icon: fa-clock
          href: articles/benchmark.html
-      
-  right:
-    - icon: fa-newspaper-o
+
+    news:
+      icon: fa-newspaper-o
       text: "News"
       href: news/index.html
-    - icon: fa-github fa-lg
-      text: "Github"
-      href: https://github.com/r-spatialecology/spectre
-    - icon: fa-user
+
+    contact:
+      icon: fa-user
       text: "Contact"
-      hreft: mailto:simpkinscraig063@gmail.com
+      hreft: mailto:simpkinscraig063@gmail.com     
+
+home:
+  sidebar:
+    structure: [authors, license]
