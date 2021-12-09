@@ -3,7 +3,7 @@
 
 # spectre
 
-<img src="man/figures/spectre.png" align="right" width="150" />
+<a href='https://r-spatialecology.github.io/spectre/'><img src='man/figures/logo.png' align="right" width="150" /></a>
 
 <!-- badges: start -->
 
