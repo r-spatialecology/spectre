@@ -8,8 +8,8 @@
 <meta name="description" content="spectre">
 <title>Minimal example • spectre</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.1.3/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.1.3/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Minimal example">
 <meta property="og:description" content="spectre">
@@ -33,7 +33,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div id="navbar" class="collapse navbar-collapse ms-2">
+    <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item">
   <a class="nav-link" href="../reference/index.html">
@@ -102,12 +102,15 @@
     
   </div>
 </nav><div class="container template-article">
+
+
+
 <script src="minimal_example_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
-  <main id="main"><div class="page-header">
+  <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Minimal example</h1>
                         <h4 data-toc-skip class="author">C.E. Simpkins, S. Hanss, M. Hesselbarth, M.C. Spangenberg, J. Salecker and K. Wiegand</h4>
             
-            <h4 data-toc-skip class="date">2021-12-09</h4>
+            <h4 data-toc-skip class="date">2022-09-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/r-spatialecology/spectre/blob/HEAD/vignettes/minimal_example.Rmd" class="external-link"><code>vignettes/minimal_example.Rmd</code></a></small>
       <div class="d-none name"><code>minimal_example.Rmd</code></div>
@@ -123,59 +126,59 @@
 </h3>
 <p>Install the release version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"spectre"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"spectre"</span><span class="op">)</span></span></code></pre></div>
 <p>To install the developmental version of <code>spectre</code>, use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-spatialecology/spectre"</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-spatialecology/spectre"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/r-spatialecology/spectre/" class="external-link">"spectre"</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/r-spatialecology/spectre/" class="external-link">"spectre"</a></span><span class="op">)</span></span></code></pre></div>
 <p>For this example, we created a random species composition (15 sites, gamma diversity = 20) and calculated <span class="math inline">\(\alpha\)</span>-diversity and Bray-Curtis dissimilarity to be used as input for the <code>spectre</code> algorithm (please see <code>R/generate_minimal_example_data.R</code> for details).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># load "observed" alpha-, beta- and gamma-diversity values of the random species composition</span>
-<span class="va">alpha_list</span> <span class="op">&lt;-</span> <span class="va">minimal_example_data</span><span class="op">$</span><span class="va">alpha_list</span> <span class="co"># richness</span>
-<span class="va">beta_list</span> <span class="op">&lt;-</span> <span class="va">minimal_example_data</span><span class="op">$</span><span class="va">beta_list</span> <span class="co"># Bray-Curtis dissimilarity</span>
-<span class="va">total_gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">minimal_example_data</span><span class="op">$</span><span class="va">species_list</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="co"># 20 species</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># load "observed" alpha-, beta- and gamma-diversity values of the random species composition</span></span>
+<span><span class="va">alpha_list</span> <span class="op">&lt;-</span> <span class="va">minimal_example_data</span><span class="op">$</span><span class="va">alpha_list</span> <span class="co"># richness</span></span>
+<span><span class="va">beta_list</span> <span class="op">&lt;-</span> <span class="va">minimal_example_data</span><span class="op">$</span><span class="va">beta_list</span> <span class="co"># Bray-Curtis dissimilarity</span></span>
+<span><span class="va">total_gamma</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">minimal_example_data</span><span class="op">$</span><span class="va">species_list</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="co"># 20 species</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="solve-species-composition-using-spectre">Solve species composition using <code>spectre</code><a class="anchor" aria-label="anchor" href="#solve-species-composition-using-spectre"></a>
 </h3>
 <p>Running the optimization is straightforward in <code>spectre</code> and only includes one function call. However, first we need to generate to commonness matrix from the <code>gdm</code> predictions to generate the object matrix. Then, we simply run the optimization using the alpha list, the <span class="math inline">\(gamma\)</span>-diversity, the objective matrix (or target), and finally the number of maximum iterations.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/r-spatialecology/spectre/" class="external-link">"spectre"</a></span><span class="op">)</span>
-
-<span class="va">objective_matrix</span> <span class="op">&lt;-</span> <span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/generate_commonness_matrix_from_gdm.html">generate_commonness_matrix_from_gdm</a></span><span class="op">(</span>gdm_predictions <span class="op">=</span> <span class="va">beta_list</span>, 
-                                                                 alpha_list <span class="op">=</span> <span class="va">alpha_list</span><span class="op">)</span>
-
-<span class="co"># Solve composition </span>
-<span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/run_optimization_min_conf.html">run_optimization_min_conf</a></span><span class="op">(</span>alpha_list <span class="op">=</span> <span class="va">alpha_list</span>,
-                                          total_gamma <span class="op">=</span> <span class="va">total_gamma</span>,
-                                          target <span class="op">=</span> <span class="va">objective_matrix</span>,
-                                          max_iterations <span class="op">=</span> <span class="fl">1000</span>, <span class="co"># n iterations</span>
-                                          seed <span class="op">=</span> <span class="fl">123</span><span class="op">)</span> <span class="co"># use a random seed for reproducibility</span>
-<span class="co">#&gt; </span>
-<span class="co">#&gt;  &gt; Optimization finished with lowest absolute error = 11 (highest absolute error was: 102 improved by: 91)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/r-spatialecology/spectre/" class="external-link">"spectre"</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">objective_matrix</span> <span class="op">&lt;-</span> <span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/generate_commonness_matrix_from_gdm.html">generate_commonness_matrix_from_gdm</a></span><span class="op">(</span>gdm_predictions <span class="op">=</span> <span class="va">beta_list</span>, </span>
+<span>                                                                 alpha_list <span class="op">=</span> <span class="va">alpha_list</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Solve composition </span></span>
+<span><span class="va">res</span> <span class="op">&lt;-</span> <span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/run_optimization_min_conf.html">run_optimization_min_conf</a></span><span class="op">(</span>alpha_list <span class="op">=</span> <span class="va">alpha_list</span>,</span>
+<span>                                          total_gamma <span class="op">=</span> <span class="va">total_gamma</span>,</span>
+<span>                                          target <span class="op">=</span> <span class="va">objective_matrix</span>,</span>
+<span>                                          max_iterations <span class="op">=</span> <span class="fl">1000</span>, <span class="co"># n iterations</span></span>
+<span>                                          seed <span class="op">=</span> <span class="fl">123</span><span class="op">)</span> <span class="co"># use a random seed for reproducibility</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;  &gt; Optimization finished with lowest absolute error = 11 (highest absolute error was: 102 improved by: 91)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="result-evaluation">Result evaluation<a class="anchor" aria-label="anchor" href="#result-evaluation"></a>
 </h3>
 <p><code>spectre</code> allows to easily calculate some error measures, namely the mean absolute commonness error (<span class="math inline">\(MAE_c\)</span>) and the relative commonness error [%] (RCE). The error is calculated between the solved species composition and the objective matrix.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">error_c</span> <span class="op">&lt;-</span> <span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/calc_commonness_error.html">calc_commonness_error</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span>, objective_matrix <span class="op">=</span> <span class="va">objective_matrix</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">error_c</span> <span class="op">&lt;-</span> <span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/calc_commonness_error.html">calc_commonness_error</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span>, objective_matrix <span class="op">=</span> <span class="va">objective_matrix</span><span class="op">)</span></span></code></pre></div>
 <p>The <em>objective matrix</em> had a mean commonness of 1.75. The mean absolute error between the <em>objective matrix</em> and the solved <em>solution matrix</em> was 0.1. The solution matrix had an relative commonness error (RCE) of 6 %.</p>
 <p>There are also two functions to visualize the optimization. First you can plot the error of the solution matrix over time. Second, you can plot the commonness error between the solution matrix and the objective matrix.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># With an increasing number of iterations, the solution matrix improved</span>
-<span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_error.html">plot_error</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># With an increasing number of iterations, the solution matrix improved</span></span>
+<span><span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_error.html">plot_error</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span><span class="op">)</span></span></code></pre></div>
 <p><img src="minimal_example_files/figure-html/unnamed-chunk-8-1.png" width="50%" style="display: block; margin: auto;"></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R">
-<span class="co"># Plot commonness error between objective matrix and solution matrix</span>
-<span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_commonness.html">plot_commonness</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span>, target <span class="op">=</span> <span class="va">objective_matrix</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span></span>
+<span><span class="co"># Plot commonness error between objective matrix and solution matrix</span></span>
+<span><span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_commonness.html">plot_commonness</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span>, target <span class="op">=</span> <span class="va">objective_matrix</span><span class="op">)</span></span></code></pre></div>
 <p><img src="minimal_example_files/figure-html/unnamed-chunk-8-2.png" width="50%" style="display: block; margin: auto;"></p>
 </div>
 </div>
@@ -192,7 +195,7 @@
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
 </div>
 
     </footer>
