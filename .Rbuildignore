@@ -12,8 +12,8 @@
 ^Doxyfile$
 ^cran-comments\.md$
 ^CODE_OF_CONDUCT\.md$
+^CONTRIBUTING\.md$
 ^CRAN-RELEASE$
-
 ^_pkgdown\.yml$
 ^docs$
 ^pkgdown$

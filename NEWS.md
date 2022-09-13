@@ -1,6 +1,7 @@
 # spectre 1.0.3
 
 - Adding printing function and S3 class
+- Update citation information
 
 # spectre 1.0.2
 
