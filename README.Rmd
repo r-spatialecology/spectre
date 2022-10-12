@@ -33,13 +33,11 @@ The goal of `spectre` is to provide an open source tool capable of predicting re
 ## Installation
 
 Install the release version from CRAN:
-
 ```{r, eval=FALSE}
 install.packages("spectre")
 ```
 
 To install the developmental version of `spectre`, use:
-
 ```{r, eval=FALSE}
 install.packages("remotes")
 remotes::install_github("r-spatialecology/spectre")
