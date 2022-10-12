@@ -39,6 +39,7 @@ install.packages("spectre")
 ```
 
 To install the developmental version of `spectre`, use:
+
 ```{r, eval=FALSE}
 install.packages("remotes")
 remotes::install_github("r-spatialecology/spectre")
