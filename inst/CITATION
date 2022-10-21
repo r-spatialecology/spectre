@@ -15,7 +15,7 @@ citEntry(
   year     = {"2022"},
   volume   = {""},
   number   = {""},
-  pages    = {""},
+  pages    = {"e06272"},
   url      = {"https://doi.org/10.1111/ecog.06272"},
-  textVersion = {"Simpkins, C.E., Hansss, S., Spangenberg, M.C., Salecker, J., Hesselbarth, M.H.K.,Wiegand, K., 2022. spectre: An R package to estimate spatially-explicit community composition using sparse data. Ecography. https://doi.org/10.1111/ecog.06272"}
+  textVersion = {"Simpkins, C.E., Hansss, S., Spangenberg, M.C., Salecker, J., Hesselbarth, M.H.K.,Wiegand, K., 2022. spectre: An R package to estimate spatially-explicit community composition using sparse data. Ecography. e06272. https://doi.org/10.1111/ecog.06272"}
 )
