@@ -1,3 +1,7 @@
+# spectre 1.0.3
+
+We added and updated the citation information of the package.
+
 # spectre 1.0.2 
 
 ## Resubmission and update
