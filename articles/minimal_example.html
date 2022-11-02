@@ -109,9 +109,11 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Minimal example</h1>
-                        <h4 data-toc-skip class="author">C.E. Simpkins, S. Hanss, M. Hesselbarth, M.C. Spangenberg, J. Salecker and K. Wiegand</h4>
+                        <h4 data-toc-skip class="author">C.E. Simpkins,
+S. Hanss, M. Hesselbarth, M.C. Spangenberg, J. Salecker and K.
+Wiegand</h4>
             
-            <h4 data-toc-skip class="date">2022-10-23</h4>
+            <h4 data-toc-skip class="date">2022-11-02</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/r-spatialecology/spectre/blob/HEAD/vignettes/minimal_example.Rmd" class="external-link"><code>vignettes/minimal_example.Rmd</code></a></small>
       <div class="d-none name"><code>minimal_example.Rmd</code></div>
@@ -128,7 +130,8 @@
 <p>Install the release version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"spectre"</span><span class="op">)</span></span></code></pre></div>
-<p>To install the developmental version of <code>spectre</code>, use:</p>
+<p>To install the developmental version of <code>spectre</code>,
+use:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-spatialecology/spectre"</span><span class="op">)</span></span></code></pre></div>
@@ -139,7 +142,11 @@
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/r-spatialecology/spectre/" class="external-link">"spectre"</a></span><span class="op">)</span></span></code></pre></div>
-<p>For this example, we created a random species composition (15 sites, gamma diversity = 20) and calculated <span class="math inline">\(\alpha\)</span>-diversity and Bray-Curtis dissimilarity to be used as input for the <code>spectre</code> algorithm (please see <code>R/generate_minimal_example_data.R</code> for details).</p>
+<p>For this example, we created a random species composition (15 sites,
+gamma diversity = 20) and calculated <span class="math inline">\(\alpha\)</span>-diversity and Bray-Curtis
+dissimilarity to be used as input for the <code>spectre</code> algorithm
+(please see <code>R/generate_minimal_example_data.R</code> for
+details).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># load "observed" alpha-, beta- and gamma-diversity values of the random species composition</span></span>
 <span><span class="va">alpha_list</span> <span class="op">&lt;-</span> <span class="va">minimal_example_data</span><span class="op">$</span><span class="va">alpha_list</span> <span class="co"># richness</span></span>
@@ -148,7 +155,13 @@
 <div class="section level3">
 <h3 id="solve-species-composition-using-spectre">Solve species composition using <code>spectre</code><a class="anchor" aria-label="anchor" href="#solve-species-composition-using-spectre"></a>
 </h3>
-<p>Running the optimization is straightforward in <code>spectre</code> and only includes one function call. However, first we need to generate to commonness matrix from the <code>gdm</code> predictions to generate the object matrix. Then, we simply run the optimization using the alpha list, the <span class="math inline">\(gamma\)</span>-diversity, the objective matrix (or target), and finally the number of maximum iterations.</p>
+<p>Running the optimization is straightforward in <code>spectre</code>
+and only includes one function call. However, first we need to generate
+to commonness matrix from the <code>gdm</code> predictions to generate
+the object matrix. Then, we simply run the optimization using the alpha
+list, the <span class="math inline">\(gamma\)</span>-diversity, the
+objective matrix (or target), and finally the number of maximum
+iterations.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/r-spatialecology/spectre/" class="external-link">"spectre"</a></span><span class="op">)</span></span>
 <span></span>
@@ -167,11 +180,20 @@
 <div class="section level3">
 <h3 id="result-evaluation">Result evaluation<a class="anchor" aria-label="anchor" href="#result-evaluation"></a>
 </h3>
-<p><code>spectre</code> allows to easily calculate some error measures, namely the mean absolute commonness error (<span class="math inline">\(MAE_c\)</span>) and the relative commonness error [%] (RCE). The error is calculated between the solved species composition and the objective matrix.</p>
+<p><code>spectre</code> allows to easily calculate some error measures,
+namely the mean absolute commonness error (<span class="math inline">\(MAE_c\)</span>) and the relative commonness error
+[%] (RCE). The error is calculated between the solved species
+composition and the objective matrix.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">error_c</span> <span class="op">&lt;-</span> <span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/calc_commonness_error.html">calc_commonness_error</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span>, objective_matrix <span class="op">=</span> <span class="va">objective_matrix</span><span class="op">)</span></span></code></pre></div>
-<p>The <em>objective matrix</em> had a mean commonness of 1.75. The mean absolute error between the <em>objective matrix</em> and the solved <em>solution matrix</em> was 0.1. The solution matrix had an relative commonness error (RCE) of 6 %.</p>
-<p>There are also two functions to visualize the optimization. First you can plot the error of the solution matrix over time. Second, you can plot the commonness error between the solution matrix and the objective matrix.</p>
+<p>The <em>objective matrix</em> had a mean commonness of 1.75. The mean
+absolute error between the <em>objective matrix</em> and the solved
+<em>solution matrix</em> was 0.1. The solution matrix had an relative
+commonness error (RCE) of 6 %.</p>
+<p>There are also two functions to visualize the optimization. First you
+can plot the error of the solution matrix over time. Second, you can
+plot the commonness error between the solution matrix and the objective
+matrix.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># With an increasing number of iterations, the solution matrix improved</span></span>
 <span><span class="fu">spectre</span><span class="fu">::</span><span class="fu"><a href="../reference/plot_error.html">plot_error</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">res</span><span class="op">)</span></span></code></pre></div>
