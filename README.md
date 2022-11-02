@@ -36,10 +36,10 @@ spectre” vignette associated with the package.
 
 ## Meta
 
--   Please [report any issues or
-    bugs](https://github.com/r-spatialecology/spectre/issues/new).
--   Get citation information for `spectre` in R doing
-    `citation(package = 'spectre')`
+- Please [report any issues or
+  bugs](https://github.com/r-spatialecology/spectre/issues/new).
+- Get citation information for `spectre` in R doing
+  `citation(package = 'spectre')`
 
 ## Code of Conduct
 
