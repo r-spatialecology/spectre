@@ -17,6 +17,9 @@
 #define CATCH_VERSION_MINOR 13
 #define CATCH_VERSION_PATCH 4
 
+#undef MINSIGSTKSZ
+#define MINSIGSTKSZ 16384
+
 #ifdef __clang__
 #    pragma clang system_header
 #elif defined __GNUC__
