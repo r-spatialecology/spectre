@@ -1,5 +1,5 @@
 window.BENCHMARK_DATA = {
-  "lastUpdate": 1633514760358,
+  "lastUpdate": 1669808433886,
   "repoUrl": "https://github.com/r-spatialecology/spectre",
   "entries": {
     "Spectre Benchmark": [
@@ -84,6 +84,51 @@ window.BENCHMARK_DATA = {
             "name": "Calc commonness 100x100",
             "value": 473.606,
             "range": "± 79.6187",
+            "unit": "us",
+            "extra": "100 samples\n1 iterations"
+          }
+        ]
+      },
+      {
+        "commit": {
+          "author": {
+            "email": "shanss@uni-goettingen.de",
+            "name": "Sebastian Hanß",
+            "username": "bitbacchus"
+          },
+          "committer": {
+            "email": "noreply@github.com",
+            "name": "GitHub",
+            "username": "web-flow"
+          },
+          "distinct": true,
+          "id": "fc4091c0ff2725ab8772fa07ff6a4e15837e34d0",
+          "message": "Update catch.hpp\n\nStill trying to solve https://stackoverflow.com/questions/71454588/minsigstksz-error-after-update-in-my-manjaro-linux",
+          "timestamp": "2022-11-30T12:36:37+01:00",
+          "tree_id": "43e8fa539a1ed02a7172e7782a82c55ca4d5fdb1",
+          "url": "https://github.com/r-spatialecology/spectre/commit/fc4091c0ff2725ab8772fa07ff6a4e15837e34d0"
+        },
+        "date": 1669808433319,
+        "tool": "catch2",
+        "benches": [
+          {
+            "name": "optimize 3 sites, 3 species",
+            "value": 302.848,
+            "range": "± 22.1523",
+            "unit": "ns",
+            "extra": "100 samples\n93 iterations"
+          },
+          {
+            "name": "optimize 100 sites, 139 spec, 5 it",
+            "value": 362.567,
+            "range": "± 2.63714",
+            "unit": "ms",
+            "extra": "100 samples\n1 iterations"
+          },
+          {
+            "name": "Calc commonness 100x100",
+            "value": 557.916,
+            "range": "± 2.71573",
             "unit": "us",
             "extra": "100 samples\n1 iterations"
           }
