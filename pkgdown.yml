@@ -1,12 +1,11 @@
-pandoc: 2.19.2
-pkgdown: 2.0.6
+pandoc: 3.1.11
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
-  benchmark: benchmark.html
+  articles/benchmark: benchmark.html
   getting_started_with_spectre: getting_started_with_spectre.html
   minimal_example: minimal_example.html
-last_built: 2022-11-30T21:07Z
+last_built: 2025-02-11T08:15Z
 urls:
   reference: https://r-spatialecology.github.io/spectre/reference
   article: https://r-spatialecology.github.io/spectre/articles
-
