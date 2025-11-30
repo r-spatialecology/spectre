@@ -15,7 +15,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/r-spatialecology/spectre/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/r-spatialecology/spectre/blob/v1.0.4/inst/CITATION)
 
 Simpkins, C.E., Hansss, S., Spangenberg, M.C., Salecker, J.,
 Hesselbarth, M.H.K.,Wiegand, K., 2022. spectre: An R package to estimate
