@@ -1,7 +1,7 @@
 Package: spectre
 Type: Package
 Title: Predict Regional Community Composition 
-Version: 1.0.3
+Version: 1.0.4
 Authors@R: c(person("Craig", "Simpkins", email = "simpkinscraig063@gmail.com", role = c("aut", "cre")),
          person("Sebastian", "Hanss", role = c("aut")),
          person("Maximilian", "Hesselbarth", role = c("aut")),
@@ -35,6 +35,5 @@ ByteCompile: true
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
-SystemRequirements: C++11
+RoxygenNote: 7.3.3
 VignetteBuilder: knitr

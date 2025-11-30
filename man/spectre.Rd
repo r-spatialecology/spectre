@@ -2,8 +2,8 @@
 % Please edit documentation in R/spectre-package.R
 \docType{package}
 \name{spectre}
-\alias{spectre}
 \alias{spectre-package}
+\alias{spectre}
 \title{spectre}
 \description{
 The goal of \code{spectre} is to provide an open source tool capable of predicting regional community composition at fine spatial resolutions using only sparse biological and environmental data.

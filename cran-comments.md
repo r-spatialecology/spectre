@@ -1,3 +1,6 @@
+# spectre 1.0.4
+Removed C++ version requirement
+
 # spectre 1.0.3
 
 We added and updated the citation information of the package.
