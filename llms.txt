@@ -1,0 +1,86 @@
+# spectre ![](reference/figures/spectre.png)
+
+The goal of `spectre` is to provide an open source tool capable of
+predicting regional community composition at fine spatial resolutions
+using only sparse biological and environmental data.
+
+## Installation
+
+Install the release version from CRAN:
+
+``` r
+install.packages("spectre")
+```
+
+To install the developmental version of `spectre`, use:
+
+``` r
+install.packages("remotes")
+remotes::install_github("r-spatialecology/spectre")
+```
+
+A full use case example is included in the “Getting started with
+spectre” vignette associated with the package.
+
+## Meta
+
+- Please [report any issues or
+  bugs](https://github.com/r-spatialecology/spectre/issues/new).
+- Get citation information for `spectre` in R doing
+  `citation(package = 'spectre')`
+
+## Code of Conduct
+
+Please note that the **spectre** package is released with a [Contributor
+Code of
+Conduct](https://r-spatialecology.github.io/spectre/CODE_OF_CONDUCT.md).
+By contributing to this project, you agree to abide by its terms.
+
+To see how to contribute to this project, please see the [Contributing
+guidelines](https://r-spatialecology.github.io/spectre/CONTRIBUTING.md).
+
+# Package index
+
+## Core
+
+- [`generate_commonness_matrix_from_gdm()`](https://r-spatialecology.github.io/spectre/reference/generate_commonness_matrix_from_gdm.md)
+  : generate_commonness_matrix_from_gdm
+- [`run_optimization_min_conf()`](https://r-spatialecology.github.io/spectre/reference/run_optimization_min_conf.md)
+  : run_optimization_min_conf
+- [`calc_commonness_error()`](https://r-spatialecology.github.io/spectre/reference/calc_commonness_error.md)
+  : calc_commonness_error
+
+## Utility
+
+- [`plot_error()`](https://r-spatialecology.github.io/spectre/reference/plot_error.md)
+  : plot_error
+- [`plot_commonness()`](https://r-spatialecology.github.io/spectre/reference/plot_commonness.md)
+  : plot_commonness
+- [`print(`*`<optim_sol>`*`)`](https://r-spatialecology.github.io/spectre/reference/print.optim_sol.md)
+  : print.optim_sol
+
+## Datasets
+
+- [`alpha_list`](https://r-spatialecology.github.io/spectre/reference/alpha_list.md)
+  : Matrix of predicted alpha diversity in each cell.
+
+- [`estimated_gamma`](https://r-spatialecology.github.io/spectre/reference/estimated_gamma.md)
+  : Total (estimated) species in the system.
+
+- [`target_matrix`](https://r-spatialecology.github.io/spectre/reference/target_matrix.md)
+  : Pairwise matrix of species in common.
+
+- [`minimal_example_data`](https://r-spatialecology.github.io/spectre/reference/minimal_example_data.md)
+  :
+
+  List with example data created using the `gdm` package
+
+# Articles
+
+### All vignettes
+
+- [Benchmarks](https://r-spatialecology.github.io/spectre/articles/benchmark.md):
+- [Getting started with
+  \`spectre\`](https://r-spatialecology.github.io/spectre/articles/getting_started_with_spectre.md):
+- [Minimal
+  example](https://r-spatialecology.github.io/spectre/articles/minimal_example.md):
