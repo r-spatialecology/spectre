@@ -31,10 +31,9 @@ spectre” vignette associated with the package.
 
 ## Code of Conduct
 
-Please note that the **spectre** package is released with a [Contributor
-Code of
-Conduct](https://r-spatialecology.github.io/spectre/CODE_OF_CONDUCT.md).
-By contributing to this project, you agree to abide by its terms.
+Please note that the **spectre** package is released with a Contributor
+Code of Conduct. By contributing to this project, you agree to abide by
+its terms.
 
-To see how to contribute to this project, please see the [Contributing
-guidelines](https://r-spatialecology.github.io/spectre/CONTRIBUTING.md).
+To see how to contribute to this project, please see the Contributing
+guidelines.

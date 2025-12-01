@@ -5,7 +5,7 @@ articles:
   articles/benchmark: benchmark.html
   getting_started_with_spectre: getting_started_with_spectre.html
   minimal_example: minimal_example.html
-last_built: 2025-11-30T23:39Z
+last_built: 2025-12-01T00:11Z
 urls:
   reference: https://r-spatialecology.github.io/spectre/reference
   article: https://r-spatialecology.github.io/spectre/articles

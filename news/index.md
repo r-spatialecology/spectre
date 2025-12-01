@@ -1,5 +1,10 @@
 # Changelog
 
+## spectre 1.0.5
+
+- Updated the DESCRIPTION and CITATION files to reflect new standards
+  and removed broken links in README.md
+
 ## spectre 1.0.4
 
 - Removed C++ version requirement

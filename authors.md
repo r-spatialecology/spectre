@@ -15,18 +15,17 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/r-spatialecology/spectre/blob/v1.0.4/inst/CITATION)
+[`inst/CITATION`](https://github.com/r-spatialecology/spectre/blob/main/inst/CITATION)
 
-Simpkins, C.E., Hansss, S., Spangenberg, M.C., Salecker, J.,
-Hesselbarth, M.H.K.,Wiegand, K., 2022. spectre: An R package to estimate
-spatially-explicit community composition using sparse data. Ecography.
-e06272. https://doi.org/10.1111/ecog.06272
+Simpkins, C. et al. (2022). Spectre: An R package for... Ecography...
 
     @Article{,
-      title = {spectre: An R package to estimate spatially-explicit community composition using sparse data},
-      author = {Craig E. Simpkins and Sebastian Hansss and Matthias C. Spangenberg and Jan Salecker and Maximilian H.K. Hesselbarth and Kerstin Wiegand},
+      title = {Spectre: An R package for...},
+      author = {Craig Simpkins and Other Author},
       journal = {Ecography},
       year = {2022},
-      pages = {e06272},
-      url = {https://doi.org/10.1111/ecog.06272},
+      volume = {xx},
+      number = {xx},
+      pages = {xx-xx},
+      doi = {10.1111/ecog.06272},
     }
