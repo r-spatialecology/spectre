@@ -15,7 +15,7 @@
 ## Citation
 
 Source:
-[`inst/CITATION`](https://github.com/r-spatialecology/spectre/blob/main/inst/CITATION)
+[`inst/CITATION`](https://github.com/r-spatialecology/spectre/blob/v1.0.5/inst/CITATION)
 
 Simpkins, C. et al. (2022). Spectre: An R package for... Ecography...
 
